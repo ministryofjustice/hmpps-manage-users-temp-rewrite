@@ -2,7 +2,7 @@ name: Security npm dependency check
 on:
   workflow_dispatch:
   schedule:
-    - cron: "19 8 * * MON-FRI" # Every weekday
+    - cron: "1 4 * * MON-FRI" # Every weekday
 
 jobs:
   security-npm-dependency-check:
