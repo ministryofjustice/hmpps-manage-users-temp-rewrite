@@ -156,7 +156,3 @@ And then either, run tests in headless mode with:
 Or run tests with the UI:
 
 `npm run int-test-ui`
-
-## Change log
-
-A changelog for the service is available [here](./CHANGELOG.md)
