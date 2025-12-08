@@ -1,9 +1,7 @@
 generic-service:
   nameOverride: hmpps-manage-users-temp-rewrite
-  productId: 'DPS017' # productId for the product that this belongs too, i.e. DPS001, see README.md for details
-
-  # the IRSA service account name for accessing AWS resources
-  # serviceAccountName: "hmpps-manage-users-temp-rewrite"
+  productId: 'DPS017'
+  serviceAccountName: "hmpps-manage-users-temp-rewrite"
 
   replicaCount: 4
 
@@ -40,24 +38,17 @@ generic-service:
   #     [name of environment variable as seen by app]: [key of kubernetes secret to load]
 
   namespace_secrets:
-    # These secrets are created by terraform.
-    hmpps-manage-users-temp-rewrite-client-creds:
-      CLIENT_CREDS_CLIENT_ID: 'CLIENT_CREDS_CLIENT_ID'
-      CLIENT_CREDS_CLIENT_SECRET: 'CLIENT_CREDS_CLIENT_SECRET'
-    hmpps-manage-users-temp-rewrite-auth-code:
-      AUTH_CODE_CLIENT_ID: 'AUTH_CODE_CLIENT_ID'
-      AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'    
-    hmpps-manage-users-temp-rewrite-session-secret:
-      SESSION_SECRET: 'SESSION_SECRET'
-    hmpps-manage-users-temp-rewrite-elasticache-redis:
-      REDIS_HOST: 'primary_endpoint_address'
-      REDIS_AUTH_TOKEN: 'auth_token'
+    hmpps-manage-users:
+      API_CLIENT_ID: "API_CLIENT_ID"
+      API_CLIENT_SECRET: "API_CLIENT_SECRET"
+      SESSION_SECRET: "SESSION_SECRET"
+    sqs-hmpps-audit-secret:
+      AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
+    hmpps-redis:
+      REDIS_HOST: "REDIS_HOST"
+      REDIS_PASSWORD: "REDIS_PASSWORD"
     hmpps-manage-users-temp-rewrite-application-insights:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
-    # This secret will need to be created in your namespace (note it isn't in hmpps-templates-dev)
-    # IRSA configuration in your namespace will also be required, and then uncomment serviceAccountName above.
-    # sqs-hmpps-audit-secret:
-    #   AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'
 
   allowlist:
     groups:
