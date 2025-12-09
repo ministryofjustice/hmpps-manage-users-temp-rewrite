@@ -1,7 +1,9 @@
 generic-service:
   nameOverride: hmpps-manage-users-temp-rewrite
   productId: 'DPS017'
-  serviceAccountName: "hmpps-manage-users-temp-rewrite"
+
+# the IRSA service account name for accessing AWS resources
+#  serviceAccountName: "hmpps-manage-users-temp-rewrite"
 
   replicaCount: 4
 
