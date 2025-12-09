@@ -40,16 +40,20 @@ generic-service:
   #     [name of environment variable as seen by app]: [key of kubernetes secret to load]
 
   namespace_secrets:
+#   using hmpps-manage-users secrets as code will be copied into repo once complete
     hmpps-manage-users:
-      API_CLIENT_ID: "API_CLIENT_ID"
-      API_CLIENT_SECRET: "API_CLIENT_SECRET"
+      AUTH_CODE_CLIENT_ID: "API_CLIENT_ID"
+      AUTH_CODE_CLIENT_SECRET: "API_CLIENT_SECRET"
       SESSION_SECRET: "SESSION_SECRET"
+    hmpps-manage-users-client-creds:
+      CLIENT_CREDS_CLIENT_ID: 'CLIENT_CREDS_CLIENT_ID'
+      CLIENT_CREDS_CLIENT_SECRET: 'CLIENT_CREDS_CLIENT_SECRET'
     sqs-hmpps-audit-secret:
       AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
     hmpps-redis:
       REDIS_HOST: "REDIS_HOST"
       REDIS_PASSWORD: "REDIS_PASSWORD"
-    hmpps-manage-users-temp-rewrite-application-insights:
+    hmpps-manage-users-application-insights:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
 
   allowlist:
