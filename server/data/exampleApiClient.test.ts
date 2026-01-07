@@ -1,19 +1,13 @@
 import nock from 'nock'
-import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import ExampleApiClient from './exampleApiClient'
 import config from '../config'
 
 describe('ExampleApiClient', () => {
   let exampleApiClient: ExampleApiClient
-  let mockAuthenticationClient: jest.Mocked<AuthenticationClient>
   const token = 'test-system-token'
 
   beforeEach(() => {
-    mockAuthenticationClient = {
-      getToken: jest.fn().mockResolvedValue(token),
-    } as unknown as jest.Mocked<AuthenticationClient>
-
-    exampleApiClient = new ExampleApiClient(mockAuthenticationClient)
+    exampleApiClient = new ExampleApiClient()
   })
 
   afterEach(() => {
