@@ -4,7 +4,7 @@ import ExampleService from './exampleService'
 jest.mock('../data/exampleApiClient')
 
 describe('ExampleService', () => {
-  const exampleApiClient = new ExampleApiClient(null) as jest.Mocked<ExampleApiClient>
+  const exampleApiClient = new ExampleApiClient() as jest.Mocked<ExampleApiClient>
   let exampleService: ExampleService
 
   beforeEach(() => {

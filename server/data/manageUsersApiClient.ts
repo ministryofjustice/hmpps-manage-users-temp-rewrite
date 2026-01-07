@@ -1,5 +1,4 @@
 import { asUser, RestClient, SanitisedError } from '@ministryofjustice/hmpps-rest-client'
-import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import { Response } from 'superagent'
 import {
   ChildGroup,
@@ -45,8 +44,8 @@ import config from '../config'
 import logger from '../../logger'
 
 export default class ManageUsersApiClient extends RestClient {
-  constructor(authenticationClient: AuthenticationClient) {
-    super('Manage Users API', config.apis.manageUsersApi, logger, authenticationClient)
+  constructor() {
+    super('Manage Users API', config.apis.manageUsersApi, logger)
   }
 
   async createEmailDomain(token: string, domain: CreateEmailDomainRequest): Promise<Response> {

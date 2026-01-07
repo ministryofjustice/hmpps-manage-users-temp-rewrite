@@ -1,5 +1,4 @@
 import nock, { DataMatcherMap } from 'nock'
-import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import {
   ChildGroup,
   CreateChildGroupRequest,
@@ -57,14 +56,9 @@ const mockApi = (
 
 describe('ManageUsersApiClient', () => {
   let manageUsersApiClient: ManageUsersApiClient
-  let mockAuthenticationClient: jest.Mocked<AuthenticationClient>
 
   beforeEach(() => {
-    mockAuthenticationClient = {
-      getToken: jest.fn().mockResolvedValue(token),
-    } as unknown as jest.Mocked<AuthenticationClient>
-
-    manageUsersApiClient = new ManageUsersApiClient(mockAuthenticationClient)
+    manageUsersApiClient = new ManageUsersApiClient()
   })
 
   afterEach(() => {
