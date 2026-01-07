@@ -12,6 +12,9 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
+    "paths": {
+      "manageUsersApiClient": ["./server/@types/manageUsersApiClient"]
+    },
     "typeRoots": ["./server/@types", "./node_modules/@types"]
   },
   "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist", "esbuild", "eslint.config.mjs"],
