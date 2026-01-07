@@ -1,4 +1,4 @@
-import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
+import { RestClient, asUser } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
@@ -15,8 +15,8 @@ export default class ExampleApiClient extends RestClient {
    * This is useful for service-to-service authorization when no user context is required.
    *
    */
-  getCurrentTime() {
-    return this.get<string>({ path: '/example/time' }, asSystem())
+  getCurrentTime(token: string) {
+    return this.get<string>({ path: '/example/time' }, asUser(token))
   }
 
   /**

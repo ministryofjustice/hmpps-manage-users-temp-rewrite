@@ -13,10 +13,11 @@ describe('ExampleService', () => {
 
   it('should call getCurrentTime on the api client and return its result', async () => {
     const expectedTime = '2025-01-01T12:00:00Z'
+    const token = 'test-token'
 
     exampleApiClient.getCurrentTime.mockResolvedValue(expectedTime)
 
-    const result = await exampleService.getCurrentTime()
+    const result = await exampleService.getCurrentTime(token)
 
     expect(exampleApiClient.getCurrentTime).toHaveBeenCalledTimes(1)
     expect(result).toEqual(expectedTime)
