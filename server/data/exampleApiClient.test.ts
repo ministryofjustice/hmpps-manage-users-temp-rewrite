@@ -6,10 +6,11 @@ import config from '../config'
 describe('ExampleApiClient', () => {
   let exampleApiClient: ExampleApiClient
   let mockAuthenticationClient: jest.Mocked<AuthenticationClient>
+  const token = 'test-system-token'
 
   beforeEach(() => {
     mockAuthenticationClient = {
-      getToken: jest.fn().mockResolvedValue('test-system-token'),
+      getToken: jest.fn().mockResolvedValue(token),
     } as unknown as jest.Mocked<AuthenticationClient>
 
     exampleApiClient = new ExampleApiClient(mockAuthenticationClient)
@@ -27,10 +28,9 @@ describe('ExampleApiClient', () => {
         .matchHeader('authorization', 'Bearer test-system-token')
         .reply(200, { time: '2025-01-01T12:00:00Z' })
 
-      const response = await exampleApiClient.getCurrentTime()
+      const response = await exampleApiClient.getCurrentTime(token)
 
       expect(response).toEqual({ time: '2025-01-01T12:00:00Z' })
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledTimes(1)
     })
   })
 })
