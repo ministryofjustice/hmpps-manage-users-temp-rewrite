@@ -37,7 +37,7 @@ export default function nunjucksSetup(app: express.Express): void {
       noCache: process.env.NODE_ENV !== 'production',
     },
   )
-
+  njkEnv.addGlobal('homeUrl', config.apis.hmppsAuth.externalUrl)
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
 }

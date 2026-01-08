@@ -94,6 +94,14 @@ export default {
   sqs: {
     audit: auditConfig(),
   },
-  ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  ingressUrl: get('INGRESS_URL', 'http://localhost:3001', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
+  featureSwitches: {
+    manageUserAllowList: {
+      enabled: get('MANAGE_USER_ALLOW_LIST_ENABLED', 'false') === 'true',
+      environmentLabel: get('MANAGE_USER_ALLOW_LIST_ENVIRONMENT_LABEL', 'localhost'),
+      pageSize: Number(get('MANAGE_USER_ALLOW_LIST_PAGE_SIZE', 20)),
+      downloadLimit: Number(get('MANAGE_USER_ALLOW_LIST_DOWNLOAD_LIMIT', 20000)),
+    },
+  },
 }

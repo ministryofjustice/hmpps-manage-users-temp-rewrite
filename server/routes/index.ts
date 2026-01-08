@@ -1,17 +1,12 @@
 import { Router } from 'express'
 
 import type { Services } from '../services'
-import { Page } from '../services/auditService'
+import menuRouter from './menuRouter'
 
-export default function routes({ auditService, exampleService }: Services): Router {
+export default function routes({ menuService }: Services): Router {
   const router = Router()
 
-  router.get('/', async (req, res) => {
-    await auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
-
-    const currentTime = await exampleService.getCurrentTime(res.locals.user.token)
-    return res.render('pages/index', { currentTime })
-  })
+  router.use(menuRouter(menuService))
 
   return router
 }
