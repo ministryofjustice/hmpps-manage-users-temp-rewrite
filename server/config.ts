@@ -94,7 +94,7 @@ export default {
   sqs: {
     audit: auditConfig(),
   },
-  ingressUrl: get('INGRESS_URL', 'http://localhost:3001', requiredInProduction),
+  ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   featureSwitches: {
     manageUserAllowList: {
