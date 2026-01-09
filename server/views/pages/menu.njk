@@ -32,7 +32,7 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">{{ title }}</h1>
       {% if menuTiles.length %}
-        <ul class="govuk-grid-row card-group">
+        <ul class="govuk-grid-row card-group" data-qa="tile-list">
           {% for tile in menuTiles %}
             <li class="govuk-grid-column-one-third card-group__item">
               <div class="card card--clickable" data-qa="{{ tile.dataQa }}">
