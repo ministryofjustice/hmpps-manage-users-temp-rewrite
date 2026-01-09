@@ -14,4 +14,17 @@ export default {
         jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
       },
     }),
+
+  stubNotificationBannerMessage: (notificationType: string, message: string): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/manage-users-api/notification/banner/${notificationType}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: { message },
+      },
+    }),
 }
