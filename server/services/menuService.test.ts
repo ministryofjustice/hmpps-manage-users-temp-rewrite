@@ -102,6 +102,18 @@ describe('MenuService', () => {
         },
       ])
     })
+    it('should only return one tile for multiple roles that are valid for that tile', async () => {
+      const tiles: MenuTile[] = menuService.getTiles(['MAINTAIN_ACCESS_ROLES', 'MAINTAIN_ACCESS_ROLES_ADMIN'])
+
+      expect(tiles).toEqual([
+        {
+          title: `Search for a DPS user`,
+          description: `Enhanced searching and managing of DPS and NOMIS users`,
+          href: '/search-with-filter-dps-users',
+          dataQa: 'search_with_filter_dps_users',
+        },
+      ])
+    })
     it('should return list containing create dps user tiles', async () => {
       const tiles: MenuTile[] = menuService.getTiles(['CREATE_USER'])
 
