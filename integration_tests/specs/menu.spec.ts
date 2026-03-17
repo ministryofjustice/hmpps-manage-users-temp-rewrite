@@ -3,6 +3,7 @@ import manageUsersApi from '../mockApis/manageUsersApi'
 
 import { login, resetStubs } from '../testUtils'
 import HomePage from '../pages/homePage'
+import paths from '../../server/routes/paths'
 
 test.describe('Menu', () => {
   test.beforeEach(async () => {
@@ -19,7 +20,7 @@ test.describe('Menu', () => {
 
     const homePage = await HomePage.verifyOnPage(page)
     await expect(homePage.bannerMessage).toBeVisible()
-    await expect(homePage.bannerMessage).toHaveText(/\s*Important\s*The service is being tested\s*/)
+    await expect(homePage.bannerMessage).toHaveText('Important The service is being tested')
   })
 
   test('Banner text is displayed if the user has MAINTAIN_ACCESS_ROLES_ADMIN role', async ({ page }) => {
@@ -28,7 +29,7 @@ test.describe('Menu', () => {
 
     const homePage = await HomePage.verifyOnPage(page)
     await expect(homePage.bannerMessage).toBeVisible()
-    await expect(homePage.bannerMessage).toHaveText(/\s*Important\s*The service is being tested\s*/)
+    await expect(homePage.bannerMessage).toHaveText('Important The service is being tested')
   })
 
   test('Banner text is not displayed if the user has other role', async ({ page }) => {
@@ -90,7 +91,7 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       `Create a DPS user`,
       `Create an account for a DPS user`,
-      '/create-user',
+      paths.dpsUser.createUser({}),
       'create_dps_user_link',
     )
   })

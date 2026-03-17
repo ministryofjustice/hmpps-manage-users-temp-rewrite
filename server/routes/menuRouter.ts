@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import MenuService from '../services/menuService'
+import { Services } from '../services'
 
-export default function menuRouter(menuService: MenuService): Router {
+export default function menuRouter({ menuService }: Services): Router {
   const router = Router()
 
   router.get('/', async (req, res) => {

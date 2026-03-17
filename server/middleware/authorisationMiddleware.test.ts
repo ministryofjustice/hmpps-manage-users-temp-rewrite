@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 import type { Request, Response } from 'express'
 
 import authorisationMiddleware from './authorisationMiddleware'
+import paths from '../routes/paths'
 
 function createToken(authorities: string[]) {
   const payload = {
@@ -35,7 +36,18 @@ describe('authorisationMiddleware', () => {
     jest.resetAllMocks()
   })
 
+  it('should redirect to sign-in if no user token', () => {
+    req = { originalUrl: '/', session: { returnTo: '' } } as Request
+    const res = { redirect: jest.fn() } as unknown as Response
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).not.toHaveBeenCalled()
+    expect(res.redirect).toHaveBeenCalledWith('/sign-in')
+  })
+
   it('should return next when no required roles', () => {
+    req = { originalUrl: '/' } as Request
     const res = createResWithToken({ authorities: [] })
 
     authorisationMiddleware()(req, res, next)
@@ -44,28 +56,81 @@ describe('authorisationMiddleware', () => {
     expect(res.redirect).not.toHaveBeenCalled()
   })
 
-  it('should redirect when user has no authorised roles', () => {
-    const res = createResWithToken({ authorities: [] })
+  it('should redirect when user tries to access create user without create user role', () => {
+    req = { originalUrl: paths.dpsUser.createUser({}) } as Request
+    const res = createResWithToken({ authorities: ['ROLE_NOT_CREATE_USER'] })
 
-    authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
+    authorisationMiddleware()(req, res, next)
 
     expect(next).not.toHaveBeenCalled()
     expect(res.redirect).toHaveBeenCalledWith('/authError')
   })
 
-  it('should return next when user has authorised role', () => {
-    const res = createResWithToken({ authorities: ['ROLE_SOME_REQUIRED_ROLE'] })
+  it('should return next when user tries to access create user with create user role', () => {
+    req = { originalUrl: paths.dpsUser.createUser({}) } as Request
+    const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
 
-    authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
+    authorisationMiddleware()(req, res, next)
 
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()
   })
 
-  it('should return next when user has authorised role and middleware created with ROLE_ prefix', () => {
-    const res = createResWithToken({ authorities: ['ROLE_SOME_REQUIRED_ROLE'] })
+  it('should redirect when user tries to access create user options without create user role', () => {
+    req = { originalUrl: paths.dpsUser.createUserOptions({}) } as Request
+    const res = createResWithToken({ authorities: ['ROLE_NOT_CREATE_USER'] })
 
-    authorisationMiddleware(['ROLE_SOME_REQUIRED_ROLE'])(req, res, next)
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).not.toHaveBeenCalled()
+    expect(res.redirect).toHaveBeenCalledWith('/authError')
+  })
+
+  it('should return next when user tries to access create user options with create user role', () => {
+    req = { originalUrl: paths.dpsUser.createUserOptions({}) } as Request
+    const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
+  })
+
+  it('should redirect when user tries to access create dps user without create user role', () => {
+    req = { originalUrl: paths.dpsUser.createDpsUser({}) } as Request
+    const res = createResWithToken({ authorities: ['ROLE_NOT_CREATE_USER'] })
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).not.toHaveBeenCalled()
+    expect(res.redirect).toHaveBeenCalledWith('/authError')
+  })
+
+  it('should return next when user tries to access create dps user with create user role', () => {
+    req = { originalUrl: paths.dpsUser.createDpsUser({}) } as Request
+    const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
+  })
+
+  it('should redirect when user tries to access create linked dps user without create user role', () => {
+    req = { originalUrl: paths.dpsUser.createLinkedDpsUser({}) } as Request
+    const res = createResWithToken({ authorities: ['ROLE_NOT_CREATE_USER'] })
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).not.toHaveBeenCalled()
+    expect(res.redirect).toHaveBeenCalledWith('/authError')
+  })
+
+  it('should return next when user tries to access create linked dps user with create user role', () => {
+    req = { originalUrl: paths.dpsUser.createLinkedDpsUser({}) } as Request
+    const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
+
+    authorisationMiddleware()(req, res, next)
 
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()

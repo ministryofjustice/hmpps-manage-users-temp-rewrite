@@ -1,6 +1,7 @@
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { MenuTile, RoleSpecificMenuTile } from './menuTiles'
 import manageUserAllowListHelper from '../utils/manageUserAllowListHelper'
+import paths from '../routes/paths'
 
 export default class MenuService {
   constructor(private readonly manageUsersApiClient: ManageUsersApiClient) {}
@@ -51,7 +52,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Create a DPS user`,
       `Create an account for a DPS user`,
-      '/create-user',
+      paths.dpsUser.createUser({}),
       'create_dps_user_link',
       2,
       ['CREATE_USER'],

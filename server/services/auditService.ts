@@ -12,6 +12,10 @@ export interface PageViewEventDetails {
   details?: object
 }
 
+export enum SubjectType {
+  USER_ID = 'USER_ID',
+}
+
 export default class AuditService {
   constructor(private readonly hmppsAuditClient: HmppsAuditClient) {}
 

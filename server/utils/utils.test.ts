@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName } from './utils'
+import { convertToTitleCase, initialiseName, isAlphaStringOrSpecialChars } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -26,5 +26,32 @@ describe('initialise name', () => {
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
   ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
     expect(initialiseName(a)).toEqual(expected)
+  })
+})
+
+describe('isAlphaStringOrSpecialChars', () => {
+  test.each([
+    ['John', true],
+    ["O'Connor", true],
+    ['Jean-Paul', true],
+    ['Anne-Marie', true],
+    ['D’Angelo', true],
+    ['O’Brien', true],
+    ['Alpha-Beta', true],
+  ])('returns %s -> %s for valid/invalid input', (input, expected) => {
+    const result = isAlphaStringOrSpecialChars(input)
+    expect(!!result).toBe(expected)
+  })
+
+  test.each([
+    ['John123', false],
+    ['123', false],
+    ['John!', false],
+    ['John_Doe', false],
+    ['John Doe', false],
+    ['', false],
+  ])('rejects invalid values %s -> %s', (input, expected) => {
+    const result = isAlphaStringOrSpecialChars(input)
+    expect(!!result).toBe(expected)
   })
 })
