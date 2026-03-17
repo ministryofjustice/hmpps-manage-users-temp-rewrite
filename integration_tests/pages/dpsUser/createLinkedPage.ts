@@ -1,7 +1,6 @@
 import { expect, Locator, Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
 import {
-  caseloadText,
   userTypeDisplay,
   userTypeExistingUsernameLabel,
   UserTypeKey,
@@ -39,7 +38,7 @@ export default class CreateLinkedPage extends AbstractPage {
     this.email = this.textBox('Email address')
     this.firstName = this.textBox('First name')
     this.lastName = this.textBox('Last name')
-    this.caseload = this.select(caseloadText(userType))
+    this.caseload = page.locator('#defaultCaseloadId')
     this.search = this.button(`Search`)
     this.submit = this.button(`Create and Link ${userTypeShorthand(userType)} User`)
     this.cancel = this.button('Cancel')

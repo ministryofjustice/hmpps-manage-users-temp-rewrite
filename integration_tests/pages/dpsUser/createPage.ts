@@ -1,6 +1,6 @@
 import { expect, Locator, Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
-import { caseloadText, userTypeDisplay, UserTypeKey } from '../../../server/presentation/userType'
+import { userTypeDisplay, UserTypeKey } from '../../../server/presentation/userType'
 
 export default class CreatePage extends AbstractPage {
   readonly header: Locator
@@ -28,7 +28,7 @@ export default class CreatePage extends AbstractPage {
     this.email = this.textBox('Email address')
     this.firstName = this.textBox('First name')
     this.lastName = this.textBox('Last name')
-    this.caseload = this.select(caseloadText(userType))
+    this.caseload = page.locator('#defaultCaseloadId')
     this.submit = this.button('Create')
     this.cancel = this.button('Cancel')
     this.errorSummary = page.getByTestId('error-summary')

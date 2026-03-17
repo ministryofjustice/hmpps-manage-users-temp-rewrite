@@ -5,10 +5,6 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-{% block header %}
-  {{ super() }}
-  <link href="/assets/accessible-autocomplete.min.css" rel="stylesheet" />
-{% endblock %}
 
 {% set title %}Create a DPS {{ userType | userTypeDisplay }} user{% endset %}
 {% set showCaseloadDropdown = userType | showCaseloadDropdown %}
@@ -38,7 +34,7 @@
     <div class="govuk-grid-column-one-half">
       <h1 class="govuk-heading-l">{{ title }}</h1>
       <form method="POST">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
         <input type='hidden' name='userType' value='{{ userType }}'/>
 
         {{ govukInput({label: {
@@ -80,9 +76,9 @@
 
         {% if userType | showCaseloadDropdown %}
           <div class="govuk-list">
-            {{ govukSelect({label: {
-              text: caseloadLabel, classes: "govuk-label--s"
-            },
+            {{ govukSelect({
+              classes: 'autocomplete-select',
+              label: { text: caseloadLabel, classes: "govuk-label--s" },
               idPrefix: 'defaultCaseloadId',
               name: 'defaultCaseloadId',
               id: 'defaultCaseloadId',
@@ -109,11 +105,3 @@
     </div>
   </div>
 {% endblock %}
-
-{% if showCaseloadDropdown %}
-  {% block pageScripts %}
-    <meta name="autocompleteElements" content="defaultCaseloadId"/>
-    <script type="module" src="/assets/accessible-autocomplete.min.js"></script>
-    <script type="module" src="/js/autocomplete.js"></script>
-  {% endblock %}
-{% endif %}

@@ -133,7 +133,7 @@ test.describe('Create Linked DPS user', () => {
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.username.fill('NEW_USER')
       if (showCaseloadDropdown(userType)) {
-        await createLinkedPage.caseload.selectOption('Moorland (HMP & YOI)')
+        await createLinkedPage.caseload.fill('Moorland (HMP & YOI)')
       }
       await createLinkedPage.submit.click()
       await expect(createLinkedPage.errorSummary).toContainText('Username already linked to another account')
@@ -152,7 +152,7 @@ test.describe('Create Linked DPS user', () => {
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.username.fill('NEW_USER')
       if (showCaseloadDropdown(userType)) {
-        await createLinkedPage.caseload.selectOption('Moorland (HMP & YOI)')
+        await createLinkedPage.caseload.fill('Moorland (HMP & YOI)')
       }
       await createLinkedPage.submit.click()
       await expect(createLinkedPage.errorSummary).toContainText('Username already exists')
@@ -171,7 +171,7 @@ test.describe('Create Linked DPS user', () => {
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.username.fill('NEW_USER')
       if (showCaseloadDropdown(userType)) {
-        await createLinkedPage.caseload.selectOption('Moorland (HMP & YOI)')
+        await createLinkedPage.caseload.fill('Moorland (HMP & YOI)')
       }
       await createLinkedPage.submit.click()
       await expect(createLinkedPage.errorSummary).toContainText('Username not found')
@@ -190,7 +190,7 @@ test.describe('Create Linked DPS user', () => {
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.username.fill('NEW_USER')
       if (showCaseloadDropdown(userType)) {
-        await createLinkedPage.caseload.selectOption('Moorland (HMP & YOI)')
+        await createLinkedPage.caseload.fill('Moorland (HMP & YOI)')
       }
       await createLinkedPage.submit.click()
       await expect(createLinkedPage.errorSummary).toContainText('Bad request')
@@ -209,7 +209,7 @@ test.describe('Create Linked DPS user', () => {
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.username.fill('NEW_USER')
       if (showCaseloadDropdown(userType)) {
-        await createLinkedPage.caseload.selectOption('Moorland (HMP & YOI)')
+        await createLinkedPage.caseload.fill('Moorland (HMP & YOI)')
       }
       await createLinkedPage.submit.click()
       const createLinkedSuccessPage = await CreateLinkedSuccessPage.verifyOnPage(page)

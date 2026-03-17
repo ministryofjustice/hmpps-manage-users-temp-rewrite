@@ -15,11 +15,6 @@
 {% set existingUsernameHint = userType | userTypeExistingUsernameHint %}
 {% set submitButtonLabel %}Create and Link {{ userTypeShorthand }} User{% endset %}
 
-{% block header %}
-  {{ super() }}
-  <link href="/assets/accessible-autocomplete.min.css" rel="stylesheet" />
-{% endblock %}
-
 {% block beforeContent %}
   {{ govukBreadcrumbs({
     items: [
@@ -107,6 +102,7 @@
         {% if showCaseloadDropdown %}
           <div class="govuk-list">
             {{ govukSelect({
+              classes: 'autocomplete-select',
               label: { text: caseloadLabel, classes: "govuk-label--s" },
               idPrefix: 'defaultCaseloadId',
               name: 'defaultCaseloadId',
@@ -136,11 +132,3 @@
     </div>
   </div>
 {% endblock %}
-
-{% if showCaseloadDropdown %}
-  {% block pageScripts %}
-    <meta name="autocompleteElements" content="defaultCaseloadId"/>
-    <script type="module" src="/assets/accessible-autocomplete.min.js"></script>
-    <script type="module" src="/js/autocomplete.js"></script>
-  {% endblock %}
-{% endif %}
