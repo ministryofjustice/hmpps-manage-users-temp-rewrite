@@ -40,7 +40,7 @@ describe('isAlphaStringOrSpecialChars', () => {
     ['Alpha-Beta', true],
   ])('returns %s -> %s for valid/invalid input', (input, expected) => {
     const result = isAlphaStringOrSpecialChars(input)
-    expect(!!result).toBe(expected)
+    expect(result).toBe(expected)
   })
 
   test.each([
@@ -52,6 +52,6 @@ describe('isAlphaStringOrSpecialChars', () => {
     ['', false],
   ])('rejects invalid values %s -> %s', (input, expected) => {
     const result = isAlphaStringOrSpecialChars(input)
-    expect(!!result).toBe(expected)
+    expect(result).toBe(expected)
   })
 })

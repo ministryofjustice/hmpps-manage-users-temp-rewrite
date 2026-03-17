@@ -22,4 +22,4 @@ export const initialiseName = (fullName?: string): string | null => {
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
 
-export const isAlphaStringOrSpecialChars = (str: string) => str.match(/^[A-Za-z'’-]+$/)
+export const isAlphaStringOrSpecialChars = (str: string): boolean => /^[A-Za-z'’-]+$/.test(str)

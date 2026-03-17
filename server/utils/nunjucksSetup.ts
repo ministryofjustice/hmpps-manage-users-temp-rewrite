@@ -67,7 +67,6 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('userTypeExistingUsernameHint', (userType: string) =>
     userTypeExistingUsernameHint(userType as UserTypeKey),
   )
-  njkEnv.addFilter('userTypeShorthand', (userType: string) => userTypeShorthand(userType as UserTypeKey))
   njkEnv.addFilter('showCaseloadDropdown', (userType: string) => showCaseloadDropdown(userType as UserTypeKey))
   njkEnv.addFilter('caseloadTitle', (userType: string) => caseloadText(userType as UserTypeKey))
   njkEnv.addFilter('caseloadDropdownValues', (caseloads: PrisonCaseload[]) => caseloadDropdownValues(caseloads))

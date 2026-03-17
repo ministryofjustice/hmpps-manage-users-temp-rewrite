@@ -19,7 +19,7 @@ export default function authorisationMiddleware(): RequestHandler {
   return (req, res, next) => {
     if (res.locals?.user?.token) {
       const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
-      const authorisedRoles: Role[] = pathRolesMap.has(req.originalUrl) ? pathRolesMap.get(req.originalUrl) : []
+      const authorisedRoles: Role[] = pathRolesMap.has(req.path) ? pathRolesMap.get(req.path) : []
 
       if (authorisedRoles.length && !roles.some(role => authorisedRoles.includes(role as Role))) {
         logger.error('User is not authorised to access this')

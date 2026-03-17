@@ -44,10 +44,11 @@ describe('authorisationMiddleware', () => {
 
     expect(next).not.toHaveBeenCalled()
     expect(res.redirect).toHaveBeenCalledWith('/sign-in')
+    expect(req.session.returnTo).toEqual('/')
   })
 
   it('should return next when no required roles', () => {
-    req = { originalUrl: '/' } as Request
+    req = { path: '/' } as Request
     const res = createResWithToken({ authorities: [] })
 
     authorisationMiddleware()(req, res, next)
@@ -57,7 +58,7 @@ describe('authorisationMiddleware', () => {
   })
 
   it('should redirect when user tries to access create user without create user role', () => {
-    req = { originalUrl: paths.dpsUser.createUser({}) } as Request
+    req = { path: paths.dpsUser.createUser({}) } as Request
     const res = createResWithToken({ authorities: ['ROLE_NOT_CREATE_USER'] })
 
     authorisationMiddleware()(req, res, next)
@@ -67,7 +68,7 @@ describe('authorisationMiddleware', () => {
   })
 
   it('should return next when user tries to access create user with create user role', () => {
-    req = { originalUrl: paths.dpsUser.createUser({}) } as Request
+    req = { path: paths.dpsUser.createUser({}) } as Request
     const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
 
     authorisationMiddleware()(req, res, next)
@@ -77,7 +78,7 @@ describe('authorisationMiddleware', () => {
   })
 
   it('should redirect when user tries to access create user options without create user role', () => {
-    req = { originalUrl: paths.dpsUser.createUserOptions({}) } as Request
+    req = { path: paths.dpsUser.createUserOptions({}) } as Request
     const res = createResWithToken({ authorities: ['ROLE_NOT_CREATE_USER'] })
 
     authorisationMiddleware()(req, res, next)
@@ -87,7 +88,7 @@ describe('authorisationMiddleware', () => {
   })
 
   it('should return next when user tries to access create user options with create user role', () => {
-    req = { originalUrl: paths.dpsUser.createUserOptions({}) } as Request
+    req = { path: paths.dpsUser.createUserOptions({}) } as Request
     const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
 
     authorisationMiddleware()(req, res, next)
@@ -97,7 +98,7 @@ describe('authorisationMiddleware', () => {
   })
 
   it('should redirect when user tries to access create dps user without create user role', () => {
-    req = { originalUrl: paths.dpsUser.createDpsUser({}) } as Request
+    req = { path: paths.dpsUser.createDpsUser({}) } as Request
     const res = createResWithToken({ authorities: ['ROLE_NOT_CREATE_USER'] })
 
     authorisationMiddleware()(req, res, next)
@@ -107,7 +108,7 @@ describe('authorisationMiddleware', () => {
   })
 
   it('should return next when user tries to access create dps user with create user role', () => {
-    req = { originalUrl: paths.dpsUser.createDpsUser({}) } as Request
+    req = { path: paths.dpsUser.createDpsUser({}) } as Request
     const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
 
     authorisationMiddleware()(req, res, next)
@@ -117,7 +118,7 @@ describe('authorisationMiddleware', () => {
   })
 
   it('should redirect when user tries to access create linked dps user without create user role', () => {
-    req = { originalUrl: paths.dpsUser.createLinkedDpsUser({}) } as Request
+    req = { path: paths.dpsUser.createLinkedDpsUser({}) } as Request
     const res = createResWithToken({ authorities: ['ROLE_NOT_CREATE_USER'] })
 
     authorisationMiddleware()(req, res, next)
@@ -127,7 +128,7 @@ describe('authorisationMiddleware', () => {
   })
 
   it('should return next when user tries to access create linked dps user with create user role', () => {
-    req = { originalUrl: paths.dpsUser.createLinkedDpsUser({}) } as Request
+    req = { path: paths.dpsUser.createLinkedDpsUser({}) } as Request
     const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
 
     authorisationMiddleware()(req, res, next)
