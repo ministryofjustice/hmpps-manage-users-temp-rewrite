@@ -12,7 +12,7 @@ export default class HomePage extends AbstractPage {
 
   private constructor(page: Page) {
     super(page)
-    this.header = page.locator('h1', { hasText: 'Manage user accounts' })
+    this.header = page.getByRole('heading', { name: 'Manage user accounts' })
     this.noAdminFunctionsMessage = page.getByTestId('no-admin-functions-message')
     this.bannerMessage = page.getByTestId('banner-message')
     this.tileList = page.getByTestId('tile-list')
@@ -31,7 +31,7 @@ export default class HomePage extends AbstractPage {
   }
 
   async verifyTile(title: string, description: string, href: string, dataQa: string): Promise<HomePage> {
-    const tileLocator = this.page.getByTestId(dataQa)
+    const tileLocator = this.getTile(dataQa)
     const h2Locator = tileLocator.getByRole('heading', { level: 2 })
     const linkLocator = tileLocator.getByRole('link')
     const descriptionLocator = tileLocator.getByRole('paragraph')
@@ -40,5 +40,18 @@ export default class HomePage extends AbstractPage {
     await expect(linkLocator).toHaveText(title)
     await expect(descriptionLocator).toHaveText(description)
     return this
+  }
+
+  async verifyTileNotShown(dataQa: string): Promise<HomePage> {
+    await expect(this.getTile(dataQa)).not.toBeVisible()
+    return this
+  }
+
+  private getTile = (dataQa: string) => {
+    return this.page.getByTestId(dataQa)
+  }
+
+  async selectTile(dataQa: string) {
+    await this.getTile(dataQa).click()
   }
 }

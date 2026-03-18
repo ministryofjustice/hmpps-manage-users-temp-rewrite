@@ -3,6 +3,7 @@ import MenuService from './menuService'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { MenuTile } from './menuTiles'
 import manageUserAllowListHelper from '../utils/manageUserAllowListHelper'
+import paths from '../routes/paths'
 
 jest.mock('../data/manageUsersApiClient')
 
@@ -121,7 +122,7 @@ describe('MenuService', () => {
         {
           title: `Create a DPS user`,
           description: `Create an account for a DPS user`,
-          href: '/create-user',
+          href: paths.dpsUser.createUser({}),
           dataQa: 'create_dps_user_link',
         },
       ])

@@ -30,4 +30,20 @@ export default class AbstractPage {
   async clickManageUserDetails() {
     await this.manageUserDetails.first().click()
   }
+
+  button(text: string): Locator {
+    return this.page.getByRole('button', { name: text })
+  }
+
+  radioButton(text: string): Locator {
+    return this.page.getByRole('radio', { name: text })
+  }
+
+  textBox(text: string): Locator {
+    return this.page.getByRole('textbox', { name: text })
+  }
+
+  select(text: string): Locator {
+    return this.page.getByLabel(text)
+  }
 }
