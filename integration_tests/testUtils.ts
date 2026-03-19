@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test'
+import { Locator, Page } from '@playwright/test'
 import tokenVerification from './mockApis/tokenVerification'
 import hmppsAuth, { type UserToken } from './mockApis/hmppsAuth'
 import { resetStubs } from './mockApis/wiremock'
@@ -26,4 +26,9 @@ export const login = async (
     tokenVerification.stubVerifyToken(active),
   ])
   await attemptHmppsAuthLogin(page)
+}
+
+export const fillAutocompleteSelect = async (selectLocator: Locator, value: string) => {
+  await selectLocator.fill(value)
+  await selectLocator.press('Enter')
 }
