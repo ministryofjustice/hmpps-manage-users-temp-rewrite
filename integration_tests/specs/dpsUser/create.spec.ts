@@ -1,6 +1,6 @@
 import { expect, Page, test } from '@playwright/test'
 
-import { login, resetStubs } from '../../testUtils'
+import { fillAutocompleteSelect, login, resetStubs } from '../../testUtils'
 import HomePage from '../../pages/homePage'
 import SelectUserTypePage from '../../pages/dpsUser/selectUserTypePage'
 import ExistingAccountOptionPage from '../../pages/dpsUser/existingAccountOptionPage'
@@ -182,7 +182,7 @@ test.describe('Create DPS user', () => {
     await createPage.firstName.fill('Test')
     await createPage.lastName.fill('User')
     await createPage.email.fill('test.user@justice.gov.uk')
-    await createPage.caseload.fill('Moorland (HMP & YOI)')
+    await fillAutocompleteSelect(createPage.caseload, 'Moorland (HMP & YOI)')
     await createPage.submit.click()
     await expect(createPage.errorSummary).toContainText('Bad request')
   })
@@ -194,7 +194,7 @@ test.describe('Create DPS user', () => {
     await createPage.firstName.fill('Test')
     await createPage.lastName.fill('User')
     await createPage.email.fill('test.user@justice.gov.uk')
-    await createPage.caseload.fill('Moorland (HMP & YOI)')
+    await fillAutocompleteSelect(createPage.caseload, 'Moorland (HMP & YOI)')
     await createPage.submit.click()
     await expect(createPage.errorSummary).toContainText('Username already exists')
   })
@@ -206,7 +206,7 @@ test.describe('Create DPS user', () => {
     await createPage.firstName.fill('Test')
     await createPage.lastName.fill('User')
     await createPage.email.fill('test.user@notvaliddomain.com')
-    await createPage.caseload.fill('Moorland (HMP & YOI)')
+    await fillAutocompleteSelect(createPage.caseload, 'Moorland (HMP & YOI)')
     await createPage.submit.click()
     await expect(createPage.errorSummary).toContainText('Invalid Email domain')
   })
@@ -217,7 +217,7 @@ test.describe('Create DPS user', () => {
     await createPage.firstName.fill('Test')
     await createPage.lastName.fill('User')
     await createPage.email.fill('test.user@justice.gov.uk')
-    await createPage.caseload.fill('Moorland (HMP & YOI)')
+    await fillAutocompleteSelect(createPage.caseload, 'Moorland (HMP & YOI)')
     await manageUsersApi.stubCreateDpsUser('TUSER_GEN', 'Test', 'User', 'test.user@justice.gov.uk', 'MDI')
     await createPage.submit.click()
     const createSuccessPage = await CreateSuccessPage.verifyOnPage(page)

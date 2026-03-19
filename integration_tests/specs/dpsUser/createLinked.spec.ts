@@ -1,6 +1,6 @@
 import { expect, Page, test } from '@playwright/test'
 
-import { login, resetStubs } from '../../testUtils'
+import { fillAutocompleteSelect, login, resetStubs } from '../../testUtils'
 import HomePage from '../../pages/homePage'
 import SelectUserTypePage from '../../pages/dpsUser/selectUserTypePage'
 import ExistingAccountOptionPage from '../../pages/dpsUser/existingAccountOptionPage'
@@ -133,7 +133,7 @@ test.describe('Create Linked DPS user', () => {
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.username.fill('NEW_USER')
       if (showCaseloadDropdown(userType)) {
-        await createLinkedPage.caseload.fill('Moorland (HMP & YOI)')
+        await fillAutocompleteSelect(createLinkedPage.caseload, 'Moorland (HMP & YOI)')
       }
       await createLinkedPage.submit.click()
       await expect(createLinkedPage.errorSummary).toContainText('Username already linked to another account')
@@ -152,7 +152,7 @@ test.describe('Create Linked DPS user', () => {
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.username.fill('NEW_USER')
       if (showCaseloadDropdown(userType)) {
-        await createLinkedPage.caseload.fill('Moorland (HMP & YOI)')
+        await fillAutocompleteSelect(createLinkedPage.caseload, 'Moorland (HMP & YOI)')
       }
       await createLinkedPage.submit.click()
       await expect(createLinkedPage.errorSummary).toContainText('Username already exists')
@@ -171,7 +171,7 @@ test.describe('Create Linked DPS user', () => {
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.username.fill('NEW_USER')
       if (showCaseloadDropdown(userType)) {
-        await createLinkedPage.caseload.fill('Moorland (HMP & YOI)')
+        await fillAutocompleteSelect(createLinkedPage.caseload, 'Moorland (HMP & YOI)')
       }
       await createLinkedPage.submit.click()
       await expect(createLinkedPage.errorSummary).toContainText('Username not found')
@@ -190,7 +190,7 @@ test.describe('Create Linked DPS user', () => {
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.username.fill('NEW_USER')
       if (showCaseloadDropdown(userType)) {
-        await createLinkedPage.caseload.fill('Moorland (HMP & YOI)')
+        await fillAutocompleteSelect(createLinkedPage.caseload, 'Moorland (HMP & YOI)')
       }
       await createLinkedPage.submit.click()
       await expect(createLinkedPage.errorSummary).toContainText('Bad request')
@@ -209,7 +209,7 @@ test.describe('Create Linked DPS user', () => {
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.username.fill('NEW_USER')
       if (showCaseloadDropdown(userType)) {
-        await createLinkedPage.caseload.fill('Moorland (HMP & YOI)')
+        await fillAutocompleteSelect(createLinkedPage.caseload, 'Moorland (HMP & YOI)')
       }
       await createLinkedPage.submit.click()
       const createLinkedSuccessPage = await CreateLinkedSuccessPage.verifyOnPage(page)
