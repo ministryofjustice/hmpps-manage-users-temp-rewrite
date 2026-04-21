@@ -10,4 +10,11 @@ $govuk-page-width: $moj-page-width;
 @import './components/header-bar';
 @import './components/card';
 @import './components/autocomplete';
+@import './components/loading_spinner';
+@import './components/multiselect';
 @import './overrides/local';
+@import './overrides/moj-overrides';
+
+.pull-right {
+  text-align: right;
+}

@@ -9,9 +9,10 @@ import CreatePage from '../../pages/dpsUser/createPage'
 import manageUsersApi from '../../mockApis/manageUsersApi'
 import AuthErrorPage from '../../pages/authErrorPage'
 import { UserType, userTypeDisplay, UserTypeKey } from '../../../server/presentation/userType'
+import AuthRole from '../../../server/interfaces/authRole'
 
 const gotoExistingAccountOptionPage = async (page: Page, userType: UserTypeKey) => {
-  await login(page, { roles: ['ROLE_CREATE_USER'] })
+  await login(page, { roles: [AuthRole.CREATE_USER] })
 
   const homePage = await HomePage.verifyOnPage(page)
   await homePage.selectTile('create_dps_user_link')
@@ -58,7 +59,7 @@ test.describe('Existing Account Option', () => {
   })
 
   test('Should go back to user type selection if no user type', async ({ page }) => {
-    await login(page, { roles: ['ROLE_CREATE_USER'] })
+    await login(page, { roles: [AuthRole.CREATE_USER] })
 
     await HomePage.verifyOnPage(page)
     await page.goto(paths.dpsUser.createUserOptions({}))

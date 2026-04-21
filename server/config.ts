@@ -104,4 +104,5 @@ export default {
       downloadLimit: Number(get('MANAGE_USER_ALLOW_LIST_DOWNLOAD_LIMIT', 20000)),
     },
   },
+  downloadRecordLimit: Number(get('DPS_SEARCH_DOWNLOAD_LINK_LIMIT', 20000)),
 }

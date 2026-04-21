@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName, isAlphaStringOrSpecialChars } from './utils'
+import { convertToTitleCase, initialiseName, isAlphaStringOrSpecialChars, toArray } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -53,5 +53,83 @@ describe('isAlphaStringOrSpecialChars', () => {
   ])('rejects invalid values %s -> %s', (input, expected) => {
     const result = isAlphaStringOrSpecialChars(input)
     expect(result).toBe(expected)
+  })
+})
+
+describe('toArray', () => {
+  describe('array inputs', () => {
+    it('returns the same array reference when input is an array', () => {
+      const input = [1, 2, 3]
+
+      const result = toArray(input)
+
+      expect(result).toBe(input)
+      expect(result).toEqual([1, 2, 3])
+    })
+
+    it('works with arrays of objects', () => {
+      const input = [{ id: 1 }, { id: 2 }]
+
+      const result = toArray(input)
+
+      expect(result).toBe(input)
+    })
+  })
+
+  describe('single values', () => {
+    it('wraps a number in an array', () => {
+      const result = toArray(42)
+
+      expect(result).toEqual([42])
+    })
+
+    it('wraps a string in an array', () => {
+      const result = toArray('hello')
+
+      expect(result).toEqual(['hello'])
+    })
+
+    it('wraps an object in an array', () => {
+      const input = { a: 1 }
+      const result = toArray(input)
+
+      expect(result).toEqual([input])
+    })
+  })
+
+  describe('falsy values', () => {
+    it('wraps 0 in an array', () => {
+      const result = toArray(0)
+
+      expect(result).toEqual([0])
+    })
+
+    it('wraps empty string in an array', () => {
+      const result = toArray('')
+
+      expect(result).toEqual([''])
+    })
+
+    it('wraps false in an array', () => {
+      const result = toArray(false)
+
+      expect(result).toEqual([false])
+    })
+  })
+
+  describe('undefined input', () => {
+    it('returns an empty array', () => {
+      const result = toArray(undefined)
+
+      expect(result).toEqual([])
+      expect(result).toHaveLength(0)
+    })
+
+    it('returns a new empty array each call', () => {
+      const a = toArray(undefined)
+      const b = toArray(undefined)
+
+      expect(a).not.toBe(b)
+    })
   })
 })

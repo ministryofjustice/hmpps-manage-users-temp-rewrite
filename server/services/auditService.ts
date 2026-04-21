@@ -16,6 +16,15 @@ export enum SubjectType {
   USER_ID = 'USER_ID',
 }
 
+export enum EventType {
+  CREATE_DPS_USER = 'CREATE_DPS_USER',
+  CREATE_LINKED_DPS_USER = 'CREATE_LINKED_DPS_USER',
+  DOWNLOAD_REPORT_ATTEMPT = 'DOWNLOAD_REPORT_ATTEMPT',
+  DOWNLOAD_REPORT_FAILURE = 'DOWNLOAD_REPORT_FAILURE',
+  SEARCH_USER_ATTEMPT = 'SEARCH_USER_ATTEMPT',
+  SEARCH_USER_FAILURE = 'SEARCH_USER_FAILURE',
+}
+
 export default class AuditService {
   constructor(private readonly hmppsAuditClient: HmppsAuditClient) {}
 

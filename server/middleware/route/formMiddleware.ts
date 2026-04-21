@@ -1,5 +1,5 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
-import { FormError } from '../interfaces/formError'
+import { FormError } from '../../interfaces/formError'
 
 export type Validator<T> = {
   (form: T): FormError[]

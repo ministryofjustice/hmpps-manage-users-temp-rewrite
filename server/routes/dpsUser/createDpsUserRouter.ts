@@ -10,9 +10,9 @@ import {
   flashErrors,
   formErrorsFromFlash,
   validateFormOrRedirect,
-} from '../../middleware/formMiddleware'
+} from '../../middleware/route/formMiddleware'
 import { Services } from '../../services'
-import { SubjectType } from '../../services/auditService'
+import { EventType, SubjectType } from '../../services/auditService'
 import { isAlphaStringOrSpecialChars } from '../../utils/utils'
 
 interface Form {
@@ -110,7 +110,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
       return res.redirect(paths.dpsUser.createDpsUser({}))
     }
     await auditService.logAuditEvent({
-      what: 'CREATE_DPS_USER',
+      what: EventType.CREATE_DPS_USER,
       who: username,
       subjectId: newUser.username,
       subjectType: SubjectType.USER_ID,

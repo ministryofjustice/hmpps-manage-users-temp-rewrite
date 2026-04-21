@@ -23,3 +23,10 @@ export const initialiseName = (fullName?: string): string | null => {
 }
 
 export const isAlphaStringOrSpecialChars = (str: string): boolean => /^[A-Za-z'’-]+$/.test(str)
+
+export const toArray = <T>(value: T | T[] | undefined): T[] => {
+  if (Array.isArray(value)) {
+    return value
+  }
+  return value === undefined ? [] : [value]
+}

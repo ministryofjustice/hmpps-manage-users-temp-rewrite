@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { validateFormOrRedirect, flashErrors, formErrorsFromFlash, flashBody, bodyFromFlash } from './formMiddleware'
-import { FormError } from '../interfaces/formError'
+import { FormError } from '../../interfaces/formError'
 
 describe('form middleware', () => {
   let req: Partial<Request>
