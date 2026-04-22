@@ -87,7 +87,7 @@
       id: 'groupCode',
       items: caseloadDropdownValues | setSelected(currentFilter.groupCode) | addBlankOptions('Select a caseload'),
       formGroup: {
-        classes: '.govuk-!-margin-bottom-5'
+        classes: 'govuk-!-margin-bottom-5'
       },
       errorMessage: errors | findError('groupCode')
     }) }}
@@ -134,29 +134,35 @@
       {
         value: 'true',
         text: "Local System Administrators only",
-        checked: currentFilter.showOnlyLSAs === 'true'
+        checked: currentFilter.showOnlyLSAs
       }
     ]
   }) }}
 
   <div class="govuk-list">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Role</legend>
-    <div id="status-hint" class="govuk-hint">Will match users that have any or all the selected roles</div>
-
     {{ govukRadios({
-      idPrefix: 'inclusiveRoles',
       name: 'inclusiveRoles',
       classes: 'govuk-radios--small',
+      fieldset: {
+        legend: {
+          text: "Role",
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      hint: {
+        text: "Will match users that have any or all the selected roles"
+      },
       items: [
         {
           value: 'false',
           text: 'All selected roles',
-          checked: currentFilter.inclusiveRoles !== 'true'
+          checked: not currentFilter.inclusiveRoles
         },
         {
           value: 'true',
           text: 'Any of the selected roles',
-          checked: currentFilter.inclusiveRoles === 'true'
+          checked: currentFilter.inclusiveRoles
         }
       ]
     }
@@ -164,7 +170,9 @@
 
     {{ multiSelectFilter({
       name: 'roleCode',
-      items: roleDropdownValues | setChecked(currentFilter.roleCode)
+      items: roleDropdownValues | setChecked(currentFilter.roleCode),
+      hint: 'Start typing to filter the role checkboxes',
+      title: 'Role search'
     }) }}
 
   </div>
@@ -198,8 +206,7 @@
                           &nbsp;{{ u.lastName }}</a><span> - {{ u.username }}</span>
                       </div>
                       <div class="govuk-grid-column-one-quarter  pull-right">
-                        <a href="{{ maintainUserUrl }}" class="govuk-link">View details</a>
-                        <span class="govuk-visually-hidden">for {{ u.firstName }}&nbsp;{{ u.lastName }}</span>
+                        <a href="{{ maintainUserUrl }}" class="govuk-link">View details<span class="govuk-visually-hidden">for {{ u.firstName }}&nbsp;{{ u.lastName }}</span></a>
                       </div>
                     </div>
                     <div class="govuk-grid-row govuk-!-margin-bottom-2">

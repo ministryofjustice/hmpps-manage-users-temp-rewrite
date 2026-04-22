@@ -10,7 +10,7 @@ import { EventType } from '../../services/auditService'
 import paths from '../paths'
 import { asUrlSearchParams, canDownload, Filter } from '../../presentation/searchDpsUser'
 import config from '../../config'
-import { toArray } from '../../utils/utils'
+import { toArray, toBoolean } from '../../utils/utils'
 
 interface Query extends Filter {
   page?: number
@@ -44,9 +44,12 @@ export const searchDpsUserRouter = ({
     const currentFilter: Query = {
       ...req.query,
       user: (req.query.user as string)?.trim(),
-      roleCode: toArray(req.query.roleCode as string[]),
       status: (req.query.status as string) || 'ALL',
+      roleCode: toArray(req.query.roleCode as string[]),
       restrictToActiveGroup: (req.query.restrictToActiveGroup as string) !== 'false',
+      inclusiveRoles: toBoolean(req.query.inclusiveRoles as string),
+      showOnlyLSAs: toBoolean(req.query.showOnlyLSAs as string),
+      page: Number(req.query.page ?? '0'),
     }
     const searchParams = asUrlSearchParams(currentFilter)
     const correlationId = crypto.randomUUID()

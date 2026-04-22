@@ -17,7 +17,7 @@ class CsvDownload {
   private constructor(form: HTMLFormElement, filename: string) {
     this.filename = filename
     this.form = form
-    this.downloadButton = document.querySelector<HTMLElement>('.downloadButton')
+    this.downloadButton = form.querySelector<HTMLElement>('.downloadButton')
     this.downloadInProgress = document.querySelector<HTMLDivElement>('#downloadInProgress')
     this.downloadError = document.querySelector<HTMLElement>('#downloadError')
   }
@@ -97,8 +97,10 @@ class CsvDownload {
 
       this.downloadButtonEnabled(true)
       this.displayDownloadInProgress(false)
-      this.displayDownloadError(false)
-      this.downloadCsv(csvText)
+      this.displayDownloadError(!response.ok)
+      if (response.ok) {
+        this.downloadCsv(csvText)
+      }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       this.downloadButtonEnabled(true)

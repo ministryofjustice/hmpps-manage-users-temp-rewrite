@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName, isAlphaStringOrSpecialChars, toArray } from './utils'
+import { convertToTitleCase, initialiseName, isAlphaStringOrSpecialChars, toArray, toBoolean } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -131,5 +131,28 @@ describe('toArray', () => {
 
       expect(a).not.toBe(b)
     })
+  })
+})
+
+describe('toBoolean', () => {
+  it.each<[string | undefined, boolean | undefined]>([
+    [undefined, undefined],
+
+    ['true', true],
+    ['TRUE', true],
+    ['True', true],
+    [' tRuE ', true],
+
+    ['false', false],
+    ['FALSE', false],
+    [' False ', false],
+
+    ['yes', false],
+    ['1', false],
+    ['', false],
+    ['   ', false],
+    ['tru', false],
+  ])('toBoolean(%p) → %p', (input, expected) => {
+    expect(toBoolean(input)).toBe(expected)
   })
 })

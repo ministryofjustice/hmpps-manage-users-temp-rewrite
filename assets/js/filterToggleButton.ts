@@ -25,6 +25,8 @@ export default () => {
     })
     const newContainer = document.querySelector('.moj-action-bar__filterTagsContainer')
     const tagsContainer = document.querySelector('.moj-filter__selected')
-    newContainer.append(tagsContainer)
+    if (newContainer && tagsContainer) {
+      newContainer.append(tagsContainer)
+    }
   }
 }

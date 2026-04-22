@@ -140,7 +140,7 @@ export const filterCategories = (
   if (filter.roleCode && filter.roleCode.length > 0) {
     categories.push(getRolesCategory(searchParams, filter, roles))
   }
-  if (String(filter.inclusiveRoles) === 'true') {
+  if (filter.inclusiveRoles) {
     categories.push(getRoleInclusivityCategory(searchParams))
   }
   if (filter.showOnlyLSAs) {
