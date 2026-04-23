@@ -64,4 +64,15 @@ declare module 'manageUsersApiClient' {
     size: number
     page: number
   }
+  interface DpsUserSearchQuery {
+    nameFilter?: string
+    accessRoles?: string[]
+    status?: string
+    caseload?: string
+    activeCaseload?: string
+    inclusiveRoles?: boolean
+    showOnlyLSAs?: boolean
+    size?: number
+    page?: number
+  }
 }

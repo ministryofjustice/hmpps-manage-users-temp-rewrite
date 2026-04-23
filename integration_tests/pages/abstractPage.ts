@@ -35,12 +35,20 @@ export default class AbstractPage {
     return this.page.getByRole('button', { name: text })
   }
 
-  radioButton(text: string): Locator {
-    return this.page.getByRole('radio', { name: text })
+  radioButton(text: string, exact: boolean = false): Locator {
+    return this.page.getByRole('radio', { name: text, exact })
+  }
+
+  checkbox(text: string, exact: boolean = false): Locator {
+    return this.page.getByRole('checkbox', { name: text, exact })
   }
 
   textBox(text: string): Locator {
     return this.page.getByRole('textbox', { name: text })
+  }
+
+  link(text: string, exact: boolean = false): Locator {
+    return this.page.getByRole('link', { name: text, exact })
   }
 
   select(text: string): Locator {

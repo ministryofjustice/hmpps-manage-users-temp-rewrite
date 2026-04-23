@@ -9,9 +9,9 @@ import {
   flashErrors,
   formErrorsFromFlash,
   validateFormOrRedirect,
-} from '../../middleware/formMiddleware'
+} from '../../middleware/route/formMiddleware'
 import { Services } from '../../services'
-import { SubjectType } from '../../services/auditService'
+import { EventType, SubjectType } from '../../services/auditService'
 import { CreateLinkedDpsUserRequest } from '../../interfaces/createLinkedDpsUserRequest'
 
 const validate = (body: CreateLinkedDpsUserRequest): FormError[] => {
@@ -103,7 +103,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
         return res.redirect(paths.dpsUser.createLinkedDpsUser({}))
       }
       await auditService.logAuditEvent({
-        what: 'CREATE_LINKED_DPS_USER',
+        what: EventType.CREATE_LINKED_DPS_USER,
         who: username,
         subjectId: newUsername,
         subjectType: SubjectType.USER_ID,

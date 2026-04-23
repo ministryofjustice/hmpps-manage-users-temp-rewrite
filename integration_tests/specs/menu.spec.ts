@@ -4,6 +4,7 @@ import manageUsersApi from '../mockApis/manageUsersApi'
 import { login, resetStubs } from '../testUtils'
 import HomePage from '../pages/homePage'
 import paths from '../../server/routes/paths'
+import AuthRole from '../../server/interfaces/authRole'
 
 test.describe('Menu', () => {
   test.beforeEach(async () => {
@@ -34,7 +35,7 @@ test.describe('Menu', () => {
 
   test('Banner text is not displayed if the user has other role', async ({ page }) => {
     await manageUsersApi.stubNotificationBannerMessage('DPSMENU', 'The service is being tested')
-    await login(page, { roles: ['ROLE_CREATE_USER'] })
+    await login(page, { roles: [AuthRole.CREATE_USER] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await expect(homePage.bannerMessage).not.toBeVisible()
@@ -65,7 +66,7 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       'Search for a DPS user',
       'Enhanced searching and managing of DPS and NOMIS users',
-      '/search-with-filter-dps-users',
+      paths.dpsUser.searchDpsUser({}),
       'search_with_filter_dps_users',
     )
   })
@@ -78,13 +79,13 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       'Search for a DPS user',
       'Enhanced searching and managing of DPS and NOMIS users',
-      '/search-with-filter-dps-users',
+      paths.dpsUser.searchDpsUser({}),
       'search_with_filter_dps_users',
     )
   })
 
   test('User with CREATE_USER is presented with the Create a DPS user tile', async ({ page }) => {
-    await login(page, { roles: ['ROLE_CREATE_USER'] })
+    await login(page, { roles: [AuthRole.CREATE_USER] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.verifyTileCount(1)

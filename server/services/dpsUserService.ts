@@ -1,4 +1,14 @@
-import { CreateUserRequest, PrisonCaseload, PrisonStaffNewUser, PrisonUserDetails } from 'manageUsersApiClient'
+import {
+  CreateUserRequest,
+  DpsUserSearchQuery,
+  PagedList,
+  PrisonAdminUserSummary,
+  PrisonCaseload,
+  PrisonStaffNewUser,
+  PrisonUserDetails,
+  PrisonUserDownloadSummary,
+  PrisonUserSearchSummary,
+} from 'manageUsersApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { CreateLinkedDpsUserRequest } from '../interfaces/createLinkedDpsUserRequest'
 
@@ -43,4 +53,13 @@ export default class DpsUserService {
       }
     }
   }
+
+  dpsUserSearch = async (token: string, query: DpsUserSearchQuery): Promise<PagedList<PrisonUserSearchSummary>> =>
+    this.manageUsersApiClient.dpsUserSearch(token, query)
+
+  downloadUserSearch = async (token: string, query: DpsUserSearchQuery): Promise<PrisonUserDownloadSummary[]> =>
+    this.manageUsersApiClient.downloadUserSearch(token, query)
+
+  downloadLsaSearch = async (token: string, query: DpsUserSearchQuery): Promise<PrisonAdminUserSummary[]> =>
+    this.manageUsersApiClient.downloadLsaSearch(token, query)
 }

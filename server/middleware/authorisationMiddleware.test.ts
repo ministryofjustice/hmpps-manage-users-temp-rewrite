@@ -3,6 +3,7 @@ import type { Request, Response } from 'express'
 
 import authorisationMiddleware from './authorisationMiddleware'
 import paths from '../routes/paths'
+import AuthRole from '../interfaces/authRole'
 
 function createToken(authorities: string[]) {
   const payload = {
@@ -69,7 +70,7 @@ describe('authorisationMiddleware', () => {
 
   it('should return next when user tries to access create user with create user role', () => {
     req = { path: paths.dpsUser.createUser({}) } as Request
-    const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
+    const res = createResWithToken({ authorities: [AuthRole.CREATE_USER] })
 
     authorisationMiddleware()(req, res, next)
 
@@ -89,7 +90,7 @@ describe('authorisationMiddleware', () => {
 
   it('should return next when user tries to access create user options with create user role', () => {
     req = { path: paths.dpsUser.createUserOptions({}) } as Request
-    const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
+    const res = createResWithToken({ authorities: [AuthRole.CREATE_USER] })
 
     authorisationMiddleware()(req, res, next)
 
@@ -109,7 +110,7 @@ describe('authorisationMiddleware', () => {
 
   it('should return next when user tries to access create dps user with create user role', () => {
     req = { path: paths.dpsUser.createDpsUser({}) } as Request
-    const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
+    const res = createResWithToken({ authorities: [AuthRole.CREATE_USER] })
 
     authorisationMiddleware()(req, res, next)
 
@@ -129,7 +130,7 @@ describe('authorisationMiddleware', () => {
 
   it('should return next when user tries to access create linked dps user with create user role', () => {
     req = { path: paths.dpsUser.createLinkedDpsUser({}) } as Request
-    const res = createResWithToken({ authorities: ['ROLE_CREATE_USER'] })
+    const res = createResWithToken({ authorities: [AuthRole.CREATE_USER] })
 
     authorisationMiddleware()(req, res, next)
 
