@@ -3,7 +3,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { PrisonCaseload } from 'manageUsersApiClient'
+import { PrisonCaseload, Role } from 'manageUsersApiClient'
 import { initialiseName } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -20,6 +20,8 @@ import {
 } from '../presentation/userType'
 import caseloadDropdownValues from '../presentation/caseloads'
 import paths from '../routes/paths'
+import roleDropdownValues from '../presentation/roles'
+import { Filter, filterCategories } from '../presentation/searchDpsUser'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -70,6 +72,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('showCaseloadDropdown', (userType: string) => showCaseloadDropdown(userType as UserTypeKey))
   njkEnv.addFilter('caseloadTitle', (userType: string) => caseloadText(userType as UserTypeKey))
   njkEnv.addFilter('caseloadDropdownValues', (caseloads: PrisonCaseload[]) => caseloadDropdownValues(caseloads))
+  njkEnv.addFilter('roleDropdownValues', (roles: Role[]) => roleDropdownValues(roles))
   njkEnv.addFilter('manageUserDetailsLink', (username: string) => paths.dpsUser.manage.userDetails({ username }))
 
   njkEnv.addFilter(
@@ -81,10 +84,49 @@ export default function nunjucksSetup(app: express.Express): void {
         selected: entry && entry.value === selected,
       })),
   )
+
+  njkEnv.addFilter(
+    'setChecked',
+    (items: SelectItem[], selectedList): SelectItem[] =>
+      items &&
+      items.map(entry => ({
+        ...entry,
+        checked: entry && selectedList && selectedList.includes(entry.value),
+      })),
+  )
   njkEnv.addFilter('addBlankOptions', (values, text): SelectItem[] =>
     [
       { text: '', value: '' },
       { text, value: '' },
     ].concat(values),
+  )
+  njkEnv.addFilter(
+    'toUserSearchFilter',
+    (
+      currentFilter: Filter,
+      prisons: PrisonCaseload[],
+      roles: Role[],
+      filterOptionsHtml: string,
+      showGroupOrPrisonFilter: boolean,
+    ) => {
+      const categories = filterCategories(currentFilter, roles, prisons, showGroupOrPrisonFilter)
+
+      return {
+        heading: {
+          text: 'Filters',
+        },
+        selectedFilters: {
+          heading: {
+            html: '<div class="moj-action-bar__filter"></div>',
+          },
+          clearLink: {
+            text: 'Clear filters',
+            href: `${paths.dpsUser.searchDpsUser({})}`,
+          },
+          categories: categories.filter(category => category.items),
+        },
+        optionsHtml: filterOptionsHtml,
+      }
+    },
   )
 }

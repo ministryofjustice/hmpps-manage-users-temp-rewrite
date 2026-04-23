@@ -7,9 +7,10 @@ import ExistingAccountOptionPage from '../../pages/dpsUser/existingAccountOption
 import paths from '../../../server/routes/paths'
 import AuthErrorPage from '../../pages/authErrorPage'
 import { UserType } from '../../../server/presentation/userType'
+import AuthRole from '../../../server/interfaces/authRole'
 
 const gotoSelectUserTypePage = async (page: Page) => {
-  await login(page, { roles: ['ROLE_CREATE_USER'] })
+  await login(page, { roles: [AuthRole.CREATE_USER] })
 
   const homePage = await HomePage.verifyOnPage(page)
   await homePage.selectTile('create_dps_user_link')

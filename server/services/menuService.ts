@@ -44,7 +44,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Search for a DPS user`,
       `Enhanced searching and managing of DPS and NOMIS users`,
-      '/search-with-filter-dps-users',
+      paths.dpsUser.searchDpsUser({}),
       'search_with_filter_dps_users',
       1,
       ['MAINTAIN_ACCESS_ROLES', 'MAINTAIN_ACCESS_ROLES_ADMIN'],

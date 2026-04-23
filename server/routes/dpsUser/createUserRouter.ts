@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { FormError } from '../../interfaces/formError'
 import paths from '../paths'
-import { bodyFromFlash, formErrorsFromFlash, validateFormOrRedirect } from '../../middleware/formMiddleware'
+import { bodyFromFlash, formErrorsFromFlash, validateFormOrRedirect } from '../../middleware/route/formMiddleware'
 import { userTypeItems } from '../../presentation/userType'
 
 interface Form {

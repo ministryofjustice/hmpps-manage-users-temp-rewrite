@@ -8,6 +8,26 @@ const manageUsersApiCreateLinkedUrlMap = new Map<UserTypeKey, string>([
   ['DPS_LSA', 'linkedprisonusers/lsa'],
 ])
 
+const replicateUser = (times: number) =>
+  [...Array(times).keys()].map(i => ({
+    username: `ITAG_USER${i}`,
+    staffId: i,
+    firstName: 'Itag',
+    lastName: `User${i}`,
+    active: i % 2 === 0,
+    status: i % 2 === 0 ? 'OPEN' : 'LOCKED',
+    locked: false,
+    expired: false,
+    lastLogonDate: '2023-12-25T12:57:50',
+    activeCaseload: {
+      id: 'BXI',
+      name: 'Brixton (HMP)',
+    },
+    dpsRoleCount: i,
+    email: `ITAG_USER${i}@gov.uk`,
+    staffStatus: 'ACTIVE',
+  }))
+
 export default {
   stubPing: (httpStatus = 200): SuperAgentRequest =>
     stubFor({
@@ -285,6 +305,211 @@ export default {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: {},
+      },
+    }),
+
+  stubDpsRoles: (adminTypes: string): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/manage-users-api/roles\\?adminTypes=${adminTypes}`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: [
+          {
+            roleCode: 'MAINTAIN_ACCESS_ROLES',
+            roleName: 'Maintain Roles',
+            roleDescription: 'Maintaining roles for everyone',
+            adminType: [
+              {
+                adminTypeCode: 'DPS_ADM',
+                adminTypeName: 'DPS Central Administrator',
+              },
+              {
+                adminTypeCode: 'DPS_LSA',
+                adminTypeName: 'DPS Local System Administrator',
+              },
+            ],
+          },
+          {
+            roleCode: 'USER_ADMIN',
+            roleName: 'User Admin',
+            roleDescription: 'Administering users',
+            adminType: [
+              {
+                adminTypeCode: 'DPS_ADM',
+                adminTypeName: 'DPS Central Administrator',
+              },
+              {
+                adminTypeCode: 'DPS_LSA',
+                adminTypeName: 'DPS Local System Administrator',
+              },
+            ],
+          },
+          {
+            roleCode: 'ANOTHER_ADMIN_ROLE',
+            roleName: 'Another admin role',
+            roleDescription: 'Some text for another Admin Role',
+            adminType: [
+              {
+                adminTypeCode: 'DPS_ADM',
+                adminTypeName: 'DPS Central Administrator',
+              },
+            ],
+          },
+          {
+            roleCode: 'ANOTHER_GENERAL_ROLE',
+            roleName: 'Another general role',
+            adminType: [
+              {
+                adminTypeCode: 'DPS_ADM',
+                adminTypeName: 'DPS Central Administrator',
+              },
+              {
+                adminTypeCode: 'EXT_ADM',
+                adminTypeName: 'External Administrator',
+              },
+            ],
+          },
+          {
+            roleCode: 'OAUTH_ADMIN',
+            roleName: 'Oauth Admin',
+            roleDescription: 'Some text for oauth admin',
+            adminType: [
+              {
+                adminTypeCode: 'DPS_ADM',
+                adminTypeName: 'DPS Central Administrator',
+              },
+              {
+                adminTypeCode: 'EXT_ADM',
+                adminTypeName: 'External Administrator',
+              },
+            ],
+          },
+        ],
+      },
+    }),
+
+  stubSearchDpsUsers: ({ totalElements = 1, page = 0, size = 10 }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/manage-users-api/prisonusers/search',
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: {
+          content: replicateUser(Math.floor(totalElements / size) === page ? totalElements % size : size),
+          size,
+          totalElements,
+          number: page,
+          numberOfElements: totalElements < size ? totalElements : size,
+        },
+      },
+    }),
+
+  stubDpsUsersDownload: (): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/manage-users-api/prisonusers/download\\?.*',
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: [
+          {
+            username: 'LOCKED_USER',
+            staffId: 7,
+            firstName: 'User',
+            lastName: 'Locked',
+            active: false,
+            status: 'LOCKED',
+            locked: true,
+            expired: false,
+            activeCaseload: null,
+            dpsRoleCount: 0,
+            email: null,
+          },
+          {
+            username: 'ITAG_USER',
+            staffId: 1,
+            firstName: 'Itag',
+            lastName: 'User',
+            active: true,
+            status: 'OPEN',
+            locked: false,
+            expired: false,
+            activeCaseload: {
+              id: 'MDI',
+              name: 'Moorland Closed (HMP & YOI)',
+            },
+            dpsRoleCount: 0,
+            email: 'multiple.user.test@digital.justice.gov.uk',
+          },
+        ],
+      },
+    }),
+
+  stubDpsLsaDownload: (): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/manage-users-api/prisonusers/download/admins\\?.*',
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: [
+          {
+            username: 'ITAG_USER',
+            staffId: 1,
+            firstName: 'Itag',
+            lastName: 'User',
+            active: true,
+            status: 'OPEN',
+            locked: false,
+            expired: false,
+            activeCaseload: {
+              id: 'MDI',
+              name: 'Moorland Closed (HMP & YOI)',
+            },
+            dpsRoleCount: 0,
+            email: 'multiple.user.test@digital.justice.gov.uk',
+            administratorOfUserGroups: [
+              { id: 'BXI', name: 'Brixton (HMP)' },
+              { id: 'MDI', name: 'Moorland (HMP & YOI)' },
+            ],
+          },
+          {
+            username: 'ITAG_USER2',
+            staffId: 2,
+            firstName: 'Itag2',
+            lastName: 'User',
+            active: true,
+            status: 'OPEN',
+            locked: false,
+            expired: false,
+            activeCaseload: {
+              id: 'MDI',
+              name: 'Moorland Closed (HMP & YOI)',
+            },
+            dpsRoleCount: 0,
+            email: 'multiple.user.test2@digital.justice.gov.uk',
+            administratorOfUserGroups: [{ id: 'MAN', name: 'Manchester (HMP)' }],
+          },
+        ],
       },
     }),
 }

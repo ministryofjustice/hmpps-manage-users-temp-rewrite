@@ -1,3 +1,5 @@
+import AuthRole from './authRole'
+
 export type AuthSource = 'nomis' | 'delius' | 'external' | 'azuread'
 
 /**
@@ -58,3 +60,5 @@ export interface AzureADUser extends BaseUser {
 }
 
 export type HmppsUser = PrisonUser | ProbationUser | ExternalUser | AzureADUser
+
+export const hasRole = (user: HmppsUser, role: AuthRole): boolean => user.userRoles.map(r => `ROLE_${r}`).includes(role)

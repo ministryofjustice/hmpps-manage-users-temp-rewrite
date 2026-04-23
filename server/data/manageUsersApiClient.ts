@@ -10,6 +10,7 @@ import {
   CreateLinkedGeneralUserRequest,
   CreateLinkedLocalAdminRequest,
   CreateUserRequest,
+  DpsUserSearchQuery,
   EmailAddress,
   EmailDomain,
   ExternalUser,
@@ -199,35 +200,7 @@ export default class ManageUsersApiClient extends RestClient {
     return this.post({ path: '/prisonusers', data: user }, asUser(token))
   }
 
-  async downloadLsaSearch(
-    token: string,
-    {
-      nameFilter,
-      accessRoles,
-      status,
-      caseload,
-      activeCaseload,
-      inclusiveRoles,
-      showOnlyLSAs,
-    }: {
-      nameFilter?: string
-      accessRoles?: string[]
-      status?: string
-      caseload?: string
-      activeCaseload?: string
-      inclusiveRoles?: boolean
-      showOnlyLSAs?: boolean
-    },
-  ): Promise<PrisonAdminUserSummary[]> {
-    const query = {
-      nameFilter,
-      accessRoles,
-      status,
-      caseload,
-      activeCaseload,
-      inclusiveRoles,
-      showOnlyLSAs,
-    }
+  async downloadLsaSearch(token: string, query: DpsUserSearchQuery): Promise<PrisonAdminUserSummary[]> {
     return this.get(
       {
         path: '/prisonusers/download/admins',
@@ -237,35 +210,7 @@ export default class ManageUsersApiClient extends RestClient {
     )
   }
 
-  async downloadUserSearch(
-    token: string,
-    {
-      nameFilter,
-      accessRoles,
-      status,
-      caseload,
-      activeCaseload,
-      inclusiveRoles,
-      showOnlyLSAs,
-    }: {
-      nameFilter?: string
-      accessRoles?: string[]
-      status?: string
-      caseload?: string
-      activeCaseload?: string
-      inclusiveRoles?: boolean
-      showOnlyLSAs?: boolean
-    },
-  ): Promise<PrisonUserDownloadSummary[]> {
-    const query = {
-      nameFilter,
-      accessRoles,
-      status,
-      caseload,
-      activeCaseload,
-      inclusiveRoles,
-      showOnlyLSAs,
-    }
+  async downloadUserSearch(token: string, query: DpsUserSearchQuery): Promise<PrisonUserDownloadSummary[]> {
     return this.get(
       {
         path: '/prisonusers/download',
@@ -291,17 +236,7 @@ export default class ManageUsersApiClient extends RestClient {
       showOnlyLSAs,
       size = 20,
       page = 0,
-    }: {
-      nameFilter?: string
-      accessRoles?: string[]
-      status?: string
-      caseload?: string
-      activeCaseload?: string
-      inclusiveRoles?: boolean
-      showOnlyLSAs?: boolean
-      size?: number
-      page?: number
-    },
+    }: DpsUserSearchQuery,
   ): Promise<PagedList<PrisonUserSearchSummary>> {
     const query = {
       nameFilter,
