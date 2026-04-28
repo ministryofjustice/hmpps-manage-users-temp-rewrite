@@ -62,7 +62,7 @@ test.describe('Existing Account Option', () => {
     await login(page, { roles: [AuthRole.CREATE_USER] })
 
     await HomePage.verifyOnPage(page)
-    await page.goto(paths.dpsUser.createUserOptions({}))
+    await page.goto(paths.dpsUser.createUserOptions.pattern)
     await SelectUserTypePage.verifyOnPage(page)
   })
 
@@ -100,14 +100,14 @@ test.describe('Existing Account Option', () => {
   test('Should fail attempting to choose existing account if unauthorised', async ({ page }) => {
     await login(page, { roles: ['ROLE_NOT_CREATE_USER'] })
 
-    await page.goto(paths.dpsUser.createUserOptions({}))
+    await page.goto(paths.dpsUser.createUserOptions.pattern)
     await AuthErrorPage.verifyOnPage(page)
   })
 
   test('Should fail attempting to choose existing account if has other manage users role', async ({ page }) => {
     await login(page, { roles: ['ROLE_MAINTAIN_EMAIL_DOMAINS'] })
 
-    await page.goto(paths.dpsUser.createUserOptions({}))
+    await page.goto(paths.dpsUser.createUserOptions.pattern)
     await AuthErrorPage.verifyOnPage(page)
   })
 })

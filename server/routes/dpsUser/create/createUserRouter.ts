@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { FormError } from '../../interfaces/formError'
-import paths from '../paths'
-import { bodyFromFlash, formErrorsFromFlash, validateFormOrRedirect } from '../../middleware/route/formMiddleware'
-import { userTypeItems } from '../../presentation/userType'
+import { FormError } from '../../../interfaces/formError'
+import paths from '../../paths'
+import { bodyFromFlash, formErrorsFromFlash, validateFormOrRedirect } from '../../../middleware/route/formMiddleware'
+import { userTypeItems } from '../../../presentation/userType'
 
 interface Form {
   userType: string
@@ -29,8 +29,8 @@ export default (): Router => {
     })
   })
 
-  router.post('/', validateFormOrRedirect<Form>(validate, paths.dpsUser.createUser({})), async (req, res) => {
-    return res.redirect(paths.dpsUser.createUserOptions({}))
+  router.post('/', validateFormOrRedirect<Form>(validate, paths.dpsUser.createUser.pattern), async (req, res) => {
+    return res.redirect(paths.dpsUser.createUserOptions.pattern)
   })
 
   return router

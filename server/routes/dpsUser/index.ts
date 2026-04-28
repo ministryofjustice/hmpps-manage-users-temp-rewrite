@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import createUserRouter from './createUserRouter'
-import createUserOptionRouter from './createUserOptionRouter'
-import createDpsUserRouter from './createDpsUserRouter'
-import createLinkedDpsUserRouter from './createLinkedDpsUserRouter'
+import createUserRouter from './create/createUserRouter'
+import createUserOptionRouter from './create/createUserOptionRouter'
+import createDpsUserRouter from './create/createDpsUserRouter'
+import createLinkedDpsUserRouter from './create/createLinkedDpsUserRouter'
 import { downloadHandler, downloadLsaHandler, searchDpsUserRouter } from './searchDpsUserRouter'
 import paths from '../paths'
 import { Services } from '../../services'
@@ -10,13 +10,13 @@ import { Services } from '../../services'
 export default function index(services: Services): Router {
   const router = Router()
 
-  router.use(paths.dpsUser.createUser({}), createUserRouter())
-  router.use(paths.dpsUser.createUserOptions({}), createUserOptionRouter())
-  router.use(paths.dpsUser.createDpsUser({}), createDpsUserRouter(services))
-  router.use(paths.dpsUser.createLinkedDpsUser({}), createLinkedDpsUserRouter(services))
-  router.use(paths.dpsUser.searchDpsUser({}), searchDpsUserRouter(services))
-  router.use(paths.dpsUser.searchDpsUserDownload({}), downloadHandler(services))
-  router.use(paths.dpsUser.searchDpsUserLsaDownload({}), downloadLsaHandler(services))
+  router.use(paths.dpsUser.createUser.pattern, createUserRouter())
+  router.use(paths.dpsUser.createUserOptions.pattern, createUserOptionRouter())
+  router.use(paths.dpsUser.createDpsUser.pattern, createDpsUserRouter(services))
+  router.use(paths.dpsUser.createLinkedDpsUser.pattern, createLinkedDpsUserRouter(services))
+  router.use(paths.dpsUser.search.pattern, searchDpsUserRouter(services))
+  router.use(paths.dpsUser.download.pattern, downloadHandler(services))
+  router.use(paths.dpsUser.downloadLsa.pattern, downloadLsaHandler(services))
 
   return router
 }

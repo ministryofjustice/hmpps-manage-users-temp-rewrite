@@ -73,7 +73,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('caseloadTitle', (userType: string) => caseloadText(userType as UserTypeKey))
   njkEnv.addFilter('caseloadDropdownValues', (caseloads: PrisonCaseload[]) => caseloadDropdownValues(caseloads))
   njkEnv.addFilter('roleDropdownValues', (roles: Role[]) => roleDropdownValues(roles))
-  njkEnv.addFilter('manageUserDetailsLink', (username: string) => paths.dpsUser.manage.userDetails({ username }))
+  njkEnv.addFilter('manageUserDetailsLink', (userId: string) => paths.dpsUser.manage.details({ userId }))
 
   njkEnv.addFilter(
     'setSelected',
@@ -121,7 +121,7 @@ export default function nunjucksSetup(app: express.Express): void {
           },
           clearLink: {
             text: 'Clear filters',
-            href: `${paths.dpsUser.searchDpsUser({})}`,
+            href: `${paths.dpsUser.search.pattern}`,
           },
           categories: categories.filter(category => category.items),
         },

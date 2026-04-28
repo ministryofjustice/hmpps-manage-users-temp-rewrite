@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { FormError } from '../../interfaces/formError'
-import paths from '../paths'
-import { bodyFromFlash, formErrorsFromFlash, validateFormOrRedirect } from '../../middleware/route/formMiddleware'
+import { FormError } from '../../../interfaces/formError'
+import paths from '../../paths'
+import { bodyFromFlash, formErrorsFromFlash, validateFormOrRedirect } from '../../../middleware/route/formMiddleware'
 
 interface Form {
   userType: string
@@ -23,7 +23,7 @@ export default (): Router => {
     const body = bodyFromFlash<Form>(req)
     const errors = formErrorsFromFlash(req)
     if (body.userType === undefined) {
-      return res.redirect(paths.dpsUser.createUser({}))
+      return res.redirect(paths.dpsUser.createUser.pattern)
     }
     return res.render('pages/dpsUser/existingAccountOption', {
       ...body,
@@ -31,13 +31,17 @@ export default (): Router => {
     })
   })
 
-  router.post('/', validateFormOrRedirect<Form>(validate, paths.dpsUser.createUserOptions({})), async (req, res) => {
-    const { body } = req
-    if (body.userExists === 'true') {
-      return res.redirect(paths.dpsUser.createLinkedDpsUser({}))
-    }
-    return res.redirect(paths.dpsUser.createDpsUser({}))
-  })
+  router.post(
+    '/',
+    validateFormOrRedirect<Form>(validate, paths.dpsUser.createUserOptions.pattern),
+    async (req, res) => {
+      const { body } = req
+      if (body.userExists === 'true') {
+        return res.redirect(paths.dpsUser.createLinkedDpsUser.pattern)
+      }
+      return res.redirect(paths.dpsUser.createDpsUser.pattern)
+    },
+  )
 
   return router
 }

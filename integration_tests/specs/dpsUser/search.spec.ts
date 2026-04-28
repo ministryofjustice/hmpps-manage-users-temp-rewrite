@@ -408,14 +408,14 @@ test.describe('Search DPS user', () => {
   test('Should fail attempting to search dps user if unauthorised', async ({ page }) => {
     await login(page, { roles: ['ROLE_NOT_MAINTAIN_ACCESS_ROLES'] })
 
-    await page.goto(paths.dpsUser.searchDpsUser({}))
+    await page.goto(paths.dpsUser.search.pattern)
     await AuthErrorPage.verifyOnPage(page)
   })
 
   test('Should fail attempting to search dps user if has other manage users role', async ({ page }) => {
     await login(page, { roles: [AuthRole.CREATE_USER] })
 
-    await page.goto(paths.dpsUser.searchDpsUser({}))
+    await page.goto(paths.dpsUser.search.pattern)
     await AuthErrorPage.verifyOnPage(page)
   })
 })

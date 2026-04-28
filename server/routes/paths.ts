@@ -7,8 +7,8 @@ const createLinkedDpsUser = path('/create-linked-dps-user')
 const searchDpsUser = path('/search-with-filter-dps-users')
 const searchDpsUserDownload = searchDpsUser.path('user-download')
 const searchDpsUserLsaDownload = searchDpsUser.path('lsa-download')
-const manageDpsUsers = path('/manage-dps-users')
-const userDetails = manageDpsUsers.path(':username/details')
+const manageDpsUser = path('/manage-dps-users/:userId')
+const details = path('/details')
 
 const paths = {
   dpsUser: {
@@ -16,11 +16,12 @@ const paths = {
     createUserOptions,
     createDpsUser,
     createLinkedDpsUser,
-    searchDpsUser,
-    searchDpsUserDownload,
-    searchDpsUserLsaDownload,
+    search: searchDpsUser,
+    download: searchDpsUserDownload,
+    downloadLsa: searchDpsUserLsaDownload,
     manage: {
-      userDetails,
+      root: manageDpsUser,
+      details: manageDpsUser.path(details.pattern),
     },
   },
 }

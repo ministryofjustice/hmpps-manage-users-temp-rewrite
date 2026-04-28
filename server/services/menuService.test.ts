@@ -86,7 +86,7 @@ describe('MenuService', () => {
         {
           title: `Search for a DPS user`,
           description: `Enhanced searching and managing of DPS and NOMIS users`,
-          href: paths.dpsUser.searchDpsUser({}),
+          href: paths.dpsUser.search.pattern,
           dataQa: 'search_with_filter_dps_users',
         },
       ])
@@ -98,7 +98,7 @@ describe('MenuService', () => {
         {
           title: `Search for a DPS user`,
           description: `Enhanced searching and managing of DPS and NOMIS users`,
-          href: paths.dpsUser.searchDpsUser({}),
+          href: paths.dpsUser.search.pattern,
           dataQa: 'search_with_filter_dps_users',
         },
       ])
@@ -110,7 +110,7 @@ describe('MenuService', () => {
         {
           title: `Search for a DPS user`,
           description: `Enhanced searching and managing of DPS and NOMIS users`,
-          href: paths.dpsUser.searchDpsUser({}),
+          href: paths.dpsUser.search.pattern,
           dataQa: 'search_with_filter_dps_users',
         },
       ])
@@ -122,7 +122,7 @@ describe('MenuService', () => {
         {
           title: `Create a DPS user`,
           description: `Create an account for a DPS user`,
-          href: paths.dpsUser.createUser({}),
+          href: paths.dpsUser.createUser.pattern,
           dataQa: 'create_dps_user_link',
         },
       ])

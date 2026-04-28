@@ -1,19 +1,19 @@
 import { Router } from 'express'
 import { CreateUserRequest, PrisonStaffNewUser } from 'manageUsersApiClient'
-import paths from '../paths'
-import { FormError } from '../../interfaces/formError'
-import { caseloadText, showCaseloadDropdown, UserTypeKey } from '../../presentation/userType'
-import { validateEmail, validateUsername } from '../../presentation/validation/userValidation'
+import paths from '../../paths'
+import { FormError } from '../../../interfaces/formError'
+import { caseloadText, showCaseloadDropdown, UserTypeKey } from '../../../presentation/userType'
+import { validateEmail, validateUsername } from '../../../presentation/validation/userValidation'
 import {
   bodyFromFlash,
   flashBody,
   flashErrors,
   formErrorsFromFlash,
   validateFormOrRedirect,
-} from '../../middleware/route/formMiddleware'
-import { Services } from '../../services'
-import { EventType, SubjectType } from '../../services/auditService'
-import { isAlphaStringOrSpecialChars } from '../../utils/utils'
+} from '../../../middleware/route/formMiddleware'
+import { Services } from '../../../services'
+import { EventType, SubjectType } from '../../../services/auditService'
+import { isAlphaStringOrSpecialChars } from '../../../utils/utils'
 
 interface Form {
   userType: string
@@ -72,7 +72,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
     const body = bodyFromFlash<CreateUserRequest>(req)
     const errors = formErrorsFromFlash(req)
     if (body.userType === undefined) {
-      return res.redirect(paths.dpsUser.createUser({}))
+      return res.redirect(paths.dpsUser.createUser.pattern)
     }
     const caseloads = await dpsUserService.getCaseloads(res.locals.user.token)
     return res.render('pages/dpsUser/create', {
@@ -82,7 +82,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
     })
   })
 
-  router.post('/', validateFormOrRedirect<Form>(validate, paths.dpsUser.createDpsUser({})), async (req, res) => {
+  router.post('/', validateFormOrRedirect<Form>(validate, paths.dpsUser.createDpsUser.pattern), async (req, res) => {
     const body = bodyFromFlash<CreateUserRequest>(req)
     const { username } = res.locals.user
     const errors: FormError[] = []
@@ -107,7 +107,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
     if (errors.length) {
       flashBody(req, body)
       flashErrors(req, errors)
-      return res.redirect(paths.dpsUser.createDpsUser({}))
+      return res.redirect(paths.dpsUser.createDpsUser.pattern)
     }
     await auditService.logAuditEvent({
       what: EventType.CREATE_DPS_USER,

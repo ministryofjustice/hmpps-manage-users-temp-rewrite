@@ -72,7 +72,7 @@ describe('searchDpsUser', () => {
       { id: 'LEI', name: 'Leeds' },
     ]
 
-    const searchUrl = paths.dpsUser.searchDpsUser({})
+    const searchUrl = paths.dpsUser.search.pattern
 
     it('produces correct href for removing user filter', () => {
       const filter = { user: 'bob', status: 'ACTIVE' }

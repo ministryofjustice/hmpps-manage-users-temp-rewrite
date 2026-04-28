@@ -6,11 +6,11 @@ import paths from '../routes/paths'
 import AuthRole from '../interfaces/authRole'
 
 const pathRolesMap = new Map<string, AuthRole[]>([
-  [paths.dpsUser.createUser({}), [AuthRole.CREATE_USER]],
-  [paths.dpsUser.createUserOptions({}), [AuthRole.CREATE_USER]],
-  [paths.dpsUser.createDpsUser({}), [AuthRole.CREATE_USER]],
-  [paths.dpsUser.createLinkedDpsUser({}), [AuthRole.CREATE_USER]],
-  [paths.dpsUser.searchDpsUser({}), [AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]],
+  [paths.dpsUser.createUser.pattern, [AuthRole.CREATE_USER]],
+  [paths.dpsUser.createUserOptions.pattern, [AuthRole.CREATE_USER]],
+  [paths.dpsUser.createDpsUser.pattern, [AuthRole.CREATE_USER]],
+  [paths.dpsUser.createLinkedDpsUser.pattern, [AuthRole.CREATE_USER]],
+  [paths.dpsUser.search.pattern, [AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]],
 ])
 
 export default function authorisationMiddleware(): RequestHandler {

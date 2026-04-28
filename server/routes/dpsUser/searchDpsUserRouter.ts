@@ -79,13 +79,11 @@ export const searchDpsUserRouter = ({
           { totalElements, page: number, size },
           new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`),
         ),
-        searchUrl: `${paths.dpsUser.searchDpsUser({})}`,
-        downloadUrl: canDownload(user) && `${paths.dpsUser.searchDpsUserDownload({})}?${queryString}`,
+        searchUrl: `${paths.dpsUser.search.pattern}`,
+        downloadUrl: canDownload(user) && `${paths.dpsUser.download.pattern}?${queryString}`,
         hideDownloadLink: canDownload(user) && totalElements > config.downloadRecordLimit ? true : undefined,
         lsaDownloadUrl:
-          canDownload(user) &&
-          currentFilter.showOnlyLSAs &&
-          `${paths.dpsUser.searchDpsUserLsaDownload({})}?${queryString}`,
+          canDownload(user) && currentFilter.showOnlyLSAs && `${paths.dpsUser.downloadLsa.pattern}?${queryString}`,
         hideLsaDownloadLink: canDownload(user) && totalElements > config.downloadRecordLimit ? true : undefined,
         downloadRecordLimit: config.downloadRecordLimit,
       })
