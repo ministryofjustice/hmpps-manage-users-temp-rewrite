@@ -39,7 +39,10 @@ export const searchDpsUserRouter = ({
 
   router.get('/', async (req, res) => {
     const { user } = res.locals
-    const [roles, caseloads] = await Promise.all([rolesService.getRoles(user), dpsUserService.getCaseloads(user.token)])
+    const [roles, caseloads] = await Promise.all([
+      rolesService.getRolesForMaintainAccessRolesUser(user),
+      dpsUserService.getCaseloads(user.token),
+    ])
     const showPrisonDropdown = hasRole(user, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
     const currentFilter: Query = {
       ...req.query,

@@ -82,45 +82,49 @@ export default ({ dpsUserService, auditService }: Services): Router => {
     })
   })
 
-  router.post('/', validateFormOrRedirect<Form>(validate, paths.dpsUser.createDpsUser.pattern), async (req, res) => {
-    const body = bodyFromFlash<CreateUserRequest>(req)
-    const { username } = res.locals.user
-    const errors: FormError[] = []
-    let newUser: PrisonStaffNewUser
-    try {
-      newUser = await dpsUserService.createDpsUser(res.locals.user.token, body)
-    } catch (err) {
-      if (err.responseStatus === 400 && err.data) {
-        const { userMessage } = err.data
-        const errorDetails = { text: userMessage }
-        errors.push(errorDetails)
-      } else if (err.responseStatus === 409 && err.data && err.data.errorCode === 601) {
-        const usernameError = { href: '#username', text: 'Username already exists' }
-        errors.push(usernameError)
-      } else if (err.responseStatus === 409 && err.data && err.data.errorCode === 602) {
-        const emailDomainError = { href: '#email', text: 'Invalid Email domain' }
-        errors.push(emailDomainError)
-      } else {
-        throw err
+  router.post(
+    '/',
+    validateFormOrRedirect<Form>(validate, _req => paths.dpsUser.createDpsUser.pattern),
+    async (req, res) => {
+      const body = bodyFromFlash<CreateUserRequest>(req)
+      const { username } = res.locals.user
+      const errors: FormError[] = []
+      let newUser: PrisonStaffNewUser
+      try {
+        newUser = await dpsUserService.createDpsUser(res.locals.user.token, body)
+      } catch (err) {
+        if (err.responseStatus === 400 && err.data) {
+          const { userMessage } = err.data
+          const errorDetails = { text: userMessage }
+          errors.push(errorDetails)
+        } else if (err.responseStatus === 409 && err.data && err.data.errorCode === 601) {
+          const usernameError = { href: '#username', text: 'Username already exists' }
+          errors.push(usernameError)
+        } else if (err.responseStatus === 409 && err.data && err.data.errorCode === 602) {
+          const emailDomainError = { href: '#email', text: 'Invalid Email domain' }
+          errors.push(emailDomainError)
+        } else {
+          throw err
+        }
       }
-    }
-    if (errors.length) {
-      flashBody(req, body)
-      flashErrors(req, errors)
-      return res.redirect(paths.dpsUser.createDpsUser.pattern)
-    }
-    await auditService.logAuditEvent({
-      what: EventType.CREATE_DPS_USER,
-      who: username,
-      subjectId: newUser.username,
-      subjectType: SubjectType.USER_ID,
-      details: body,
-    })
-    return res.render('pages/dpsUser/createSuccess', {
-      email: `${newUser.primaryEmail}`,
-      username: `${newUser.username}`,
-    })
-  })
+      if (errors.length) {
+        flashBody(req, body)
+        flashErrors(req, errors)
+        return res.redirect(paths.dpsUser.createDpsUser.pattern)
+      }
+      await auditService.logAuditEvent({
+        what: EventType.CREATE_DPS_USER,
+        who: username,
+        subjectId: newUser.username,
+        subjectType: SubjectType.USER_ID,
+        details: body,
+      })
+      return res.render('pages/dpsUser/createSuccess', {
+        email: `${newUser.primaryEmail}`,
+        username: `${newUser.username}`,
+      })
+    },
+  )
 
   return router
 }

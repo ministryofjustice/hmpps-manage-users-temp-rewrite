@@ -137,4 +137,64 @@ describe('authorisationMiddleware', () => {
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()
   })
+
+  it('should redirect when user tries to access search dps user without maintain access role', () => {
+    req = { path: paths.dpsUser.search.pattern } as Request
+    const res = createResWithToken({ authorities: ['ROLE_NOT_CREATE_USER'] })
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).not.toHaveBeenCalled()
+    expect(res.redirect).toHaveBeenCalledWith('/authError')
+  })
+
+  it('should return next when user tries to access search dps user with maintain access roles role', () => {
+    req = { path: paths.dpsUser.search.pattern } as Request
+    const res = createResWithToken({ authorities: [AuthRole.MAINTAIN_ACCESS_ROLES] })
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
+  })
+
+  it('should return next when user tries to access search dps user with maintain access roles admin role', () => {
+    req = { path: paths.dpsUser.search.pattern } as Request
+    const res = createResWithToken({ authorities: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
+  })
+
+  it('should redirect when user tries to access select caseloads user with other role', () => {
+    req = { path: paths.dpsUser.manage.selectCaseloads({ userId: 'ITAG_USER5' }) } as Request
+    const res = createResWithToken({ authorities: ['ROLE_NOT_MAINTAIN_ACCESS_ROLES'] })
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).not.toHaveBeenCalled()
+    expect(res.redirect).toHaveBeenCalledWith('/authError')
+  })
+
+  it('should redirect when user tries to access select caseloads user with maintain access roles role', () => {
+    req = { path: paths.dpsUser.manage.selectCaseloads({ userId: 'ITAG_USER5' }) } as Request
+    const res = createResWithToken({ authorities: [AuthRole.MAINTAIN_ACCESS_ROLES] })
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).not.toHaveBeenCalled()
+    expect(res.redirect).toHaveBeenCalledWith('/authError')
+  })
+
+  it('should return next when user tries to access search dps user with maintain access roles admin role', () => {
+    req = { path: paths.dpsUser.manage.selectCaseloads({ userId: 'ITAG_USER5' }) } as Request
+    const res = createResWithToken({ authorities: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
+  })
 })

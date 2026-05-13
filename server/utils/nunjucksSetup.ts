@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import path from 'path'
+import moment from 'moment'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
@@ -20,8 +21,9 @@ import {
 } from '../presentation/userType'
 import caseloadDropdownValues from '../presentation/caseloads'
 import paths from '../routes/paths'
-import roleDropdownValues from '../presentation/roles'
+import { roleDropdownValues } from '../presentation/roles'
 import { Filter, filterCategories } from '../presentation/searchDpsUser'
+import { isRestrictedRoleCode, RestrictedRoles } from '../presentation/restrictedRoles'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -73,6 +75,12 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('caseloadTitle', (userType: string) => caseloadText(userType as UserTypeKey))
   njkEnv.addFilter('caseloadDropdownValues', (caseloads: PrisonCaseload[]) => caseloadDropdownValues(caseloads))
   njkEnv.addFilter('roleDropdownValues', (roles: Role[]) => roleDropdownValues(roles))
+
+  njkEnv.addFilter('formatDate', (value: string, format: string) => (value ? moment(value).format(format) : null))
+  njkEnv.addFilter('formatYesNo', (value: boolean) => (value ? 'Yes' : 'No'))
+  njkEnv.addFilter('isRestrictedRoleCode', (roleCode: string, restrictedRoles: RestrictedRoles[]) =>
+    isRestrictedRoleCode(roleCode, restrictedRoles),
+  )
   njkEnv.addFilter('manageUserDetailsLink', (userId: string) => paths.dpsUser.manage.details({ userId }))
 
   njkEnv.addFilter(

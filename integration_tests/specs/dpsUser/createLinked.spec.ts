@@ -98,7 +98,12 @@ test.describe('Create Linked DPS user', () => {
   ].forEach(({ userType, existingUsername }) => {
     test(`Should fill in details from found searched ${userType} user`, async ({ page }) => {
       const createLinkedPage = await gotoCreateLinkedPage(page, userType)
-      await manageUsersApi.stubGetDpsUser(existingUsername, 'Test', 'User', 'test.user@justice.gov.uk')
+      await manageUsersApi.stubGetDpsUser({
+        username: existingUsername,
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'test.user@justice.gov.uk',
+      })
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.search.click()
       await expect(createLinkedPage.firstName).toHaveValue('Test')

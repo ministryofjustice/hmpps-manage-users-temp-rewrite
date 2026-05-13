@@ -33,7 +33,7 @@ export default (): Router => {
 
   router.post(
     '/',
-    validateFormOrRedirect<Form>(validate, paths.dpsUser.createUserOptions.pattern),
+    validateFormOrRedirect<Form>(validate, _req => paths.dpsUser.createUserOptions.pattern),
     async (req, res) => {
       const { body } = req
       if (body.userExists === 'true') {

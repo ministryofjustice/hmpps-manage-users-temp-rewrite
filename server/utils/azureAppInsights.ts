@@ -89,3 +89,13 @@ export function appInsightsMiddleware(): RequestHandler {
     next()
   }
 }
+
+export const appInsightsEvent = (eventName: string, userName: string, eventData: Record<string, unknown>) => {
+  if (defaultClient && eventName) {
+    defaultClient.trackEvent({ name: eventName, properties: { ...eventData, userName } })
+  }
+}
+
+export enum Event {
+  REQUEST_REMOVE_USER_ROLE_ATTEMPT = 'manageUsersRequestRemoveUserRole',
+}

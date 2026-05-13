@@ -133,7 +133,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
 
   router.post(
     '/',
-    validateFormOrRedirect<CreateLinkedDpsUserRequest>(validate, paths.dpsUser.createLinkedDpsUser.pattern),
+    validateFormOrRedirect<CreateLinkedDpsUserRequest>(validate, _req => paths.dpsUser.createLinkedDpsUser.pattern),
     postSearch(),
     postCreate(),
   )

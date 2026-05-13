@@ -24,7 +24,7 @@ describe('form middleware', () => {
       const validator = jest.fn().mockReturnValue([])
       req.body = { name: 'test', _csrf: 'token' }
 
-      const handler = validateFormOrRedirect(validator, '/redirect')
+      const handler = validateFormOrRedirect(validator, _req => '/redirect')
 
       await handler(req as Request, res as Response, next)
 
@@ -39,7 +39,7 @@ describe('form middleware', () => {
       const validator = jest.fn().mockReturnValue(errors)
       req.body = { name: '', _csrf: 'token' }
 
-      const handler = validateFormOrRedirect(validator, '/redirect')
+      const handler = validateFormOrRedirect(validator, _req => '/redirect')
 
       await handler(req as Request, res as Response, next)
 

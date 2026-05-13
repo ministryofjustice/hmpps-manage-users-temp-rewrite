@@ -29,9 +29,13 @@ export default (): Router => {
     })
   })
 
-  router.post('/', validateFormOrRedirect<Form>(validate, paths.dpsUser.createUser.pattern), async (req, res) => {
-    return res.redirect(paths.dpsUser.createUserOptions.pattern)
-  })
+  router.post(
+    '/',
+    validateFormOrRedirect<Form>(validate, _req => paths.dpsUser.createUser.pattern),
+    async (req, res) => {
+      return res.redirect(paths.dpsUser.createUserOptions.pattern)
+    },
+  )
 
   return router
 }

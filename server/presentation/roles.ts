@@ -1,9 +1,19 @@
 import { Role } from 'manageUsersApiClient'
-import { SelectItem } from '../interfaces/selectItem'
+import { SelectItem, SelectItemWithHint } from '../interfaces/selectItem'
 
-const roleDropdownValues = (roles: Role[]): SelectItem[] =>
+export const roleDropdownValues = (roles: Role[]): SelectItem[] =>
   roles.map(role => ({
     text: role.roleName,
     value: role.roleCode,
   }))
-export default roleDropdownValues
+
+export const roleDropdownValuesWithHint = (roles: Role[]): SelectItemWithHint[] =>
+  roles.map((r: Role) => ({
+    text: r.roleName,
+    value: r.roleCode,
+    ...(r.roleDescription && {
+      hint: {
+        text: r.roleDescription,
+      },
+    }),
+  }))

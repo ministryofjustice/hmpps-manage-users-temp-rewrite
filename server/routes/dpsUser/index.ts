@@ -6,6 +6,7 @@ import createLinkedDpsUserRouter from './create/createLinkedDpsUserRouter'
 import { downloadHandler, downloadLsaHandler, searchDpsUserRouter } from './searchDpsUserRouter'
 import paths from '../paths'
 import { Services } from '../../services'
+import manageDpsUserRouter from './manageDpsUserRouter'
 
 export default function index(services: Services): Router {
   const router = Router()
@@ -17,6 +18,7 @@ export default function index(services: Services): Router {
   router.use(paths.dpsUser.search.pattern, searchDpsUserRouter(services))
   router.use(paths.dpsUser.download.pattern, downloadHandler(services))
   router.use(paths.dpsUser.downloadLsa.pattern, downloadLsaHandler(services))
+  router.use(paths.dpsUser.manage.root.pattern, manageDpsUserRouter(services))
 
   return router
 }

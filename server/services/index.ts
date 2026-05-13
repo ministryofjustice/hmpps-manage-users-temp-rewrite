@@ -3,8 +3,9 @@ import AuditService from './auditService'
 import ExampleService from './exampleService'
 import MenuService from './menuService'
 import DpsUserService from './dpsUserService'
-import paginationService from './paginationService'
 import RolesService from './rolesService'
+import UserService from './userService'
+import paginationService from './paginationService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, exampleApiClient, manageUsersApiClient } = dataAccess()
@@ -16,6 +17,7 @@ export const services = () => {
     menuService: new MenuService(manageUsersApiClient),
     dpsUserService: new DpsUserService(manageUsersApiClient),
     rolesService: new RolesService(manageUsersApiClient),
+    userService: new UserService(manageUsersApiClient),
     paginationService,
   }
 }

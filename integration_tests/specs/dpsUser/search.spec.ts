@@ -1,23 +1,12 @@
-import { expect, Page, test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import * as fs from 'node:fs'
 import { getMatchingRequests, resetStubs } from '../../mockApis/wiremock'
 import { fillAutocompleteSelect, login } from '../../testUtils'
 import paths from '../../../server/routes/paths'
 import AuthErrorPage from '../../pages/authErrorPage'
 import AuthRole from '../../../server/interfaces/authRole'
-import HomePage from '../../pages/homePage'
-import SearchPage from '../../pages/dpsUser/searchPage'
 import manageUsersApi from '../../mockApis/manageUsersApi'
-
-const gotoSearchPage = async (page: Page, role: AuthRole, totalElements: number = 21, size: number = 10) => {
-  await login(page, { roles: [role] })
-
-  const homePage = await HomePage.verifyOnPage(page)
-  await manageUsersApi.stubDpsRoles(role === AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN ? 'DPS_ADM' : 'DPS_LSA')
-  await manageUsersApi.stubSearchDpsUsers({ totalElements, size })
-  await homePage.selectTile('search_with_filter_dps_users')
-  return SearchPage.verifyOnPage(page)
-}
+import { editUser, gotoSearchPage } from '../../helpers/dpsUser'
 
 const getDpsUserSearchRequests = async () => {
   return getMatchingRequests({
@@ -27,22 +16,17 @@ const getDpsUserSearchRequests = async () => {
 }
 
 test.describe('Search DPS user', () => {
-  test.beforeEach(async () => {
-    await manageUsersApi.stubGetCaseloads()
-    await manageUsersApi.stubNotificationBannerMessage('DPSMENU', '')
-  })
-
   test.afterEach(async () => {
     await resetStubs()
   })
 
   test('Should show filter', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
     await expect(searchPage.filter).toBeVisible()
   })
 
   test('Can add and remove user filter', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
     await searchPage.userFilterInput.fill('Andy')
     await searchPage.filterButton.click()
     await expect(searchPage.userFilterInput).toHaveValue('Andy')
@@ -55,7 +39,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Can change default ALL status to active or inactive only', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
     await expect(searchPage.statusAllRadio).toBeChecked()
 
     await searchPage.statusInactiveRadio.click()
@@ -78,7 +62,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Can add and remove show LSA only filter', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
     await searchPage.showLsaOnlyCheckbox.click()
     await searchPage.filterButton.click()
     await expect(searchPage.showLsaOnlyCheckbox).toBeChecked()
@@ -92,7 +76,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Can add and remove a single caseload filter', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
     await fillAutocompleteSelect(searchPage.caseload, 'Moorland')
     await searchPage.filterButton.click()
     await expect(searchPage.filterCategoryLink('Moorland')).toBeVisible()
@@ -112,12 +96,12 @@ test.describe('Search DPS user', () => {
   })
 
   test('Can not see caseload filter when not an admin', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES] })
     await expect(searchPage.caseload).not.toBeVisible()
   })
 
   test('Can add and remove a single role filter', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     await searchPage.checkbox('User Admin').click()
     await searchPage.filterButton.click()
@@ -129,7 +113,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Can add multiple role filters', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     await searchPage.checkbox('User Admin').click()
     await searchPage.checkbox('Maintain Roles').click()
@@ -141,7 +125,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Can change default All selected roles to Any selected roles', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
     await expect(searchPage.rolesAllMatchRadio).toBeChecked()
 
     await searchPage.rolesAnyMatchRadio.click()
@@ -157,7 +141,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Can search for a role to filter', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     const userAdminCheckbox = searchPage.checkbox('User Admin')
     const oauthAdminCheckbox = searchPage.checkbox('Oauth Admin')
@@ -188,7 +172,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Adding and removing roles updates roles selected counter', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     await expect(searchPage.rolesSelectedCounter).toHaveText('')
 
@@ -204,7 +188,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Roles selected counter shows number of roles selected after applying filter', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     await searchPage.checkbox('Maintain Roles').click()
     await searchPage.checkbox('User Admin').click()
@@ -215,7 +199,10 @@ test.describe('Search DPS user', () => {
   })
 
   test('Shows user details in the results', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN, 3)
+    const searchPage = await gotoSearchPage(page, {
+      roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN],
+      totalElements: 3,
+    })
 
     await expect(searchPage.userTableCells).toHaveCount(3)
     const firstCell = searchPage.userTableCells.nth(0)
@@ -228,16 +215,19 @@ test.describe('Search DPS user', () => {
     await expect(searchPage.userTableCells.nth(2)).toContainText('2 DPS roles')
   })
 
-  // TODO enable test (and finish off when manage user details page available
-  // test('Clicking user details link goes to user details page', async ({ page }) => {
-  //   const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
-  //
-  //   await searchPage.userDetailsLink('ITAG_USER0').click()
-  //   UserPage.verifyOnPage(page)
-  // })
+  test('Clicking user details link goes to user details page', async ({ page }) => {
+    const userPage = await editUser(page, {
+      roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN],
+    })
+    await expect(userPage.header).toHaveText('Itag User')
+  })
 
   test('Can click through pages while maintaining filter', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN, 101, 20)
+    const searchPage = await gotoSearchPage(page, {
+      roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN],
+      totalElements: 101,
+      size: 20,
+    })
 
     await searchPage.filterAll()
 
@@ -254,7 +244,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Calls the dps user search api for admin with no filter', async ({ page }) => {
-    await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     const requests = await getDpsUserSearchRequests()
     expect(requests.length).toBe(1)
@@ -266,7 +256,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Calls the dps user search api for admin with filter applied', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     await searchPage.filterAll()
 
@@ -287,7 +277,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Calls the dps user search api for non-admin with no filter', async ({ page }) => {
-    await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES)
+    await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES] })
 
     const requests = await getDpsUserSearchRequests()
     expect(requests.length).toBe(1)
@@ -299,7 +289,7 @@ test.describe('Search DPS user', () => {
   })
 
   test('Calls the dps user search api for non-admin with filter applied', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES] })
 
     await searchPage.filterAll(false)
 
@@ -320,7 +310,7 @@ test.describe('Search DPS user', () => {
   test('Can download the list of users', async ({ page }) => {
     await manageUsersApi.stubDpsUsersDownload()
     const downloadPromise = page.waitForEvent('download')
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     await searchPage.downloadButton.click()
     const path = await downloadPromise.then(dl => dl.path())
@@ -338,7 +328,7 @@ test.describe('Search DPS user', () => {
   test('Can download the list of LSA admins', async ({ page }) => {
     await manageUsersApi.stubDpsLsaDownload()
     const downloadPromise = page.waitForEvent('download')
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     await searchPage.showLsaOnlyCheckbox.click()
     await searchPage.filterButton.click()
@@ -355,7 +345,10 @@ test.describe('Search DPS user', () => {
   })
 
   test('Hides the download user button and displays message if result set too large', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN, 20001)
+    const searchPage = await gotoSearchPage(page, {
+      roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN],
+      totalElements: 20001,
+    })
 
     await expect(searchPage.downloadButton).not.toBeVisible()
     await expect(searchPage.downloadLimitExceededMessage).toHaveText(
@@ -364,7 +357,10 @@ test.describe('Search DPS user', () => {
   })
 
   test('Hides the download lsa button and displays message if result set too large', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN, 20001)
+    const searchPage = await gotoSearchPage(page, {
+      roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN],
+      totalElements: 20001,
+    })
 
     await searchPage.showLsaOnlyCheckbox.click()
     await searchPage.filterButton.click()
@@ -376,19 +372,22 @@ test.describe('Search DPS user', () => {
   })
 
   test('Does not show the download users button for non-admin', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES] })
 
     await expect(searchPage.downloadButton).not.toBeVisible()
   })
 
   test('Does not show download limit exceeds message if result set too large and non-admin', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES, 20001)
+    const searchPage = await gotoSearchPage(page, {
+      roles: [AuthRole.MAINTAIN_ACCESS_ROLES],
+      totalElements: 20001,
+    })
 
     await expect(searchPage.downloadLimitExceededMessage).not.toBeVisible()
   })
 
   test('Does not show the download lsa button for non-admin', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES)
+    const searchPage = await gotoSearchPage(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES] })
 
     await searchPage.showLsaOnlyCheckbox.click()
     await searchPage.filterButton.click()
@@ -397,7 +396,10 @@ test.describe('Search DPS user', () => {
   })
 
   test('Does not show download lsa limit exceeds message if result set too large and non-admin', async ({ page }) => {
-    const searchPage = await gotoSearchPage(page, AuthRole.MAINTAIN_ACCESS_ROLES, 20001)
+    const searchPage = await gotoSearchPage(page, {
+      roles: [AuthRole.MAINTAIN_ACCESS_ROLES],
+      totalElements: 20001,
+    })
 
     await searchPage.showLsaOnlyCheckbox.click()
     await searchPage.filterButton.click()
