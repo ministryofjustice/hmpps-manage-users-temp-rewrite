@@ -13,6 +13,8 @@ import {
 import paths from '../../paths'
 import { EventType, SubjectType } from '../../../services/auditService'
 import emailVerificationError from '../../../presentation/errors'
+import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
+import AuthRole from '../../../interfaces/authRole'
 
 interface Form {
   email: string
@@ -36,6 +38,8 @@ const getUser = async (token: string, username: string, { dpsUserService, userSe
 
 export const changeEmailRouter = (services: Services): Router => {
   const router = Router({ mergeParams: true })
+
+  router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]))
 
   router.get('/', async (req: Request<UserParam>, res) => {
     const { userId } = req.params

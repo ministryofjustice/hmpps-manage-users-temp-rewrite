@@ -32,8 +32,12 @@ export default class DpsUserService {
   removeCaseload = async (token: string, username: string, caseload: string): Promise<UserCaseloadDetail> =>
     this.manageUsersApiClient.removeUserCaseload(token, username, caseload)
 
-  getDpsUser = async (token: string, username: string): Promise<PrisonUserDetails> =>
-    this.manageUsersApiClient.getDpsUser(token, username)
+  getDpsUser = async (token: string, username: string, syncEmail: boolean = false): Promise<PrisonUserDetails> => {
+    if (syncEmail) {
+      await this.syncEmail(token, username)
+    }
+    return this.manageUsersApiClient.getDpsUser(token, username)
+  }
 
   createLinkedDpsUser = async (token: string, request: CreateLinkedDpsUserRequest): Promise<string> => {
     switch (request.userType) {
@@ -79,7 +83,7 @@ export default class DpsUserService {
     this.manageUsersApiClient.addDpsUserRoles(token, username, roles)
 
   getRoles = async (token: string, username: string): Promise<UserRoleDetail> =>
-    this.manageUsersApiClient.contextUserRoles(token, username)
+    this.manageUsersApiClient.getDpsUserRoles(token, username)
 
   removeRole = async (token: string, username: string, roleCode: string): Promise<UserRoleDetail> =>
     this.manageUsersApiClient.removeDpsUserRole(token, username, roleCode)

@@ -25,7 +25,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
     } catch (err) {
       switch (err.responseStatus) {
         case 400: // role already removed from user
-          return res.redirect(req.originalUrl)
+          return res.redirect(staffUrl)
         case 404:
           return res.redirect(staffUrl)
         default:

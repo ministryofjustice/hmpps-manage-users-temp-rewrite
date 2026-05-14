@@ -1,4 +1,16 @@
-import { CreateUserRequest, PrisonCaseload, PrisonStaffNewUser, PrisonUserDetails } from 'manageUsersApiClient'
+import { Response } from 'superagent'
+import {
+  CreateUserRequest,
+  PagedList,
+  PrisonAdminUserSummary,
+  PrisonCaseload,
+  PrisonStaffNewUser,
+  PrisonUserDetails,
+  PrisonUserDownloadSummary,
+  PrisonUserSearchSummary,
+  UserCaseloadDetail,
+  UserRoleDetail,
+} from 'manageUsersApiClient'
 import DpsUserService from './dpsUserService'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { CreateLinkedDpsUserRequest } from '../interfaces/createLinkedDpsUserRequest'
@@ -17,6 +29,19 @@ describe('DpsUserService', () => {
       createLinkedCentralAdminUser: jest.fn(),
       createLinkedLsaUser: jest.fn(),
       createLinkedGeneralUser: jest.fn(),
+      dpsUserSearch: jest.fn(),
+      downloadUserSearch: jest.fn(),
+      downloadLsaSearch: jest.fn(),
+      addDpsUserRoles: jest.fn(),
+      getDpsUserRoles: jest.fn(),
+      removeDpsUserRole: jest.fn(),
+      syncDpsEmail: jest.fn(),
+      changeDpsEmail: jest.fn(),
+      enablePrisonUser: jest.fn(),
+      disablePrisonUser: jest.fn(),
+      addUserCaseloads: jest.fn(),
+      getUserCaseloads: jest.fn(),
+      removeUserCaseload: jest.fn(),
     } as unknown as jest.Mocked<ManageUsersApiClient>
 
     service = new DpsUserService(apiClient)
@@ -47,6 +72,60 @@ describe('DpsUserService', () => {
     expect(result).toBe(caseloads)
   })
 
+  it('adds caseloads', async () => {
+    const userCaseloadDetail: UserCaseloadDetail = {
+      username: 'some-user',
+      active: true,
+      accountType: 'GENERAL',
+      caseloads: [
+        { id: 'MDI', name: 'Moorland' },
+        { id: 'LEI', name: 'Leeds (HMP)' },
+      ],
+    }
+
+    apiClient.addUserCaseloads.mockResolvedValue(userCaseloadDetail)
+
+    const result = await service.addCaseloads(token, 'some-user', ['LEI'])
+
+    expect(apiClient.addUserCaseloads).toHaveBeenCalledWith(token, 'some-user', ['LEI'])
+    expect(result).toBe(userCaseloadDetail)
+  })
+
+  it('gets user caseloads', async () => {
+    const userCaseloadDetail: UserCaseloadDetail = {
+      username: 'some-user',
+      active: true,
+      accountType: 'GENERAL',
+      caseloads: [
+        { id: 'MDI', name: 'Moorland' },
+        { id: 'LEI', name: 'Leeds (HMP)' },
+      ],
+    }
+
+    apiClient.getUserCaseloads.mockResolvedValue(userCaseloadDetail)
+
+    const result = await service.getUserCaseloads(token, 'some-user')
+
+    expect(apiClient.getUserCaseloads).toHaveBeenCalledWith(token, 'some-user')
+    expect(result).toBe(userCaseloadDetail)
+  })
+
+  it('removes a user caseload', async () => {
+    const userCaseloadDetail: UserCaseloadDetail = {
+      username: 'some-user',
+      active: true,
+      accountType: 'GENERAL',
+      caseloads: [{ id: 'MDI', name: 'Moorland' }],
+    }
+
+    apiClient.removeUserCaseload.mockResolvedValue(userCaseloadDetail)
+
+    const result = await service.removeCaseload(token, 'some-user', 'LEI')
+
+    expect(apiClient.removeUserCaseload).toHaveBeenCalledWith(token, 'some-user', 'LEI')
+    expect(result).toBe(userCaseloadDetail)
+  })
+
   it('gets a DPS user', async () => {
     const user: PrisonUserDetails = { username: 'some-user' } as PrisonUserDetails
 
@@ -56,6 +135,101 @@ describe('DpsUserService', () => {
 
     expect(apiClient.getDpsUser).toHaveBeenCalledWith(token, 'some-user')
     expect(result).toBe(user)
+  })
+
+  it('gets a DPS user and syncs email beforehand', async () => {
+    const user: PrisonUserDetails = { username: 'some-user' } as PrisonUserDetails
+
+    apiClient.getDpsUser.mockResolvedValue(user)
+
+    const result = await service.getDpsUser(token, 'some-user', true)
+
+    expect(apiClient.syncDpsEmail).toHaveBeenCalledWith(token, 'some-user')
+    expect(apiClient.getDpsUser).toHaveBeenCalledWith(token, 'some-user')
+    expect(result).toBe(user)
+  })
+
+  it('searches dps users', async () => {
+    const users = {
+      content: [
+        {
+          username: `ITAG_USER`,
+          staffId: 1,
+          firstName: 'Itag',
+          lastName: `User`,
+          active: true,
+          status: 'OPEN',
+          locked: false,
+          expired: false,
+          lastLogonDate: '2023-12-25T12:57:50',
+          activeCaseload: {
+            id: 'BXI',
+            name: 'Brixton (HMP)',
+          },
+          dpsRoleCount: 1,
+          email: `ITAG_USER@gov.uk`,
+          staffStatus: 'ACTIVE',
+        },
+      ],
+      size: 10,
+      totalElements: 1,
+      number: 0,
+      numberOfElements: 1,
+    } as PagedList<PrisonUserSearchSummary>
+
+    apiClient.dpsUserSearch.mockResolvedValue(users)
+
+    const result = await service.dpsUserSearch(token, { nameFilter: 'ITAG', size: 10, page: 0 })
+
+    expect(apiClient.dpsUserSearch).toHaveBeenCalledWith(token, { nameFilter: 'ITAG', size: 10, page: 0 })
+    expect(result).toBe(users)
+  })
+
+  it('downloads dps users', async () => {
+    const users: PrisonUserDownloadSummary = [
+      {
+        username: 'ITAG_USER',
+        staffId: '12345',
+        firstName: 'Test',
+        lastName: 'User',
+        active: true,
+      },
+    ]
+
+    apiClient.downloadUserSearch.mockResolvedValue(users)
+
+    const result = await service.downloadUserSearch(token, { nameFilter: 'ITAG', size: 10, page: 0 })
+
+    expect(apiClient.downloadUserSearch).toHaveBeenCalledWith(token, { nameFilter: 'ITAG', size: 10, page: 0 })
+    expect(result).toBe(users)
+  })
+
+  it('downloads dps lsa admins', async () => {
+    const users: PrisonAdminUserSummary = [
+      {
+        username: 'ITAG_USER',
+        staffId: '12345',
+        firstName: 'Test',
+        lastName: 'User',
+        active: true,
+        locked: false,
+        expired: false,
+        dpsRoleCount: 1,
+        groups: [
+          {
+            id: 'TEST_GROUP',
+            name: 'Test Group',
+          },
+        ],
+      },
+    ]
+
+    apiClient.downloadLsaSearch.mockResolvedValue(users)
+
+    const result = await service.downloadLsaSearch(token, { nameFilter: 'ITAG', size: 10, page: 0 })
+
+    expect(apiClient.downloadLsaSearch).toHaveBeenCalledWith(token, { nameFilter: 'ITAG', size: 10, page: 0 })
+    expect(result).toBe(users)
   })
 
   const createLinkedDpsUserRequest = (
@@ -127,5 +301,109 @@ describe('DpsUserService', () => {
     })
 
     expect(result).toBe('new-gen')
+  })
+
+  it('adds user roles', async () => {
+    const userRoleDetail: UserRoleDetail = {
+      username: 'some-user',
+      active: true,
+      accountType: 'GENERAL',
+      dpsRoles: [
+        { code: 'ROLE_TEST', name: 'Test role' },
+        { code: 'ROLE_ADMIN_TEST', name: 'Test admin role' },
+      ],
+    }
+
+    apiClient.addDpsUserRoles.mockResolvedValue(userRoleDetail)
+
+    const result = await service.addRoles(token, 'some-user', ['ROLE_TEST'])
+
+    expect(apiClient.addDpsUserRoles).toHaveBeenCalledWith(token, 'some-user', ['ROLE_TEST'])
+    expect(result).toBe(userRoleDetail)
+  })
+
+  it('gets user roles', async () => {
+    const userRoleDetail: UserRoleDetail = {
+      username: 'some-user',
+      active: true,
+      accountType: 'GENERAL',
+      dpsRoles: [
+        { code: 'ROLE_TEST', name: 'Test role' },
+        { code: 'ROLE_ADMIN_TEST', name: 'Test admin role' },
+      ],
+    }
+
+    apiClient.getDpsUserRoles.mockResolvedValue(userRoleDetail)
+
+    const result = await service.getRoles(token, 'some-user')
+
+    expect(apiClient.getDpsUserRoles).toHaveBeenCalledWith(token, 'some-user')
+    expect(result).toBe(userRoleDetail)
+  })
+
+  it('removes a user role', async () => {
+    const userRoleDetail: UserRoleDetail = {
+      username: 'some-user',
+      active: true,
+      accountType: 'GENERAL',
+      dpsRoles: [{ code: 'ROLE_TEST', name: 'Test role' }],
+    }
+
+    apiClient.removeDpsUserRole.mockResolvedValue(userRoleDetail)
+
+    const result = await service.removeRole(token, 'some-user', 'ROLE_ADMIN_TEST')
+
+    expect(apiClient.removeDpsUserRole).toHaveBeenCalledWith(token, 'some-user', 'ROLE_ADMIN_TEST')
+    expect(result).toBe(userRoleDetail)
+  })
+
+  it('syncs a users email', async () => {
+    const response = {
+      ok: true,
+    } as Response
+
+    apiClient.syncDpsEmail.mockResolvedValue(response)
+
+    const result = await service.syncEmail(token, 'some-user')
+
+    expect(apiClient.syncDpsEmail).toHaveBeenCalledWith(token, 'some-user')
+    expect(result).toBe(response)
+  })
+
+  it('changes a users email', async () => {
+    const newEmail = 'newEmail@justice.gov.uk'
+
+    apiClient.changeDpsEmail.mockResolvedValue(newEmail)
+
+    const result = await service.changeEmail(token, 'some-user', newEmail)
+
+    expect(apiClient.changeDpsEmail).toHaveBeenCalledWith(token, 'some-user', newEmail)
+    expect(result).toBe(newEmail)
+  })
+
+  it('enables a user', async () => {
+    const response = {
+      ok: true,
+    } as Response
+
+    apiClient.enablePrisonUser.mockResolvedValue(response)
+
+    const result = await service.enableUser(token, 'some-user')
+
+    expect(apiClient.enablePrisonUser).toHaveBeenCalledWith(token, 'some-user')
+    expect(result).toBe(response)
+  })
+
+  it('disables a user', async () => {
+    const response = {
+      ok: true,
+    } as Response
+
+    apiClient.disablePrisonUser.mockResolvedValue(response)
+
+    const result = await service.disableUser(token, 'some-user')
+
+    expect(apiClient.disablePrisonUser).toHaveBeenCalledWith(token, 'some-user')
+    expect(result).toBe(response)
   })
 })

@@ -14,6 +14,8 @@ import {
 import { Services } from '../../../services'
 import { EventType, SubjectType } from '../../../services/auditService'
 import { isAlphaStringOrSpecialChars } from '../../../utils/utils'
+import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
+import AuthRole from '../../../interfaces/authRole'
 
 interface Form {
   userType: string
@@ -67,6 +69,8 @@ const validate = (body: Form): FormError[] => {
 
 export default ({ dpsUserService, auditService }: Services): Router => {
   const router = Router()
+
+  router.use(authRoleGuardMiddleware([AuthRole.CREATE_USER]))
 
   router.get('/', async (req, res) => {
     const body = bodyFromFlash<CreateUserRequest>(req)

@@ -7,6 +7,8 @@ import { downloadHandler, downloadLsaHandler, searchDpsUserRouter } from './sear
 import paths from '../paths'
 import { Services } from '../../services'
 import manageDpsUserRouter from './manageDpsUserRouter'
+import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
+import AuthRole from '../../interfaces/authRole'
 
 export default function index(services: Services): Router {
   const router = Router()
@@ -16,8 +18,16 @@ export default function index(services: Services): Router {
   router.use(paths.dpsUser.createDpsUser.pattern, createDpsUserRouter(services))
   router.use(paths.dpsUser.createLinkedDpsUser.pattern, createLinkedDpsUserRouter(services))
   router.use(paths.dpsUser.search.pattern, searchDpsUserRouter(services))
-  router.use(paths.dpsUser.download.pattern, downloadHandler(services))
-  router.use(paths.dpsUser.downloadLsa.pattern, downloadLsaHandler(services))
+  router.use(
+    paths.dpsUser.download.pattern,
+    authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]),
+    downloadHandler(services),
+  )
+  router.use(
+    paths.dpsUser.downloadLsa.pattern,
+    authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]),
+    downloadLsaHandler(services),
+  )
   router.use(paths.dpsUser.manage.root.pattern, manageDpsUserRouter(services))
 
   return router

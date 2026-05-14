@@ -11,6 +11,7 @@ import AddRolePage from '../../pages/addRolePage'
 import RequestRoleRemovalPage from '../../pages/dpsUser/requestRoleRemovalPage'
 import AddUserCaseloadPage from '../../pages/addUserCaseloadPage'
 import AuthErrorPage from '../../pages/authErrorPage'
+import { login } from '../../testUtils'
 
 const attemptPostWithoutCsrf = async (page: Page, url: string) => {
   const response = await page.request.post(url, {
@@ -167,6 +168,13 @@ test.describe('Manage a DPS user', () => {
     await expect(userPage.userRows.nth(2)).toHaveText('Verified No')
   })
 
+  test('Should fail attempting to view user details if unauthorised', async ({ page }) => {
+    await login(page, { roles: [AuthRole.CREATE_USER] })
+
+    await page.goto(paths.dpsUser.manage.details({ userId: 'ITAG_USER5' }))
+    await AuthErrorPage.verifyOnPage(page)
+  })
+
   test.describe('Change an email address', () => {
     const changeEmail = async (page: Page) => {
       const userPage = await editUser(page, {
@@ -259,6 +267,13 @@ test.describe('Manage a DPS user', () => {
         roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN],
       })
       await attemptPostWithoutCsrf(page, paths.dpsUser.manage.changeEmail({ userId: 'ITAG_USER5' }))
+    })
+
+    test('Should fail attempting to change email if unauthorised', async ({ page }) => {
+      await login(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES] })
+
+      await page.goto(paths.dpsUser.manage.changeEmail({ userId: 'ITAG_USER5' }))
+      await AuthErrorPage.verifyOnPage(page)
     })
   })
 
@@ -382,6 +397,13 @@ test.describe('Manage a DPS user', () => {
         page,
         paths.dpsUser.manage.roles.remove({ userId: 'ITAG_USER5', role: 'ANOTHER_GENERAL_ROLE' }),
       )
+    })
+
+    test('Should fail attempting to add roles if unauthorised', async ({ page }) => {
+      await login(page, { roles: [AuthRole.CREATE_USER] })
+
+      await page.goto(paths.dpsUser.manage.selectRoles({ userId: 'ITAG_USER5' }))
+      await AuthErrorPage.verifyOnPage(page)
     })
   })
 

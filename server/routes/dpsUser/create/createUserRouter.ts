@@ -3,6 +3,8 @@ import { FormError } from '../../../interfaces/formError'
 import paths from '../../paths'
 import { bodyFromFlash, formErrorsFromFlash, validateFormOrRedirect } from '../../../middleware/route/formMiddleware'
 import { userTypeItems } from '../../../presentation/userType'
+import AuthRole from '../../../interfaces/authRole'
+import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 
 interface Form {
   userType: string
@@ -18,6 +20,8 @@ const validate = (body: Form): FormError[] => {
 
 export default (): Router => {
   const router = Router()
+
+  router.use(authRoleGuardMiddleware([AuthRole.CREATE_USER]))
 
   router.get('/', async (req, res) => {
     const body = bodyFromFlash<Form>(req)

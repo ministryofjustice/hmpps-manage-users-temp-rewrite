@@ -9,9 +9,8 @@ import { hasRole } from '../../../interfaces/hmppsUser'
 import AuthRole from '../../../interfaces/authRole'
 
 const getPageData = async (token: string, username: string, { dpsUserService, userService }: Services) => {
-  await dpsUserService.syncEmail(token, username)
   const [user, roles, email, caseloads] = await Promise.all([
-    dpsUserService.getDpsUser(token, username),
+    dpsUserService.getDpsUser(token, username, true),
     dpsUserService.getRoles(token, username),
     userService.getUserEmail(token, username),
     dpsUserService.getUserCaseloads(token, username),

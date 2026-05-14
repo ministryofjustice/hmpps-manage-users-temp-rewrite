@@ -9,6 +9,8 @@ import { formErrorsFromFlash, validateFormOrRedirect } from '../../../middleware
 import { FormError } from '../../../interfaces/formError'
 import { toArray } from '../../../utils/utils'
 import { EventType, SubjectType } from '../../../services/auditService'
+import AuthRole from '../../../interfaces/authRole'
+import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 
 interface Form {
   caseloads: string[]
@@ -38,6 +40,9 @@ const validate = (form: Form): FormError[] => {
 
 export default (services: Services): Router => {
   const router = Router({ mergeParams: true })
+
+  router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]))
+
   const { auditService, dpsUserService } = services
 
   router.get('/', async (req: Request<UserParam>, res) => {

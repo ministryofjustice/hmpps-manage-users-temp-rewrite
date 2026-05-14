@@ -11,6 +11,7 @@ import paths from '../paths'
 import { asUrlSearchParams, canDownload, Filter } from '../../presentation/searchDpsUser'
 import config from '../../config'
 import { toArray, toBoolean } from '../../utils/utils'
+import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 
 interface Query extends Filter {
   page?: number
@@ -36,6 +37,8 @@ export const searchDpsUserRouter = ({
   paginationService,
 }: Services): Router => {
   const router = Router()
+
+  router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]))
 
   router.get('/', async (req, res) => {
     const { user } = res.locals

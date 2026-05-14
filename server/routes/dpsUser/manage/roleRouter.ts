@@ -28,7 +28,7 @@ export default (services: Services): Router => {
     } catch (err) {
       if (err.responseStatus === 400) {
         // role already removed from user
-        return res.redirect(req.originalUrl)
+        return res.redirect(paths.dpsUser.manage.details({ userId }))
       }
       throw err
     }

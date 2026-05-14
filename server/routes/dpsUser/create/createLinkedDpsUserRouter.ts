@@ -13,6 +13,8 @@ import {
 import { Services } from '../../../services'
 import { EventType, SubjectType } from '../../../services/auditService'
 import { CreateLinkedDpsUserRequest } from '../../../interfaces/createLinkedDpsUserRequest'
+import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
+import AuthRole from '../../../interfaces/authRole'
 
 const validate = (body: CreateLinkedDpsUserRequest): FormError[] => {
   const errors: FormError[] = []
@@ -116,6 +118,8 @@ export default ({ dpsUserService, auditService }: Services): Router => {
   }
 
   const router = Router()
+
+  router.use(authRoleGuardMiddleware([AuthRole.CREATE_USER]))
 
   router.get('/', async (req, res) => {
     const body = bodyFromFlash<CreateLinkedDpsUserRequest>(req)

@@ -193,7 +193,7 @@ describe('Restricted roles middleware', () => {
 
     expect(dpsUserService.getDpsUser).not.toHaveBeenCalled()
     expect(rolesService.getRoles).not.toHaveBeenCalled()
-    expect(res.locals.restrictedRoleCodes).toBe(undefined)
+    expect(res.locals.restrictedRoles).toBe(undefined)
   })
 
   it('should add DPS_ADM only restricted role codes for an LSA if auth source is nomis', async () => {
