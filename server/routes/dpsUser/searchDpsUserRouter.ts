@@ -11,6 +11,7 @@ import paths from '../paths'
 import { asUrlSearchParams, canDownload, Filter } from '../../presentation/searchDpsUser'
 import config from '../../config'
 import { toArray, toBoolean } from '../../utils/utils'
+import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 
 interface Query extends Filter {
   page?: number
@@ -37,9 +38,14 @@ export const searchDpsUserRouter = ({
 }: Services): Router => {
   const router = Router()
 
+  router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]))
+
   router.get('/', async (req, res) => {
     const { user } = res.locals
-    const [roles, caseloads] = await Promise.all([rolesService.getRoles(user), dpsUserService.getCaseloads(user.token)])
+    const [roles, caseloads] = await Promise.all([
+      rolesService.getRolesForMaintainAccessRolesUser(user),
+      dpsUserService.getCaseloads(user.token),
+    ])
     const showPrisonDropdown = hasRole(user, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
     const currentFilter: Query = {
       ...req.query,
@@ -79,13 +85,11 @@ export const searchDpsUserRouter = ({
           { totalElements, page: number, size },
           new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`),
         ),
-        searchUrl: `${paths.dpsUser.searchDpsUser({})}`,
-        downloadUrl: canDownload(user) && `${paths.dpsUser.searchDpsUserDownload({})}?${queryString}`,
+        searchUrl: `${paths.dpsUser.search.pattern}`,
+        downloadUrl: canDownload(user) && `${paths.dpsUser.download.pattern}?${queryString}`,
         hideDownloadLink: canDownload(user) && totalElements > config.downloadRecordLimit ? true : undefined,
         lsaDownloadUrl:
-          canDownload(user) &&
-          currentFilter.showOnlyLSAs &&
-          `${paths.dpsUser.searchDpsUserLsaDownload({})}?${queryString}`,
+          canDownload(user) && currentFilter.showOnlyLSAs && `${paths.dpsUser.downloadLsa.pattern}?${queryString}`,
         hideLsaDownloadLink: canDownload(user) && totalElements > config.downloadRecordLimit ? true : undefined,
         downloadRecordLimit: config.downloadRecordLimit,
       })

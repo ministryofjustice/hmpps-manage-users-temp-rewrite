@@ -302,7 +302,7 @@ export default class ManageUsersApiClient extends RestClient {
     return this.post({ path: `/prisonusers/${username}/roles`, data: roles }, asUser(token))
   }
 
-  async contextUserRoles(token: string, username: string): Promise<UserRoleDetail> {
+  async getDpsUserRoles(token: string, username: string): Promise<UserRoleDetail> {
     return this.get({ path: `/prisonusers/${username}/roles` }, asUser(token))
   }
 

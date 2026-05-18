@@ -67,7 +67,7 @@ const getPrisonCategory = (searchParams: URLSearchParams, filter: Filter, prison
       const searchParamsCopy = new URLSearchParams(searchParams)
       searchParamsCopy.set('restrictToActiveGroup', 'false')
       items.push({
-        href: `${paths.dpsUser.searchDpsUser({})}?${searchParamsCopy.toString()}`,
+        href: `${paths.dpsUser.search.pattern}?${searchParamsCopy.toString()}`,
         text: 'Active caseload only',
       })
     }
@@ -157,7 +157,7 @@ const removeField = (searchParams: URLSearchParams, fieldName: string, fieldValu
 
 const hrefToRemoveFilter = (searchParams: URLSearchParams, fieldName: string, fieldValue?: string): string => {
   const searchParamsCopy = removeField(searchParams, fieldName, fieldValue)
-  return `${paths.dpsUser.searchDpsUser({})}?${searchParamsCopy.toString()}`
+  return `${paths.dpsUser.search.pattern}?${searchParamsCopy.toString()}`
 }
 
 export type DownloadAuthorisationCheck = (user: HmppsUser) => boolean

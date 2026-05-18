@@ -98,7 +98,12 @@ test.describe('Create Linked DPS user', () => {
   ].forEach(({ userType, existingUsername }) => {
     test(`Should fill in details from found searched ${userType} user`, async ({ page }) => {
       const createLinkedPage = await gotoCreateLinkedPage(page, userType)
-      await manageUsersApi.stubGetDpsUser(existingUsername, 'Test', 'User', 'test.user@justice.gov.uk')
+      await manageUsersApi.stubGetDpsUser({
+        username: existingUsername,
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'test.user@justice.gov.uk',
+      })
       await createLinkedPage.existingUsername.fill(existingUsername)
       await createLinkedPage.search.click()
       await expect(createLinkedPage.firstName).toHaveValue('Test')
@@ -216,7 +221,7 @@ test.describe('Create Linked DPS user', () => {
       const createLinkedSuccessPage = await CreateLinkedSuccessPage.verifyOnPage(page)
       await expect(createLinkedSuccessPage.userDetailsLink).toHaveAttribute(
         'href',
-        paths.dpsUser.manage.userDetails({ username: 'NEW_USER' }),
+        paths.dpsUser.manage.details({ userId: 'NEW_USER' }),
       )
     })
   })
@@ -224,14 +229,14 @@ test.describe('Create Linked DPS user', () => {
   test('Should fail attempting to create linked dps user if unauthorised', async ({ page }) => {
     await login(page, { roles: ['ROLE_NOT_CREATE_USER'] })
 
-    await page.goto(paths.dpsUser.createLinkedDpsUser({}))
+    await page.goto(paths.dpsUser.createLinkedDpsUser.pattern)
     await AuthErrorPage.verifyOnPage(page)
   })
 
   test('Should fail attempting to create linked dps user if has other manage users role', async ({ page }) => {
     await login(page, { roles: ['ROLE_MAINTAIN_EMAIL_DOMAINS'] })
 
-    await page.goto(paths.dpsUser.createLinkedDpsUser({}))
+    await page.goto(paths.dpsUser.createLinkedDpsUser.pattern)
     await AuthErrorPage.verifyOnPage(page)
   })
 })

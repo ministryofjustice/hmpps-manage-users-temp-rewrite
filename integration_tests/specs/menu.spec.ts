@@ -66,7 +66,7 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       'Search for a DPS user',
       'Enhanced searching and managing of DPS and NOMIS users',
-      paths.dpsUser.searchDpsUser({}),
+      paths.dpsUser.search.pattern,
       'search_with_filter_dps_users',
     )
   })
@@ -79,7 +79,7 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       'Search for a DPS user',
       'Enhanced searching and managing of DPS and NOMIS users',
-      paths.dpsUser.searchDpsUser({}),
+      paths.dpsUser.search.pattern,
       'search_with_filter_dps_users',
     )
   })
@@ -92,7 +92,7 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       `Create a DPS user`,
       `Create an account for a DPS user`,
-      paths.dpsUser.createUser({}),
+      paths.dpsUser.createUser.pattern,
       'create_dps_user_link',
     )
   })

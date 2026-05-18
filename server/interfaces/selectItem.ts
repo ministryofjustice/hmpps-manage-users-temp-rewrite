@@ -4,3 +4,9 @@ export interface SelectItem {
   selected?: boolean
   checked?: boolean
 }
+
+export interface SelectItemWithHint extends SelectItem {
+  hint: {
+    text: string
+  }
+}

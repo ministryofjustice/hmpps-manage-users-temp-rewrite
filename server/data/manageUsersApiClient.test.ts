@@ -972,7 +972,7 @@ describe('ManageUsersApiClient', () => {
         }
         mockApi('get', `/prisonusers/${username}/roles`, successResponse, userRoleDetail)
 
-        const response = await manageUsersApiClient.contextUserRoles(token, username)
+        const response = await manageUsersApiClient.getDpsUserRoles(token, username)
         expect(response).toEqual(userRoleDetail)
       })
     })

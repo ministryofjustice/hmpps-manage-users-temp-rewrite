@@ -1,18 +1,20 @@
 import { RequestHandler, Router } from 'express'
-import paths from '../paths'
-import { FormError } from '../../interfaces/formError'
-import { caseloadText, showCaseloadDropdown, UserTypeKey } from '../../presentation/userType'
-import { validateUsername } from '../../presentation/validation/userValidation'
+import paths from '../../paths'
+import { FormError } from '../../../interfaces/formError'
+import { caseloadText, showCaseloadDropdown, UserTypeKey } from '../../../presentation/userType'
+import { validateUsername } from '../../../presentation/validation/userValidation'
 import {
   bodyFromFlash,
   flashBody,
   flashErrors,
   formErrorsFromFlash,
   validateFormOrRedirect,
-} from '../../middleware/route/formMiddleware'
-import { Services } from '../../services'
-import { EventType, SubjectType } from '../../services/auditService'
-import { CreateLinkedDpsUserRequest } from '../../interfaces/createLinkedDpsUserRequest'
+} from '../../../middleware/route/formMiddleware'
+import { Services } from '../../../services'
+import { EventType, SubjectType } from '../../../services/auditService'
+import { CreateLinkedDpsUserRequest } from '../../../interfaces/createLinkedDpsUserRequest'
+import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
+import AuthRole from '../../../interfaces/authRole'
 
 const validate = (body: CreateLinkedDpsUserRequest): FormError[] => {
   const errors: FormError[] = []
@@ -48,7 +50,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
             existingUsername: userFound.username,
           }
           flashBody(req, updatedBody)
-          return res.redirect(paths.dpsUser.createLinkedDpsUser({}))
+          return res.redirect(paths.dpsUser.createLinkedDpsUser.pattern)
         } catch (err) {
           if (err.responseStatus === 400 && err.data) {
             const { userMessage } = err.data
@@ -64,7 +66,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
         if (errors.length) {
           flashBody(req, body)
           flashErrors(req, errors)
-          return res.redirect(paths.dpsUser.createLinkedDpsUser({}))
+          return res.redirect(paths.dpsUser.createLinkedDpsUser.pattern)
         }
         // Do we need an audit event here for simply finding a valid user??
       }
@@ -100,7 +102,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
       if (errors.length) {
         flashBody(req, body)
         flashErrors(req, errors)
-        return res.redirect(paths.dpsUser.createLinkedDpsUser({}))
+        return res.redirect(paths.dpsUser.createLinkedDpsUser.pattern)
       }
       await auditService.logAuditEvent({
         what: EventType.CREATE_LINKED_DPS_USER,
@@ -117,11 +119,13 @@ export default ({ dpsUserService, auditService }: Services): Router => {
 
   const router = Router()
 
+  router.use(authRoleGuardMiddleware([AuthRole.CREATE_USER]))
+
   router.get('/', async (req, res) => {
     const body = bodyFromFlash<CreateLinkedDpsUserRequest>(req)
     const errors = formErrorsFromFlash(req)
     if (body.userType === undefined) {
-      return res.redirect(paths.dpsUser.createUser({}))
+      return res.redirect(paths.dpsUser.createUser.pattern)
     }
     const caseloads = await dpsUserService.getCaseloads(res.locals.user.token)
     return res.render('pages/dpsUser/createLinked', {
@@ -133,7 +137,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
 
   router.post(
     '/',
-    validateFormOrRedirect<CreateLinkedDpsUserRequest>(validate, paths.dpsUser.createLinkedDpsUser({})),
+    validateFormOrRedirect<CreateLinkedDpsUserRequest>(validate, _req => paths.dpsUser.createLinkedDpsUser.pattern),
     postSearch(),
     postCreate(),
   )

@@ -1,5 +1,6 @@
 import type { SuperAgentRequest } from 'superagent'
-import { stubFor } from './wiremock'
+import { PrisonUserGroupDetail, Role, RoleDetail, UserCaseloadDetail } from 'manageUsersApiClient'
+import { stubJson } from './wiremock'
 import { UserTypeKey } from '../../server/presentation/userType'
 
 const manageUsersApiCreateLinkedUrlMap = new Map<UserTypeKey, string>([
@@ -7,6 +8,126 @@ const manageUsersApiCreateLinkedUrlMap = new Map<UserTypeKey, string>([
   ['DPS_GEN', 'linkedprisonusers/general'],
   ['DPS_LSA', 'linkedprisonusers/lsa'],
 ])
+
+const defaultImsHiddenRoles: Role[] = [
+  {
+    roleCode: 'IMS_USER',
+    roleName: 'IMS user',
+    roleDescription: 'IMS user',
+    adminType: [
+      {
+        adminTypeCode: 'IMS_HIDDEN',
+        adminTypeName: 'IMS Administrator',
+      },
+    ],
+  },
+]
+
+const defaultDpsAdminRoles: Role[] = [
+  {
+    roleCode: 'MAINTAIN_ACCESS_ROLES',
+    roleName: 'Maintain Roles',
+    roleDescription: 'Maintaining roles for everyone',
+    adminType: [
+      {
+        adminTypeCode: 'DPS_ADM',
+        adminTypeName: 'DPS Central Administrator',
+      },
+      {
+        adminTypeCode: 'DPS_LSA',
+        adminTypeName: 'DPS Local System Administrator',
+      },
+    ],
+  },
+  {
+    roleCode: 'USER_ADMIN',
+    roleName: 'User Admin',
+    roleDescription: 'Administering users',
+    adminType: [
+      {
+        adminTypeCode: 'DPS_ADM',
+        adminTypeName: 'DPS Central Administrator',
+      },
+      {
+        adminTypeCode: 'DPS_LSA',
+        adminTypeName: 'DPS Local System Administrator',
+      },
+    ],
+  },
+  {
+    roleCode: 'ANOTHER_ADMIN_ROLE',
+    roleName: 'Another admin role',
+    roleDescription: 'Some text for another Admin Role',
+    adminType: [
+      {
+        adminTypeCode: 'DPS_ADM',
+        adminTypeName: 'DPS Central Administrator',
+      },
+    ],
+  },
+  {
+    roleCode: 'ANOTHER_GENERAL_ROLE',
+    roleName: 'Another general role',
+    adminType: [
+      {
+        adminTypeCode: 'DPS_ADM',
+        adminTypeName: 'DPS Central Administrator',
+      },
+      {
+        adminTypeCode: 'EXT_ADM',
+        adminTypeName: 'External Administrator',
+      },
+    ],
+  },
+  {
+    roleCode: 'OAUTH_ADMIN',
+    roleName: 'Oauth Admin',
+    roleDescription: 'Some text for oauth admin',
+    adminType: [
+      {
+        adminTypeCode: 'DPS_ADM',
+        adminTypeName: 'DPS Central Administrator',
+      },
+      {
+        adminTypeCode: 'EXT_ADM',
+        adminTypeName: 'External Administrator',
+      },
+    ],
+  },
+]
+
+const defaultLsaRoles: Role[] = [
+  {
+    roleCode: 'MAINTAIN_ACCESS_ROLES',
+    roleName: 'Maintain Roles',
+    roleDescription: 'Maintaining roles for everyone',
+    adminType: [
+      {
+        adminTypeCode: 'DPS_ADM',
+        adminTypeName: 'DPS Central Administrator',
+      },
+      {
+        adminTypeCode: 'DPS_LSA',
+        adminTypeName: 'DPS Local System Administrator',
+      },
+    ],
+  },
+  {
+    roleCode: 'USER_ADMIN',
+    roleName: 'User Admin',
+    roleDescription: 'Administering users',
+    adminType: [
+      {
+        adminTypeCode: 'DPS_ADM',
+        adminTypeName: 'DPS Central Administrator',
+      },
+      {
+        adminTypeCode: 'DPS_LSA',
+        adminTypeName: 'DPS Local System Administrator',
+      },
+    ],
+  },
+]
 
 const replicateUser = (times: number) =>
   [...Array(times).keys()].map(i => ({
@@ -28,53 +149,118 @@ const replicateUser = (times: number) =>
     staffStatus: 'ACTIVE',
   }))
 
+const stubDpsRoles = (adminTypes: string, body: Role[] = defaultDpsAdminRoles): SuperAgentRequest =>
+  stubJson({
+    urlPattern: `/manage-users-api/roles\\?adminTypes=${adminTypes}`,
+    body,
+  })
+
+const stubGetDpsUser = ({
+  username = 'ITAG_USER5',
+  firstName = 'Itag',
+  lastName = 'User',
+  email = 'ITAG_USER@gov.uk',
+  active = true,
+  enabled = true,
+  administratorOfUserGroups,
+  accountStatus = 'OPEN',
+}: {
+  username?: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  active?: boolean
+  enabled?: boolean
+  administratorOfUserGroups?: PrisonUserGroupDetail[]
+  accountStatus?: string
+}): SuperAgentRequest =>
+  stubJson({
+    urlPattern: `/manage-users-api/prisonusers/${username}/details`,
+    body: {
+      staffId: '12345',
+      username,
+      firstName,
+      lastName,
+      primaryEmail: email,
+      email,
+      lastLogonDate: '2023-12-25T12:57:50',
+      active,
+      enabled,
+      accountStatus,
+      administratorOfUserGroups,
+    },
+  })
+
+const stubLsaDpsRoles = () => {
+  return stubDpsRoles('DPS_LSA', defaultLsaRoles)
+}
+
+const stubCentralAdminDpsRoles = () => {
+  return stubDpsRoles('DPS_ADM', defaultDpsAdminRoles)
+}
+
+const stubOAuthAdminDpsRoles = () => {
+  return stubDpsRoles('DPS_ADM', [
+    {
+      roleCode: 'USER_ADMIN',
+      roleName: 'User Admin',
+      roleDescription: 'Administering users',
+      adminType: [
+        {
+          adminTypeCode: 'DPS_ADM',
+          adminTypeName: 'DPS Central Administrator',
+        },
+        {
+          adminTypeCode: 'DPS_LSA',
+          adminTypeName: 'DPS Local System Administrator',
+        },
+      ],
+    },
+    {
+      roleCode: 'OAUTH_ADMIN',
+      roleName: 'Oauth Admin',
+      roleDescription: 'Some text for oauth admin',
+      adminType: [
+        {
+          adminTypeCode: 'DPS_ADM',
+          adminTypeName: 'DPS Central Administrator',
+        },
+        {
+          adminTypeCode: 'EXT_ADM',
+          adminTypeName: 'External Administrator',
+        },
+      ],
+    },
+  ])
+}
+
 export default {
   stubPing: (httpStatus = 200): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/manage-users-api/health/ping',
-      },
-      response: {
-        status: httpStatus,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
-      },
+    stubJson({
+      urlPattern: '/manage-users-api/health/ping',
+      body: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
+      status: httpStatus,
     }),
 
   stubNotificationBannerMessage: (notificationType: string, message: string): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: `/manage-users-api/notification/banner/${notificationType}`,
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: { message },
-      },
+    stubJson({
+      urlPattern: `/manage-users-api/notification/banner/${notificationType}`,
+      body: { message },
     }),
 
   stubGetCaseloads: (): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/manage-users-api/prisonusers/reference-data/caseloads',
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: [
-          {
-            id: 'MDI',
-            name: 'Moorland (HMP & YOI)',
-          },
-          {
-            id: 'LEI',
-            name: 'Leeds (HMP)',
-          },
-        ],
-      },
+    stubJson({
+      urlPattern: '/manage-users-api/prisonusers/reference-data/caseloads',
+      body: [
+        {
+          id: 'MDI',
+          name: 'Moorland (HMP & YOI)',
+        },
+        {
+          id: 'LEI',
+          name: 'Leeds (HMP)',
+        },
+      ],
     }),
 
   stubCreateDpsUser: (
@@ -84,147 +270,71 @@ export default {
     email: string,
     caseloadId: string,
   ): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: '/manage-users-api/prisonusers',
-      },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {
-          username,
-          staffId: 100,
-          firstName,
-          lastName,
-          activeCaseloadId: caseloadId,
-          accountStatus: 'EXPIRED',
-          accountType: 'ADMIN',
-          primaryEmail: email,
-          dpsRoleCodes: [],
-          accountNonLocked: true,
-          credentialsNonExpired: false,
-          enabled: true,
-          admin: true,
-          active: false,
-        },
+    stubJson({
+      method: 'POST',
+      urlPattern: '/manage-users-api/prisonusers',
+      body: {
+        username,
+        staffId: 100,
+        firstName,
+        lastName,
+        activeCaseloadId: caseloadId,
+        accountStatus: 'EXPIRED',
+        accountType: 'ADMIN',
+        primaryEmail: email,
+        dpsRoleCodes: [],
+        accountNonLocked: true,
+        credentialsNonExpired: false,
+        enabled: true,
+        admin: true,
+        active: false,
       },
     }),
 
   stubCreateDpsUser400Response: (): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: '/manage-users-api/prisonusers',
-      },
-      response: {
-        status: 400,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {
-          userMessage: 'Bad request',
-        },
+    stubJson({
+      method: 'POST',
+      status: 400,
+      urlPattern: '/manage-users-api/prisonusers',
+      body: {
+        userMessage: 'Bad request',
       },
     }),
 
   stubCreateDpsUserAlreadyExists: (): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: '/manage-users-api/prisonusers',
-      },
-      response: {
-        status: 409,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {
-          errorCode: 601,
-        },
+    stubJson({
+      method: 'POST',
+      status: 409,
+      urlPattern: '/manage-users-api/prisonusers',
+      body: {
+        errorCode: 601,
       },
     }),
 
   stubCreateDpsUserInvalidEmailDomain: (): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: '/manage-users-api/prisonusers',
-      },
-      response: {
-        status: 409,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {
-          errorCode: 602,
-        },
+    stubJson({
+      method: 'POST',
+      status: 409,
+      urlPattern: '/manage-users-api/prisonusers',
+      body: {
+        errorCode: 602,
       },
     }),
 
-  stubGetDpsUser: (
-    username: string = 'ITAG_USER5',
-    firstName: string = 'Itag',
-    lastName: string = 'User',
-    email: string = 'ITAG_USER@gov.uk',
-  ): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: `/manage-users-api/prisonusers/${username}/details`,
-      },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {
-          staffId: '12345',
-          username,
-          firstName,
-          lastName,
-          primaryEmail: email,
-          email,
-          lastLogonDate: '2023-12-25T12:57:50',
-          active: true,
-          enabled: true,
-          accountStatus: 'OPEN',
-          administratorOfUserGroups: null,
-        },
-      },
-    }),
-
+  stubGetDpsUser,
   stubGetDpsUserNotFound: (username: string = 'ITAG_USER5'): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: `/manage-users-api/prisonusers/${username}/details`,
-      },
-      response: {
-        status: 404,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {},
-      },
+    stubJson({
+      urlPattern: `/manage-users-api/prisonusers/${username}/details`,
+      status: 404,
+      body: {},
     }),
 
   stubGetDpsUser400Response: (username: string = 'ITAG_USER5'): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: `/manage-users-api/prisonusers/${username}/details`,
-      },
-      response: {
-        status: 400,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {
-          userMessage: 'Bad request',
-        },
+    stubJson({
+      urlPattern: `/manage-users-api/prisonusers/${username}/details`,
+      status: 400,
+      body: {
+        userMessage: 'Bad request',
       },
     }),
 
@@ -235,41 +345,26 @@ export default {
     lastName: string = 'User',
     email: string = 'test.user@djustice.gov.uk',
   ): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
-      },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {
-          staffId: 100,
-          firstName,
-          lastName,
-          status: 'ACTIVE',
-          primaryEmail: email,
-          [`${userType === 'DPS_GEN' ? 'generalAccount' : 'adminAccount'}`]: { username },
-        },
+    stubJson({
+      method: 'POST',
+      urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
+      body: {
+        staffId: 100,
+        firstName,
+        lastName,
+        status: 'ACTIVE',
+        primaryEmail: email,
+        [`${userType === 'DPS_GEN' ? 'generalAccount' : 'adminAccount'}`]: { username },
       },
     }),
 
   stubCreateLinkedDpsUser400Response: (userType: UserTypeKey): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
-      },
-      response: {
-        status: 400,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {
-          userMessage: 'Bad request',
-        },
+    stubJson({
+      method: 'POST',
+      status: 400,
+      urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
+      body: {
+        userMessage: 'Bad request',
       },
     }),
 
@@ -277,239 +372,288 @@ export default {
     userType: UserTypeKey,
     userMessage: string = 'User already exists',
   ): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
-      },
-      response: {
-        status: 409,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {
-          userMessage,
-        },
+    stubJson({
+      method: 'POST',
+      status: 409,
+      urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
+      body: {
+        userMessage,
       },
     }),
 
   stubCreateLinkedDpsUser404Response: (userType: UserTypeKey): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
+    stubJson({
+      method: 'POST',
+      status: 404,
+      urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
+      body: {},
+    }),
+
+  stubDpsRoles,
+
+  stubLsaDpsRoles,
+
+  stubCentralAdminDpsRoles,
+
+  stubOAuthAdminDpsRoles,
+
+  stubDpsUserRoles: ({
+    activeCaseload = true,
+    dpsRoles = [
+      {
+        code: 'MAINTAIN_ACCESS_ROLES',
+        name: 'Maintain Roles',
+        adminRoleOnly: false,
       },
-      response: {
-        status: 404,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {},
+      {
+        code: 'ANOTHER_GENERAL_ROLE',
+        name: 'Another general role',
+        adminRoleOnly: false,
+      },
+    ],
+  }: {
+    activeCaseload?: boolean
+    dpsRoles?: RoleDetail[]
+  }): SuperAgentRequest =>
+    stubJson({
+      urlPattern: `/manage-users-api/prisonusers/.*/roles`,
+      body: {
+        ...(activeCaseload && {
+          activeCaseload: {
+            id: 'MDI',
+            name: 'Moorland',
+          },
+        }),
+        dpsRoles,
       },
     }),
 
-  stubDpsRoles: (adminTypes: string): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: `/manage-users-api/roles\\?adminTypes=${adminTypes}`,
-      },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
+  stubDpsAddUserRoles: (): SuperAgentRequest =>
+    stubJson({
+      method: 'POST',
+      urlPattern: `/manage-users-api/prisonusers/.*/roles`,
+      body: {},
+    }),
+
+  stubDpsRemoveUserRole: (): SuperAgentRequest =>
+    stubJson({
+      method: 'DELETE',
+      urlPattern: `/manage-users-api/prisonusers/.*/roles/.*`,
+    }),
+
+  stubDpsUserCaseloads: (caseloads?: UserCaseloadDetail, username: string = 'ITAG_USER5'): SuperAgentRequest =>
+    stubJson({
+      urlPattern: `/manage-users-api/prisonusers/${username}/caseloads`,
+      body: caseloads || {
+        username,
+        activeCaseload: {
+          id: 'MDI',
+          name: 'Moorland',
         },
-        jsonBody: [
+        caseloads: [
           {
-            roleCode: 'MAINTAIN_ACCESS_ROLES',
-            roleName: 'Maintain Roles',
-            roleDescription: 'Maintaining roles for everyone',
-            adminType: [
-              {
-                adminTypeCode: 'DPS_ADM',
-                adminTypeName: 'DPS Central Administrator',
-              },
-              {
-                adminTypeCode: 'DPS_LSA',
-                adminTypeName: 'DPS Local System Administrator',
-              },
-            ],
+            id: 'MDI',
+            name: 'Moorland',
           },
           {
-            roleCode: 'USER_ADMIN',
-            roleName: 'User Admin',
-            roleDescription: 'Administering users',
-            adminType: [
-              {
-                adminTypeCode: 'DPS_ADM',
-                adminTypeName: 'DPS Central Administrator',
-              },
-              {
-                adminTypeCode: 'DPS_LSA',
-                adminTypeName: 'DPS Local System Administrator',
-              },
-            ],
+            id: 'LEI',
+            name: 'Leeds (HMP)',
           },
           {
-            roleCode: 'ANOTHER_ADMIN_ROLE',
-            roleName: 'Another admin role',
-            roleDescription: 'Some text for another Admin Role',
-            adminType: [
-              {
-                adminTypeCode: 'DPS_ADM',
-                adminTypeName: 'DPS Central Administrator',
-              },
-            ],
-          },
-          {
-            roleCode: 'ANOTHER_GENERAL_ROLE',
-            roleName: 'Another general role',
-            adminType: [
-              {
-                adminTypeCode: 'DPS_ADM',
-                adminTypeName: 'DPS Central Administrator',
-              },
-              {
-                adminTypeCode: 'EXT_ADM',
-                adminTypeName: 'External Administrator',
-              },
-            ],
-          },
-          {
-            roleCode: 'OAUTH_ADMIN',
-            roleName: 'Oauth Admin',
-            roleDescription: 'Some text for oauth admin',
-            adminType: [
-              {
-                adminTypeCode: 'DPS_ADM',
-                adminTypeName: 'DPS Central Administrator',
-              },
-              {
-                adminTypeCode: 'EXT_ADM',
-                adminTypeName: 'External Administrator',
-              },
-            ],
+            id: 'PVI',
+            name: 'Pentonville (HMP)',
           },
         ],
       },
     }),
 
-  stubSearchDpsUsers: ({ totalElements = 1, page = 0, size = 10 }): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPath: '/manage-users-api/prisonusers/search',
+  stubDpsRemoveUserCaseload: (): SuperAgentRequest =>
+    stubJson({
+      method: 'DELETE',
+      urlPattern: '/manage-users-api/prisonusers/.*/caseloads/.*',
+    }),
+
+  stubDpsAddUserCaseload: (): SuperAgentRequest =>
+    stubJson({
+      method: 'POST',
+      urlPattern: '/manage-users-api/prisonusers/.*/caseloads',
+    }),
+
+  stubEmail: ({
+    username = 'ITAG_USER5',
+    email,
+    verified = true,
+  }: {
+    username?: string
+    email: string
+    verified?: boolean
+  }): SuperAgentRequest =>
+    stubJson({
+      urlPattern: `/manage-users-api/users/[^/]*/email\\?unverified=true`,
+      body: {
+        username,
+        email,
+        verified,
       },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: {
-          content: replicateUser(Math.floor(totalElements / size) === page ? totalElements % size : size),
-          size,
-          totalElements,
-          number: page,
-          numberOfElements: totalElements < size ? totalElements : size,
-        },
+    }),
+
+  stubRestrictedRolesMiddleware: ({
+    username = 'USER1',
+    isLocalAdmin = false,
+  }: {
+    username?: string
+    isLocalAdmin?: boolean
+  }) => {
+    return Promise.all([
+      stubDpsRoles('IMS_HIDDEN', defaultImsHiddenRoles),
+      stubCentralAdminDpsRoles(),
+      stubLsaDpsRoles(),
+      stubGetDpsUser({
+        username,
+        administratorOfUserGroups: isLocalAdmin
+          ? [
+              { id: 'BLM', name: 'Belmarsh (HMP)' },
+              { id: 'BXI', name: 'Brixton (HMP)' },
+            ]
+          : [],
+      }),
+    ])
+  },
+
+  stubSearchDpsUsers: ({ totalElements = 1, page = 0, size = 10 }): SuperAgentRequest =>
+    stubJson({
+      urlPath: '/manage-users-api/prisonusers/search',
+      body: {
+        content: replicateUser(Math.floor(totalElements / size) === page ? totalElements % size : size),
+        size,
+        totalElements,
+        number: page,
+        numberOfElements: totalElements < size ? totalElements : size,
       },
     }),
 
   stubDpsUsersDownload: (): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/manage-users-api/prisonusers/download\\?.*',
-      },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
+    stubJson({
+      urlPattern: '/manage-users-api/prisonusers/download\\?.*',
+      body: [
+        {
+          username: 'LOCKED_USER',
+          staffId: 7,
+          firstName: 'User',
+          lastName: 'Locked',
+          active: false,
+          status: 'LOCKED',
+          locked: true,
+          expired: false,
+          activeCaseload: null,
+          dpsRoleCount: 0,
+          email: null,
         },
-        jsonBody: [
-          {
-            username: 'LOCKED_USER',
-            staffId: 7,
-            firstName: 'User',
-            lastName: 'Locked',
-            active: false,
-            status: 'LOCKED',
-            locked: true,
-            expired: false,
-            activeCaseload: null,
-            dpsRoleCount: 0,
-            email: null,
+        {
+          username: 'ITAG_USER',
+          staffId: 1,
+          firstName: 'Itag',
+          lastName: 'User',
+          active: true,
+          status: 'OPEN',
+          locked: false,
+          expired: false,
+          activeCaseload: {
+            id: 'MDI',
+            name: 'Moorland Closed (HMP & YOI)',
           },
-          {
-            username: 'ITAG_USER',
-            staffId: 1,
-            firstName: 'Itag',
-            lastName: 'User',
-            active: true,
-            status: 'OPEN',
-            locked: false,
-            expired: false,
-            activeCaseload: {
-              id: 'MDI',
-              name: 'Moorland Closed (HMP & YOI)',
-            },
-            dpsRoleCount: 0,
-            email: 'multiple.user.test@digital.justice.gov.uk',
-          },
-        ],
-      },
+          dpsRoleCount: 0,
+          email: 'multiple.user.test@digital.justice.gov.uk',
+        },
+      ],
     }),
 
   stubDpsLsaDownload: (): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/manage-users-api/prisonusers/download/admins\\?.*',
-      },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
+    stubJson({
+      urlPattern: '/manage-users-api/prisonusers/download/admins\\?.*',
+      body: [
+        {
+          username: 'ITAG_USER',
+          staffId: 1,
+          firstName: 'Itag',
+          lastName: 'User',
+          active: true,
+          status: 'OPEN',
+          locked: false,
+          expired: false,
+          activeCaseload: {
+            id: 'MDI',
+            name: 'Moorland Closed (HMP & YOI)',
+          },
+          dpsRoleCount: 0,
+          email: 'multiple.user.test@digital.justice.gov.uk',
+          administratorOfUserGroups: [
+            { id: 'BXI', name: 'Brixton (HMP)' },
+            { id: 'MDI', name: 'Moorland (HMP & YOI)' },
+          ],
         },
-        jsonBody: [
-          {
-            username: 'ITAG_USER',
-            staffId: 1,
-            firstName: 'Itag',
-            lastName: 'User',
-            active: true,
-            status: 'OPEN',
-            locked: false,
-            expired: false,
-            activeCaseload: {
-              id: 'MDI',
-              name: 'Moorland Closed (HMP & YOI)',
-            },
-            dpsRoleCount: 0,
-            email: 'multiple.user.test@digital.justice.gov.uk',
-            administratorOfUserGroups: [
-              { id: 'BXI', name: 'Brixton (HMP)' },
-              { id: 'MDI', name: 'Moorland (HMP & YOI)' },
-            ],
+        {
+          username: 'ITAG_USER2',
+          staffId: 2,
+          firstName: 'Itag2',
+          lastName: 'User',
+          active: true,
+          status: 'OPEN',
+          locked: false,
+          expired: false,
+          activeCaseload: {
+            id: 'MDI',
+            name: 'Moorland Closed (HMP & YOI)',
           },
-          {
-            username: 'ITAG_USER2',
-            staffId: 2,
-            firstName: 'Itag2',
-            lastName: 'User',
-            active: true,
-            status: 'OPEN',
-            locked: false,
-            expired: false,
-            activeCaseload: {
-              id: 'MDI',
-              name: 'Moorland Closed (HMP & YOI)',
-            },
-            dpsRoleCount: 0,
-            email: 'multiple.user.test2@digital.justice.gov.uk',
-            administratorOfUserGroups: [{ id: 'MAN', name: 'Manchester (HMP)' }],
-          },
-        ],
+          dpsRoleCount: 0,
+          email: 'multiple.user.test2@digital.justice.gov.uk',
+          administratorOfUserGroups: [{ id: 'MAN', name: 'Manchester (HMP)' }],
+        },
+      ],
+    }),
+
+  stubSyncDpsEmail: (): SuperAgentRequest =>
+    stubJson({
+      method: 'POST',
+      urlPattern: '/manage-users-api/prisonusers/[^/]*/email/sync',
+      body: undefined,
+    }),
+
+  stubDpsUserChangeEmail: () =>
+    stubJson({
+      method: 'POST',
+      urlPattern: '/manage-users-api/prisonusers/[^/]*/email',
+    }),
+
+  stubDpsUserChangeEmailInvalidDomain: () =>
+    stubJson({
+      status: 400,
+      method: 'POST',
+      urlPattern: '/manage-users-api/prisonusers/[^/]*/email',
+      body: {
+        developerMessage: 'Validate email failed with reason: domain',
       },
+    }),
+
+  stubDpsUserChangeEmailAlreadyAssigned: () =>
+    stubJson({
+      status: 400,
+      method: 'POST',
+      urlPattern: '/manage-users-api/prisonusers/[^/]*/email',
+      body: {
+        developerMessage: 'Validate email failed with reason: duplicate',
+      },
+    }),
+
+  stubDpsUserEnable: () =>
+    stubJson({
+      method: 'PUT',
+      urlPattern: '/manage-users-api/prisonusers/.*/enable-user',
+    }),
+
+  stubDpsUserDisable: () =>
+    stubJson({
+      method: 'PUT',
+      urlPattern: '/manage-users-api/prisonusers/.*/disable-user',
     }),
 }

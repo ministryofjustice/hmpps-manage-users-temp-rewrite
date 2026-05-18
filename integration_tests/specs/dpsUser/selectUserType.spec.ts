@@ -54,14 +54,14 @@ test.describe('Select DPS user type', () => {
   test('Should fail attempting to select user type if unauthorised', async ({ page }) => {
     await login(page, { roles: ['ROLE_NOT_CREATE_USER'] })
 
-    await page.goto(paths.dpsUser.createUser({}))
+    await page.goto(paths.dpsUser.createUser.pattern)
     await AuthErrorPage.verifyOnPage(page)
   })
 
   test('Should fail attempting to select user type if has other manage users role', async ({ page }) => {
     await login(page, { roles: ['ROLE_MAINTAIN_EMAIL_DOMAINS'] })
 
-    await page.goto(paths.dpsUser.createUser({}))
+    await page.goto(paths.dpsUser.createUser.pattern)
     await AuthErrorPage.verifyOnPage(page)
   })
 })

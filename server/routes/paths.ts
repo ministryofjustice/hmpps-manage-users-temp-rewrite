@@ -7,20 +7,59 @@ const createLinkedDpsUser = path('/create-linked-dps-user')
 const searchDpsUser = path('/search-with-filter-dps-users')
 const searchDpsUserDownload = searchDpsUser.path('user-download')
 const searchDpsUserLsaDownload = searchDpsUser.path('lsa-download')
-const manageDpsUsers = path('/manage-dps-users')
-const userDetails = manageDpsUsers.path(':username/details')
+const manageDpsUser = path('/manage-dps-users/:userId')
+const details = path('/details')
+const selectRoles = path('/select-roles')
+const roleRoot = path('/roles/:role')
+const remove = path('/remove')
+const requestRemoval = path('/request-removal')
+const selectCaseloads = path('/select-caseloads')
+const removeCaseload = path('/caseloads/:caseload/remove')
+const changeEmail = path('/change-email')
+const changeEmailSuccess = path('/change-email-success')
+const activate = path('/activate')
+const deactivate = path('/deactivate')
 
+const roleRootAbsolute = manageDpsUser.path(roleRoot.pattern)
 const paths = {
   dpsUser: {
     createUser,
     createUserOptions,
     createDpsUser,
     createLinkedDpsUser,
-    searchDpsUser,
-    searchDpsUserDownload,
-    searchDpsUserLsaDownload,
+    search: searchDpsUser,
+    download: searchDpsUserDownload,
+    downloadLsa: searchDpsUserLsaDownload,
     manage: {
-      userDetails,
+      root: manageDpsUser,
+      details: manageDpsUser.path(details.pattern),
+      selectRoles: manageDpsUser.path(selectRoles.pattern),
+      roles: {
+        root: roleRootAbsolute,
+        remove: roleRootAbsolute.path(remove.pattern),
+        requestRemoval: roleRootAbsolute.path(requestRemoval.pattern),
+        relative: {
+          remove,
+          requestRemoval,
+        },
+      },
+      selectCaseloads: manageDpsUser.path(selectCaseloads.pattern),
+      removeCaseload: manageDpsUser.path(removeCaseload.pattern),
+      changeEmail: manageDpsUser.path(changeEmail.pattern),
+      changeEmailSuccess: manageDpsUser.path(changeEmailSuccess.pattern),
+      activate: manageDpsUser.path(activate.pattern),
+      deactivate: manageDpsUser.path(deactivate.pattern),
+      relative: {
+        details,
+        selectRoles,
+        roleRoot,
+        selectCaseloads,
+        removeCaseload,
+        changeEmail,
+        changeEmailSuccess,
+        activate,
+        deactivate,
+      },
     },
   },
 }

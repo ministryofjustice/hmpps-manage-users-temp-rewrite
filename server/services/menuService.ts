@@ -44,7 +44,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Search for a DPS user`,
       `Enhanced searching and managing of DPS and NOMIS users`,
-      paths.dpsUser.searchDpsUser({}),
+      paths.dpsUser.search.pattern,
       'search_with_filter_dps_users',
       1,
       ['MAINTAIN_ACCESS_ROLES', 'MAINTAIN_ACCESS_ROLES_ADMIN'],
@@ -52,7 +52,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Create a DPS user`,
       `Create an account for a DPS user`,
-      paths.dpsUser.createUser({}),
+      paths.dpsUser.createUser.pattern,
       'create_dps_user_link',
       2,
       ['CREATE_USER'],
