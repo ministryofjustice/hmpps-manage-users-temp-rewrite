@@ -17,13 +17,7 @@ jest.mock('../../../logger', () => ({
 }))
 
 const createResponse = () => {
-  const res: Partial<Response> & {
-    header: jest.Mock
-    attachment: jest.Mock
-    send: jest.Mock
-    writeHead: jest.Mock
-    end: jest.Mock
-  } = {
+  const res = {
     header: jest.fn().mockReturnThis(),
     attachment: jest.fn().mockReturnThis(),
     send: jest.fn().mockReturnThis(),
