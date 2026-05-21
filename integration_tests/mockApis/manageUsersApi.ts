@@ -1,5 +1,5 @@
 import type { SuperAgentRequest } from 'superagent'
-import { PrisonUserGroupDetail, Role, RoleDetail, UserCaseloadDetail } from 'manageUsersApiClient'
+import { EmailDomain, PrisonUserGroupDetail, Role, RoleDetail, UserCaseloadDetail } from 'manageUsersApiClient'
 import { stubJson } from './wiremock'
 import { UserTypeKey } from '../../server/presentation/userType'
 
@@ -655,5 +655,66 @@ export default {
     stubJson({
       method: 'PUT',
       urlPattern: '/manage-users-api/prisonusers/.*/disable-user',
+    }),
+
+  stubGetAllEmailDomains: (emailDomains?: EmailDomain[]) =>
+    stubJson({
+      urlPath: '/manage-users-api/email-domains',
+      body: emailDomains || [
+        {
+          id: 'cb5d9f0c-b7c8-40d5-8626-2e97f66d5127',
+          domain: 'test.justice.gov.uk',
+          description: 'Test justice domain',
+        },
+        {
+          id: 'acf5e424-2f7c-4bea-ac1e-07d2553f3e63',
+          domain: 'test.police.uk',
+          description: 'Test police domain',
+        },
+        {
+          id: '8529edfa-6bcf-462f-ae29-5433a615d405',
+          domain: 'test.external.com',
+          description: 'Test external domain',
+        },
+      ],
+    }),
+
+  stubGetEmailDomain: (id: string) =>
+    stubJson({
+      urlPath: `/manage-users-api/email-domains/${id}`,
+      body: {
+        id,
+        domain: 'test.justice.gov.uk',
+        description: 'Test justice domain',
+      },
+    }),
+
+  stubGetEmailDomainBadRequest: (id: string) =>
+    stubJson({
+      status: 400,
+      urlPath: `/manage-users-api/email-domains/${id}`,
+    }),
+
+  stubGetEmailDomainNotFound: (id: string) =>
+    stubJson({
+      status: 404,
+      urlPath: `/manage-users-api/email-domains/${id}`,
+    }),
+
+  stubCreateEmailDomain: () =>
+    stubJson({
+      method: 'POST',
+      urlPath: `/manage-users-api/email-domains`,
+      body: {
+        id: 'cb5d9f0c-b7c8-40d5-8626-2e97f66d5127',
+        domain: 'test.justice.gov.uk',
+        description: 'Test justice domain',
+      },
+    }),
+
+  stubDeleteEmailDomain: (id: string) =>
+    stubJson({
+      method: 'DELETE',
+      urlPath: `/manage-users-api/email-domains/${id}`,
     }),
 }

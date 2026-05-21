@@ -5,6 +5,7 @@ import MenuService from './menuService'
 import DpsUserService from './dpsUserService'
 import RolesService from './rolesService'
 import UserService from './userService'
+import EmailDomainsService from './emailDomainsService'
 import paginationService from './paginationService'
 
 export const services = () => {
@@ -18,6 +19,7 @@ export const services = () => {
     dpsUserService: new DpsUserService(manageUsersApiClient),
     rolesService: new RolesService(manageUsersApiClient),
     userService: new UserService(manageUsersApiClient),
+    emailDomainsService: new EmailDomainsService(manageUsersApiClient),
     paginationService,
   }
 }

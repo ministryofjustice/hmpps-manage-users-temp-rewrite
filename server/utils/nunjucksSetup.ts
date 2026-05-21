@@ -82,6 +82,7 @@ export default function nunjucksSetup(app: express.Express): void {
     isRestrictedRoleCode(roleCode, restrictedRoles),
   )
   njkEnv.addFilter('manageUserDetailsLink', (userId: string) => paths.dpsUser.manage.details({ userId }))
+  njkEnv.addFilter('deleteEmailDomainLink', (id: string) => paths.emailDomains.deleteWithId({ id }))
 
   njkEnv.addFilter(
     'setSelected',

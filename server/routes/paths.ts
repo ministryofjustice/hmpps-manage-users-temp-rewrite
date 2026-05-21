@@ -19,6 +19,9 @@ const changeEmail = path('/change-email')
 const changeEmailSuccess = path('/change-email-success')
 const activate = path('/activate')
 const deactivate = path('/deactivate')
+const emailDomains = path('/email-domains')
+const createEmailDomain = path('/create-email-domain')
+const deleteEmailDomain = path('/delete-email-domain')
 
 const roleRootAbsolute = manageDpsUser.path(roleRoot.pattern)
 const paths = {
@@ -61,6 +64,12 @@ const paths = {
         deactivate,
       },
     },
+  },
+  emailDomains: {
+    list: emailDomains,
+    create: createEmailDomain,
+    delete: deleteEmailDomain,
+    deleteWithId: deleteEmailDomain.path('/:id'),
   },
 }
 

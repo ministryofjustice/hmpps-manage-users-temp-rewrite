@@ -1,0 +1,70 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% set title = "Manage Email Domains" %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      { text: "Home", href: homeUrl },
+      { text: "Manage user accounts", href: '/' },
+      { text: title }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-xl">Allowed Email Domain List</h1>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {{ govukButton({
+        text: "Add Email Domain",
+        href: createUrl
+      }) }}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      {% if domains.length %}
+        <table class="govuk-table govuk-!-margin-bottom-3" data-qa="domains">
+          <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Domain</th>
+            <th class="govuk-table__header" scope="col">Description</th>
+            <th class="govuk-table__header" scope="col"></th>
+          </tr>
+          </thead>
+
+          <tbody class="govuk-table__body">
+          {% for domain in domains %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ domain.domain }}</td>
+              <td class="govuk-table__cell">{{ domain.description }}</td>
+              <td class="govuk-table__cell govuk-!-text-align-right">
+                <a href="{{ domain.id | deleteEmailDomainLink(domain.domain) }}"
+                   class="govuk-link govuk-link--no-visited-state">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="govuk-body" data-qa="no-email-domains">
+          There are no registered email domains. Add an email domain using the button above.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}

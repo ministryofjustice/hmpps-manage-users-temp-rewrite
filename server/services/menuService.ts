@@ -60,7 +60,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Manage Email Domains`,
       `Create, Delete and View email domain listing`,
-      '/email-domains',
+      paths.emailDomains.list.pattern,
       'view_email_domains_link',
       3,
       ['MAINTAIN_EMAIL_DOMAINS'],
