@@ -11,7 +11,7 @@ export default class EmailDomainsService {
   getEmailDomain = async (token: string, id: string): Promise<EmailDomain> =>
     this.manageUsersApiClient.getEmailDomain(token, id)
 
-  createEmailDomain = async (token: string, request: CreateEmailDomainRequest): Promise<Response> =>
+  createEmailDomain = async (token: string, request: CreateEmailDomainRequest): Promise<EmailDomain> =>
     this.manageUsersApiClient.createEmailDomain(token, request)
 
   deleteEmailDomain = async (token: string, domainId: string): Promise<Response> =>

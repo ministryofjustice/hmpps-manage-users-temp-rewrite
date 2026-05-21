@@ -1,5 +1,7 @@
-export const validateDomainName = (domainName: string) => {
-  const errors = []
+import { FormError } from '../../interfaces/formError'
+
+export const validateDomainName = (domainName: string): FormError[] => {
+  const errors: FormError[] = []
   if (!domainName) {
     errors.push({ href: '#name', text: 'Enter a domain name' })
   } else {
@@ -13,8 +15,8 @@ export const validateDomainName = (domainName: string) => {
   return errors
 }
 
-export const validateDomainDescription = (domainDescription: string) => {
-  const errors = []
+export const validateDomainDescription = (domainDescription: string): FormError[] => {
+  const errors: FormError[] = []
   if (!domainDescription) {
     errors.push({ href: '#description', text: 'Enter a domain description' })
   } else {
