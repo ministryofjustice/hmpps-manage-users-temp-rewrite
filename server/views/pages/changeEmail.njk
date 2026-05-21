@@ -46,20 +46,21 @@
           errorMessage: errors | findError('email')
         }) }}
 
-        {{ govukButton({
-          text: "Confirm",
-          type: "submit",
-          classes: "govuk-!-margin-right-1",
-          attributes: { "data-qa": "confirm-button" }
-        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Confirm",
+            type: "submit",
+            attributes: { "data-qa": "confirm-button" }
+          }) }}
 
-        {{ govukButton({
-          text: "Cancel",
-          element: 'a',
-          href: staffUrl,
-          classes: "govuk-button--secondary",
-          attributes: { "data-qa": "cancel-link" }
-        }) }}
+          {{ govukButton({
+            text: "Cancel",
+            element: 'a',
+            href: staffUrl,
+            classes: "govuk-button--secondary",
+            attributes: { "data-qa": "cancel-link" }
+          }) }}
+        </div>
       </form>
     </div>
   </div>

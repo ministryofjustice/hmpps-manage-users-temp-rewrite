@@ -57,19 +57,20 @@
           errorMessage: errors | findError('userExists')
         }) }}
 
-        {{ govukButton({
-          text: "Continue",
-          type: "submit",
-          classes: "govuk-!-margin-right-1",
-          attributes: { "data-qa": "create-button" }
-        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue",
+            type: "submit",
+            attributes: { "data-qa": "create-button" }
+          }) }}
 
-        {{ govukButton({
-          text: "Cancel",
-          element: 'a',
-          href: '/',
-          classes: "govuk-button--secondary"
-        }) }}
+          {{ govukButton({
+            text: "Cancel",
+            element: 'a',
+            href: '/',
+            classes: "govuk-button--secondary"
+          }) }}
+        </div>
       </form>
     </div>
   </div>

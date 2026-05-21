@@ -113,21 +113,22 @@
           </div>
         {% endif %}
 
-        {{ govukButton({
-          text: submitButtonLabel,
-          type: "submit",
-          id: "createUser",
-          name: "createUser",
-          classes: "govuk-!-margin-right-1",
-          attributes: { "data-qa": "create-button" }
-        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: submitButtonLabel,
+            type: "submit",
+            id: "createUser",
+            name: "createUser",
+            attributes: { "data-qa": "create-button" }
+          }) }}
 
-        {{ govukButton({
-          text: "Cancel",
-          element: 'a',
-          href: '/',
-          classes: "govuk-button--secondary"
-        }) }}
+          {{ govukButton({
+            text: "Cancel",
+            element: 'a',
+            href: '/',
+            classes: "govuk-button--secondary"
+          }) }}
+        </div>
       </form>
     </div>
   </div>
