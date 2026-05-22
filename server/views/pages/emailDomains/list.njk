@@ -1,8 +1,6 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
-{% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
 {% set title = "Manage Email Domains" %}
@@ -35,30 +33,28 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-
       {% if domains.length %}
-        <table class="govuk-table govuk-!-margin-bottom-3" data-qa="domains">
-          <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th class="govuk-table__header" scope="col">Domain</th>
-            <th class="govuk-table__header" scope="col">Description</th>
-            <th class="govuk-table__header" scope="col"></th>
-          </tr>
-          </thead>
-
-          <tbody class="govuk-table__body">
-          {% for domain in domains %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">{{ domain.domain }}</td>
-              <td class="govuk-table__cell">{{ domain.description }}</td>
-              <td class="govuk-table__cell govuk-!-text-align-right">
-                <a href="{{ domain.id | deleteEmailDomainLink }}"
-                   class="govuk-link govuk-link--no-visited-state">Delete</a>
-              </td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
+        {% set rows = [] %}
+        {% for domain in domains %}
+          {% set deleteLink %}
+            <a href="{{ domain.id | deleteEmailDomainLink }}" class="govuk-link govuk-link--no-visited-state">Delete</a>
+          {% endset %}
+          {% set rows = (rows.push([
+            { text: domain.domain },
+            { text: domain.description },
+            { html: deleteLink, classes: 'govuk-!-text-align-right' }
+          ]), rows) %}
+        {% endfor %}
+        {{ govukTable({
+          head: [
+            { text: 'Domain' },
+            { text: 'Description' },
+            { text: '' }
+          ],
+          rows: rows,
+          classes: 'govuk-!-margin-bottom-3',
+          attributes: { "data-qa": "domains" }
+        }) }}
       {% else %}
         <p class="govuk-body" data-qa="no-email-domains">
           There are no registered email domains. Add an email domain using the button above.
