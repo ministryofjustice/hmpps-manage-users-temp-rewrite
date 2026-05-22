@@ -12,7 +12,7 @@ export default class EmailDomainListPage extends AbstractPage {
 
   private constructor(page: Page) {
     super(page)
-    this.header = page.getByRole('heading', { name: 'Allowed Email Domain List' })
+    this.header = page.getByRole('heading', { name: 'Manage Email Domains' })
     this.tableRows = page.getByRole('row')
     this.addEmailDomainButton = page.getByRole('button', { name: 'Add Email Domain' })
     this.noDomainsMessage = page.getByTestId('no-email-domains')

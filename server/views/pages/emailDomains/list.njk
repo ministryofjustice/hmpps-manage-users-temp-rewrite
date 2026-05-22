@@ -18,7 +18,7 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <h1 class="govuk-heading-xl">Allowed Email Domain List</h1>
+      <h1 class="govuk-heading-xl">{{ title }}</h1>
     </div>
   </div>
 
@@ -37,7 +37,7 @@
         {% set rows = [] %}
         {% for domain in domains %}
           {% set deleteLink %}
-            <a href="{{ domain.id | deleteEmailDomainLink }}" class="govuk-link govuk-link--no-visited-state">Delete</a>
+            <a href="{{ domain.id | deleteEmailDomainLink }}" class="govuk-link govuk-link--no-visited-state">Delete<span class="govuk-visually-hidden"> domain {{ domain.domain }}</span></a>
           {% endset %}
           {% set rows = (rows.push([
             { text: domain.domain },
@@ -45,11 +45,14 @@
             { html: deleteLink, classes: 'govuk-!-text-align-right' }
           ]), rows) %}
         {% endfor %}
+        {% set actionHeaderHtml %}
+          <span class="govuk-visually-hidden">Actions</span>
+        {% endset %}
         {{ govukTable({
           head: [
             { text: 'Domain' },
             { text: 'Description' },
-            { text: '' }
+            { html: actionHeaderHtml }
           ],
           rows: rows,
           classes: 'govuk-!-margin-bottom-3',

@@ -21,7 +21,7 @@ export default (services: Services): Router => {
     try {
       req.emailDomain = await emailDomainsService.getEmailDomain(res.locals.user.token, id)
     } catch (err) {
-      logger.info('An error occurred while deleting email domain', err)
+      logger.info(`An error occurred while fetching email domain with id ${id}`, err)
       return res.redirect(paths.emailDomains.list.pattern)
     }
     return next()

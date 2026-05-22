@@ -22,10 +22,16 @@ test.describe('Manage Email Domains', () => {
     const emailDomainsPage = await gotoEmailDomainList(page)
 
     await expect(emailDomainsPage.tableRows).toHaveCount(4)
-    await expect(emailDomainsPage.tableRows.nth(0)).toHaveText('Domain Description') // Header
-    await expect(emailDomainsPage.tableRows.nth(1)).toHaveText('test.justice.gov.uk Test justice domain Delete')
-    await expect(emailDomainsPage.tableRows.nth(2)).toHaveText('test.police.uk Test police domain Delete')
-    await expect(emailDomainsPage.tableRows.nth(3)).toHaveText('test.external.com Test external domain Delete')
+    await expect(emailDomainsPage.tableRows.nth(0)).toHaveText('Domain Description Actions') // Header
+    await expect(emailDomainsPage.tableRows.nth(1)).toHaveText(
+      'test.justice.gov.uk Test justice domain Delete domain test.justice.gov.uk',
+    )
+    await expect(emailDomainsPage.tableRows.nth(2)).toHaveText(
+      'test.police.uk Test police domain Delete domain test.police.uk',
+    )
+    await expect(emailDomainsPage.tableRows.nth(3)).toHaveText(
+      'test.external.com Test external domain Delete domain test.external.com',
+    )
   })
 
   test('Shows no domains message when there are no registered domains', async ({ page }) => {
