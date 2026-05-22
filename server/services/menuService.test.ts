@@ -134,7 +134,7 @@ describe('MenuService', () => {
         {
           title: `Manage Email Domains`,
           description: `Create, Delete and View email domain listing`,
-          href: '/email-domains',
+          href: paths.emailDomains.list.pattern,
           dataQa: 'view_email_domains_link',
         },
       ])

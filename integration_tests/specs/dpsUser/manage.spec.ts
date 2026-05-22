@@ -11,17 +11,7 @@ import AddRolePage from '../../pages/addRolePage'
 import RequestRoleRemovalPage from '../../pages/dpsUser/requestRoleRemovalPage'
 import AddUserCaseloadPage from '../../pages/addUserCaseloadPage'
 import AuthErrorPage from '../../pages/authErrorPage'
-import { login } from '../../testUtils'
-
-const attemptPostWithoutCsrf = async (page: Page, url: string) => {
-  const response = await page.request.post(url, {
-    data: {},
-    failOnStatusCode: false,
-    maxRedirects: 0,
-  })
-  expect(response.status()).toBe(302)
-  expect(response.headers().location).toEqual('/sign-out')
-}
+import { attemptPostWithoutCsrf, login } from '../../testUtils'
 
 const getDpsAddUserRoleRequests = async () => {
   return getMatchingRequests({

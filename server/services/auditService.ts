@@ -3,6 +3,7 @@ import HmppsAuditClient, { AuditEvent } from '../data/hmppsAuditClient'
 export enum Page {
   EXAMPLE_PAGE = 'EXAMPLE_PAGE',
   VIEW_DPS_USER = 'VIEW_DPS_USER',
+  VIEW_EMAIL_DOMAINS = 'VIEW_EMAIL_DOMAINS',
 }
 
 export interface PageViewEventDetails {
@@ -15,6 +16,7 @@ export interface PageViewEventDetails {
 
 export enum SubjectType {
   USER_ID = 'USER_ID',
+  EMAIL_DOMAIN_ID = 'EMAIL_DOMAIN_ID',
 }
 
 export enum EventType {
@@ -29,6 +31,8 @@ export enum EventType {
   REMOVE_USER_CASELOAD = 'REMOVE_USER_CASELOAD',
   ENABLE_USER = 'ENABLE_USER',
   DISABLE_USER = 'DISABLE_USER',
+  CREATE_EMAIL_DOMAIN = 'CREATE_EMAIL_DOMAIN',
+  DELETE_EMAIL_DOMAIN = 'DELETE_EMAIL_DOMAIN',
   DOWNLOAD_REPORT_ATTEMPT = 'DOWNLOAD_REPORT_ATTEMPT',
   DOWNLOAD_REPORT_FAILURE = 'DOWNLOAD_REPORT_FAILURE',
   SEARCH_USER_ATTEMPT = 'SEARCH_USER_ATTEMPT',

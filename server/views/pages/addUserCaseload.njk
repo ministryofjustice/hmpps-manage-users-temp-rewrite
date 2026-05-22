@@ -84,21 +84,22 @@
             errorMessage: errors | findError('caseloads')
           }) }}
 
-          {{ govukButton({
-            text: "Confirm",
-            type: "submit",
-            classes: "govuk-!-margin-right-1",
-            attributes: { "data-qa": "add-button" },
-            preventDoubleClick: true
-          }) }}
+          <div class="govuk-button-group">
+            {{ govukButton({
+              text: "Confirm",
+              type: "submit",
+              attributes: { "data-qa": "add-button" },
+              preventDoubleClick: true
+            }) }}
 
-          {{ govukButton({
-            text: "Cancel",
-            element: 'a',
-            href: staffUrl,
-            classes: "govuk-button--secondary",
-            attributes: { "data-qa": "cancel-link" }
-          }) }}
+            {{ govukButton({
+              text: "Cancel",
+              element: 'a',
+              href: staffUrl,
+              classes: "govuk-button--secondary",
+              attributes: { "data-qa": "cancel-link" }
+            }) }}
+          </div>
         </form>
       {% endif %}
     </div>

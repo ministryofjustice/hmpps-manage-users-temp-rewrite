@@ -49,15 +49,19 @@ export default class ManageUsersApiClient extends RestClient {
     super('Manage Users API', config.apis.manageUsersApi, logger)
   }
 
-  async createEmailDomain(token: string, domain: CreateEmailDomainRequest): Promise<Response> {
+  async createEmailDomain(token: string, domain: CreateEmailDomainRequest): Promise<EmailDomain> {
     return this.post({ path: '/email-domains', data: domain }, asUser(token))
+  }
+
+  async getEmailDomain(token: string, domainId: string): Promise<EmailDomain> {
+    return this.get({ path: `/email-domains/${domainId}` }, asUser(token))
   }
 
   async deleteEmailDomain(token: string, domainId: string): Promise<Response> {
     return this.delete({ path: `/email-domains/${domainId}` }, asUser(token))
   }
 
-  async getAllEmailDomains(token: string): Promise<PagedList<EmailDomain>> {
+  async getAllEmailDomains(token: string): Promise<EmailDomain[]> {
     return this.get({ path: '/email-domains' }, asUser(token))
   }
 

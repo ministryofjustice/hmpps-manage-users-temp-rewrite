@@ -1,20 +1,17 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-{% block header %}
-  {{ super() }}
-{% endblock %}
-
-{% set title %}Create a DPS {{ userType | userTypeDisplay }} user{% endset %}
+{% set title = "Create Email Domain" %}
 
 {% block beforeContent %}
   {{ govukBreadcrumbs({
     items: [
       { text: "Home", href: homeUrl },
       { text: "Manage user accounts", href: '/' },
+      { text: "Manage Email Domains", href: listUrl },
       { text: title }
     ]
   }) }}
@@ -30,36 +27,35 @@
   {% endif %}
 
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-half">
+    <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">{{ title }}</h1>
-      <form method="POST">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        <input type="hidden" name="userType" value="{{ userType }}" />
+      <form action="{{ createUrl }}" method="POST">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-        {{ govukRadios({
-          idPrefix: "userExists",
-          name: "userExists",
-          fieldset: {
-            legend: {
-              text: "Does user have an existing account?"
-            }
-          },
-          items: [
-            {
-              value: true,
-              text: "Yes"
-            },
-            {
-              value: false,
-              text: "No"
-            }
-          ],
-          errorMessage: errors | findError('userExists')
+        {{ govukInput({label: {
+          text: "Domain Name", classes: "govuk-label--s"
+        },
+          classes: "govuk-input--width-30",
+          value: name,
+          id: "name",
+          name: "name",
+          errorMessage: errors | findError('name')
+        }) }}
+
+        {{ govukInput({label: {
+          text: "Domain Description", classes: "govuk-label--s"
+        },
+          classes: "govuk-input--width-30",
+          value: description,
+          id: "description",
+          name: "description",
+          errorMessage: errors | findError('description')
         }) }}
 
         <div class="govuk-button-group">
           {{ govukButton({
-            text: "Continue",
+            text: "Add Email Domain",
+            preventDoubleClick: true,
             type: "submit",
             attributes: { "data-qa": "create-button" }
           }) }}
@@ -67,8 +63,9 @@
           {{ govukButton({
             text: "Cancel",
             element: 'a',
-            href: '/',
-            classes: "govuk-button--secondary"
+            href: listUrl,
+            classes: "govuk-button--secondary",
+            attributes: { "id": "cancel-button" }
           }) }}
         </div>
       </form>

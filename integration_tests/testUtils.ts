@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test'
+import { expect, Locator, Page } from '@playwright/test'
 import tokenVerification from './mockApis/tokenVerification'
 import hmppsAuth, { type UserToken } from './mockApis/hmppsAuth'
 import { resetStubs } from './mockApis/wiremock'
@@ -31,4 +31,14 @@ export const login = async (
 export const fillAutocompleteSelect = async (selectLocator: Locator, value: string) => {
   await selectLocator.fill(value)
   await selectLocator.press('Enter')
+}
+
+export const attemptPostWithoutCsrf = async (page: Page, url: string) => {
+  const response = await page.request.post(url, {
+    data: {},
+    failOnStatusCode: false,
+    maxRedirects: 0,
+  })
+  expect(response.status()).toBe(302)
+  expect(response.headers().location).toEqual('/sign-out')
 }

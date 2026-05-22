@@ -7,7 +7,6 @@ import {
   CreateLinkedLocalAdminRequest,
   CreateUserRequest,
   EmailAddress,
-  EmailDomain,
   ExternalUser,
   ExternalUserRole,
   Group,
@@ -69,13 +68,18 @@ describe('ManageUsersApiClient', () => {
   describe('Email Domain Endpoints', () => {
     describe('create email domain', () => {
       it('should return 200 status', async () => {
-        mockApi('post', '/email-domains', successResponse, { status: successResponse })
+        const emailDomain = {
+          id: '46bbbe2f-fe26-4f2b-b0e4-21967f0fa8f8',
+          domain: 'justice.test.uk',
+          description: 'test domain',
+        }
+        mockApi('post', '/email-domains', successResponse, emailDomain)
 
         const response = await manageUsersApiClient.createEmailDomain(token, {
           name: 'justice.test.uk',
           description: 'test domain',
         })
-        expect(response.status).toEqual(successResponse)
+        expect(response).toEqual(emailDomain)
       })
     })
 
@@ -91,17 +95,33 @@ describe('ManageUsersApiClient', () => {
 
     describe('get all email domains', () => {
       it('should return list of email domains', async () => {
-        const emailDomains = createPagedList<EmailDomain>([
+        const emailDomains = [
           {
             id: 'test-domain-1',
             domain: 'test.justice.gov.uk',
             description: 'test justice domain',
           },
-        ])
+        ]
         mockApi('get', '/email-domains', successResponse, emailDomains)
 
         const response = await manageUsersApiClient.getAllEmailDomains(token)
         expect(response).toEqual(emailDomains)
+      })
+    })
+
+    describe('get an email domain', () => {
+      it('should return the email domain', async () => {
+        const domainId = 'test-domain-id'
+        const emailDomain = {
+          id: 'test-domain-1',
+          domain: 'test.justice.gov.uk',
+          description: 'test justice domain',
+        }
+
+        mockApi('get', `/email-domains/${domainId}`, successResponse, emailDomain)
+
+        const response = await manageUsersApiClient.getEmailDomain(token, domainId)
+        expect(response).toEqual(emailDomain)
       })
     })
   })
