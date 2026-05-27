@@ -4,7 +4,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-{% set title = "Create Email Domain" %}
+{% set title = "Add Email Domain" %}
 
 {% block beforeContent %}
   {{ govukBreadcrumbs({
@@ -33,7 +33,7 @@
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukInput({label: {
-          text: "Domain Name", classes: "govuk-label--s"
+          text: "Domain", classes: "govuk-label--s"
         },
           classes: "govuk-input--width-30",
           value: name,
@@ -43,7 +43,7 @@
         }) }}
 
         {{ govukInput({label: {
-          text: "Domain Description", classes: "govuk-label--s"
+          text: "Description", classes: "govuk-label--s"
         },
           classes: "govuk-input--width-30",
           value: description,
