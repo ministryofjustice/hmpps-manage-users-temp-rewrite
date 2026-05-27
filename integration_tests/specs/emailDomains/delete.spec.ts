@@ -33,10 +33,34 @@ test.describe('Delete Email Domain', () => {
     await resetStubs()
   })
 
-  test('Deletes an email domain when clicking delete email domain button', async ({ page }) => {
+  test('Shows an error if the confirmed domain to delete is empty', async ({ page }) => {
+    const deleteEmailDomainPage = await gotoDeleteEmailDomain(page)
+
+    await deleteEmailDomainPage.deleteEmailDomainButton.click()
+
+    await expect(deleteEmailDomainPage.errorSummary).toHaveText(
+      'There is a problem Enter "test.justice.gov.uk" to confirm deletion of domain',
+    )
+  })
+
+  test('Shows an error if the confirmed domain is different to the expected domain', async ({ page }) => {
+    const deleteEmailDomainPage = await gotoDeleteEmailDomain(page)
+
+    await deleteEmailDomainPage.confirmDomainTextbox.fill('not.test.justice.gov.uk')
+    await deleteEmailDomainPage.deleteEmailDomainButton.click()
+
+    await expect(deleteEmailDomainPage.errorSummary).toHaveText(
+      'There is a problem Enter "test.justice.gov.uk" to confirm deletion of domain',
+    )
+  })
+
+  test('Deletes an email domain when filling in the expected domain and clicking delete email domain button', async ({
+    page,
+  }) => {
     const deleteEmailDomainPage = await gotoDeleteEmailDomain(page)
 
     await manageUsersApi.stubDeleteEmailDomain('cb5d9f0c-b7c8-40d5-8626-2e97f66d5127')
+    await deleteEmailDomainPage.confirmDomainTextbox.fill('test.justice.gov.uk')
     await deleteEmailDomainPage.deleteEmailDomainButton.click()
 
     const requests = await getDeleteEmailDomainRequests()

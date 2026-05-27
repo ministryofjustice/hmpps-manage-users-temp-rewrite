@@ -16,9 +16,9 @@ export default class CreateEmailDomainPage extends AbstractPage {
 
   private constructor(page: Page) {
     super(page)
-    this.header = page.getByRole('heading', { name: 'Create Email Domain' })
-    this.domainNameTextbox = this.textBox('Domain Name')
-    this.domainDescriptionTextbox = this.textBox('Domain Description')
+    this.header = page.getByRole('heading', { name: 'Add Email Domain' })
+    this.domainNameTextbox = this.textBox('Domain')
+    this.domainDescriptionTextbox = this.textBox('Description')
     this.addEmailDomainButton = this.button('Add Email Domain')
     this.cancelButton = this.button('Cancel')
     this.errorSummary = page.getByTestId('error-summary')

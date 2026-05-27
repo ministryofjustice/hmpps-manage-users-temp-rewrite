@@ -28,7 +28,7 @@ describe('form middleware', () => {
 
       await handler(req as Request, res as Response, next)
 
-      expect(validator).toHaveBeenCalledWith({ name: 'test' }) // _csrf removed
+      expect(validator).toHaveBeenCalledWith({ name: 'test' }, req) // _csrf removed
       expect(req.flash).toHaveBeenCalledWith('requestBody', JSON.stringify({ name: 'test' }))
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
