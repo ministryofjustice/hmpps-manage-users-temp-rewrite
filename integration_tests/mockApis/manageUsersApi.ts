@@ -1,5 +1,5 @@
 import type { SuperAgentRequest } from 'superagent'
-import { EmailDomain, PrisonUserGroupDetail, Role, RoleDetail, UserCaseloadDetail } from 'manageUsersApiClient'
+import { EmailDomain, Group, PrisonUserGroupDetail, Role, RoleDetail, UserCaseloadDetail } from 'manageUsersApiClient'
 import { stubJson } from './wiremock'
 import { UserTypeKey } from '../../server/presentation/userType'
 
@@ -716,5 +716,18 @@ export default {
     stubJson({
       method: 'DELETE',
       urlPath: `/manage-users-api/email-domains/${id}`,
+    }),
+
+  stubCreateGroup: () =>
+    stubJson({
+      method: 'POST',
+      urlPath: `/manage-users-api/groups`,
+    }),
+
+  stubGroupDetails: (group: Group) =>
+    stubJson({
+      method: 'GET',
+      urlPath: `/manage-users-api/groups/${group.groupCode}`,
+      body: group,
     }),
 }

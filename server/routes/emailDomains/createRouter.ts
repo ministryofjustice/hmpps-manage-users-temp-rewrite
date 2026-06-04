@@ -57,8 +57,7 @@ export default (services: Services): Router => {
         emailDomain = await emailDomainsService.createEmailDomain(res.locals.user.token, body)
       } catch (err) {
         if (err.responseStatus === 409 && err.data) {
-          const emailDomainError = { href: '#name', text: err.data.userMessage }
-          errors.push(emailDomainError)
+          errors.push({ href: '#name', text: err.data.userMessage })
         } else {
           throw err
         }
