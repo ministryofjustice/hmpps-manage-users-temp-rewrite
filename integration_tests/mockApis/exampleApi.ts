@@ -1,8 +1,9 @@
 import type { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
+import { HttpStatusCode } from '../../server/utils/utils'
 
 export default {
-  stubPing: (httpStatus = 200): SuperAgentRequest =>
+  stubPing: (httpStatus = HttpStatusCode.OK): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
@@ -11,11 +12,11 @@ export default {
       response: {
         status: httpStatus,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
+        jsonBody: { status: httpStatus === HttpStatusCode.OK ? 'UP' : 'DOWN' },
       },
     }),
 
-  stubExampleTime: (httpStatus = 200): SuperAgentRequest =>
+  stubExampleTime: (httpStatus = HttpStatusCode.OK): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',

@@ -2,6 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import MenuService from '../services/menuService'
+import { HttpStatusCode } from '../utils/utils'
 
 jest.mock('../services/menuService')
 
@@ -27,7 +28,7 @@ describe('GET /', () => {
     return request(app)
       .get('/')
       .expect('Content-Type', /html/)
-      .expect(200)
+      .expect(HttpStatusCode.OK)
       .expect(res => {
         expect(res.text).toContain('Manage user accounts')
       })

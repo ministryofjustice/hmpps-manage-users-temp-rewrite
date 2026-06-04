@@ -1,6 +1,7 @@
 import nock from 'nock'
 import ExampleApiClient from './exampleApiClient'
 import config from '../config'
+import { HttpStatusCode } from '../utils/utils'
 
 describe('ExampleApiClient', () => {
   let exampleApiClient: ExampleApiClient
@@ -20,7 +21,7 @@ describe('ExampleApiClient', () => {
       nock(config.apis.exampleApi.url)
         .get('/example/time')
         .matchHeader('authorization', 'Bearer test-system-token')
-        .reply(200, { time: '2025-01-01T12:00:00Z' })
+        .reply(HttpStatusCode.OK, { time: '2025-01-01T12:00:00Z' })
 
       const response = await exampleApiClient.getCurrentTime(token)
 

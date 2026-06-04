@@ -13,7 +13,7 @@ import {
 } from '../../../middleware/route/formMiddleware'
 import { Services } from '../../../services'
 import { EventType, SubjectType } from '../../../services/auditService'
-import { isAlphaStringOrSpecialChars } from '../../../utils/utils'
+import { HttpStatusCode, isAlphaStringOrSpecialChars } from '../../../utils/utils'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../../interfaces/authRole'
 
@@ -97,14 +97,14 @@ export default ({ dpsUserService, auditService }: Services): Router => {
       try {
         newUser = await dpsUserService.createDpsUser(res.locals.user.token, body)
       } catch (err) {
-        if (err.responseStatus === 400 && err.data) {
+        if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
           const { userMessage } = err.data
           const errorDetails = { text: userMessage }
           errors.push(errorDetails)
-        } else if (err.responseStatus === 409 && err.data && err.data.errorCode === 601) {
+        } else if (err.responseStatus === HttpStatusCode.CONFLICT && err.data && err.data.errorCode === 601) {
           const usernameError = { href: '#username', text: 'Username already exists' }
           errors.push(usernameError)
-        } else if (err.responseStatus === 409 && err.data && err.data.errorCode === 602) {
+        } else if (err.responseStatus === HttpStatusCode.CONFLICT && err.data && err.data.errorCode === 602) {
           const emailDomainError = { href: '#email', text: 'Invalid Email domain' }
           errors.push(emailDomainError)
         } else {

@@ -15,6 +15,7 @@ import { EventType, SubjectType } from '../../../services/auditService'
 import emailVerificationError from '../../../presentation/errors'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../../interfaces/authRole'
+import { HttpStatusCode } from '../../../utils/utils'
 
 interface Form {
   email: string
@@ -75,7 +76,7 @@ export const changeEmailRouter = (services: Services): Router => {
       try {
         await dpsUserService.changeEmail(res.locals.user.token, userId, body.email)
       } catch (err) {
-        if (err.responseStatus === 400 && err.data) {
+        if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
           const errorDetails = { href: '#email', text: emailVerificationError(err) }
           errors.push(errorDetails)
         } else {

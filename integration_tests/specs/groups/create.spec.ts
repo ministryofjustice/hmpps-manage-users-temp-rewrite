@@ -10,6 +10,7 @@ import { getMatchingRequests } from '../../mockApis/wiremock'
 import HomePage from '../../pages/homePage'
 import CreateGroupPage from '../../pages/groups/createGroupPage'
 import GroupDetailsPage from '../../pages/groups/groupDetailsPage'
+import { HttpStatusCode } from '../../../server/utils/utils'
 
 const gotoCreateGroup = async (page: Page) => {
   await login(page, { roles: [AuthRole.MAINTAIN_OAUTH_USERS] })
@@ -122,6 +123,16 @@ test.describe('Create Group', () => {
     )
   })
 
+  test('Shows an error if group code already exists', async ({ page }) => {
+    const createGroupPage = await gotoCreateGroup(page)
+
+    await manageUsersApi.stubCreateGroup(HttpStatusCode.CONFLICT)
+    await createGroupPage.groupName.fill('Test group name')
+    await createGroupPage.groupCode.fill('EXISTING_TEST_GROUP')
+    await createGroupPage.submit.click()
+    await expect(createGroupPage.errorSummary).toHaveText('There is a problem Group code already exists')
+  })
+
   test('Creates a group if valid group name and code entered', async ({ page }) => {
     const createGroupPage = await gotoCreateGroup(page)
 
@@ -154,7 +165,7 @@ test.describe('Create Group', () => {
   // })
 
   test('Should fail attempting to create group if unauthorised', async ({ page }) => {
-    await login(page, { roles: ['ROLE_NOT_MAINTAIN_EMAIL_DOMAINS'] })
+    await login(page, { roles: ['ROLE_NOT_MAINTAIN_OAUTH_USERS'] })
 
     await page.goto(paths.groups.create.pattern)
     await AuthErrorPage.verifyOnPage(page)

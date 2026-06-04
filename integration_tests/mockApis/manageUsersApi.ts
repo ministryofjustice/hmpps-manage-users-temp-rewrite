@@ -2,6 +2,7 @@ import type { SuperAgentRequest } from 'superagent'
 import { EmailDomain, Group, PrisonUserGroupDetail, Role, RoleDetail, UserCaseloadDetail } from 'manageUsersApiClient'
 import { stubJson } from './wiremock'
 import { UserTypeKey } from '../../server/presentation/userType'
+import { HttpStatusCode } from '../../server/utils/utils'
 
 const manageUsersApiCreateLinkedUrlMap = new Map<UserTypeKey, string>([
   ['DPS_ADM', 'linkedprisonusers/admin'],
@@ -235,10 +236,10 @@ const stubOAuthAdminDpsRoles = () => {
 }
 
 export default {
-  stubPing: (httpStatus = 200): SuperAgentRequest =>
+  stubPing: (httpStatus = HttpStatusCode.OK): SuperAgentRequest =>
     stubJson({
       urlPattern: '/manage-users-api/health/ping',
-      body: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
+      body: { status: httpStatus === HttpStatusCode.OK ? 'UP' : 'DOWN' },
       status: httpStatus,
     }),
 
@@ -294,7 +295,7 @@ export default {
   stubCreateDpsUser400Response: (): SuperAgentRequest =>
     stubJson({
       method: 'POST',
-      status: 400,
+      status: HttpStatusCode.BAD_REQUEST,
       urlPattern: '/manage-users-api/prisonusers',
       body: {
         userMessage: 'Bad request',
@@ -304,7 +305,7 @@ export default {
   stubCreateDpsUserAlreadyExists: (): SuperAgentRequest =>
     stubJson({
       method: 'POST',
-      status: 409,
+      status: HttpStatusCode.CONFLICT,
       urlPattern: '/manage-users-api/prisonusers',
       body: {
         errorCode: 601,
@@ -314,7 +315,7 @@ export default {
   stubCreateDpsUserInvalidEmailDomain: (): SuperAgentRequest =>
     stubJson({
       method: 'POST',
-      status: 409,
+      status: HttpStatusCode.CONFLICT,
       urlPattern: '/manage-users-api/prisonusers',
       body: {
         errorCode: 602,
@@ -325,14 +326,14 @@ export default {
   stubGetDpsUserNotFound: (username: string = 'ITAG_USER5'): SuperAgentRequest =>
     stubJson({
       urlPattern: `/manage-users-api/prisonusers/${username}/details`,
-      status: 404,
+      status: HttpStatusCode.NOT_FOUND,
       body: {},
     }),
 
   stubGetDpsUser400Response: (username: string = 'ITAG_USER5'): SuperAgentRequest =>
     stubJson({
       urlPattern: `/manage-users-api/prisonusers/${username}/details`,
-      status: 400,
+      status: HttpStatusCode.BAD_REQUEST,
       body: {
         userMessage: 'Bad request',
       },
@@ -361,7 +362,7 @@ export default {
   stubCreateLinkedDpsUser400Response: (userType: UserTypeKey): SuperAgentRequest =>
     stubJson({
       method: 'POST',
-      status: 400,
+      status: HttpStatusCode.BAD_REQUEST,
       urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
       body: {
         userMessage: 'Bad request',
@@ -374,7 +375,7 @@ export default {
   ): SuperAgentRequest =>
     stubJson({
       method: 'POST',
-      status: 409,
+      status: HttpStatusCode.CONFLICT,
       urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
       body: {
         userMessage,
@@ -384,7 +385,7 @@ export default {
   stubCreateLinkedDpsUser404Response: (userType: UserTypeKey): SuperAgentRequest =>
     stubJson({
       method: 'POST',
-      status: 404,
+      status: HttpStatusCode.NOT_FOUND,
       urlPattern: `/manage-users-api/${manageUsersApiCreateLinkedUrlMap.get(userType)}`,
       body: {},
     }),
@@ -627,7 +628,7 @@ export default {
 
   stubDpsUserChangeEmailInvalidDomain: () =>
     stubJson({
-      status: 400,
+      status: HttpStatusCode.BAD_REQUEST,
       method: 'POST',
       urlPattern: '/manage-users-api/prisonusers/[^/]*/email',
       body: {
@@ -637,7 +638,7 @@ export default {
 
   stubDpsUserChangeEmailAlreadyAssigned: () =>
     stubJson({
-      status: 400,
+      status: HttpStatusCode.BAD_REQUEST,
       method: 'POST',
       urlPattern: '/manage-users-api/prisonusers/[^/]*/email',
       body: {
@@ -691,13 +692,13 @@ export default {
 
   stubGetEmailDomainBadRequest: (id: string) =>
     stubJson({
-      status: 400,
+      status: HttpStatusCode.BAD_REQUEST,
       urlPath: `/manage-users-api/email-domains/${id}`,
     }),
 
   stubGetEmailDomainNotFound: (id: string) =>
     stubJson({
-      status: 404,
+      status: HttpStatusCode.NOT_FOUND,
       urlPath: `/manage-users-api/email-domains/${id}`,
     }),
 
@@ -718,10 +719,11 @@ export default {
       urlPath: `/manage-users-api/email-domains/${id}`,
     }),
 
-  stubCreateGroup: () =>
+  stubCreateGroup: (status: HttpStatusCode = HttpStatusCode.OK) =>
     stubJson({
       method: 'POST',
       urlPath: `/manage-users-api/groups`,
+      status,
     }),
 
   stubGroupDetails: (group: Group) =>

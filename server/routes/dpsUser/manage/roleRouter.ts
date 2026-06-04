@@ -7,6 +7,7 @@ import { Event } from '../../../utils/azureAppInsights'
 import { getRemovalMessage } from '../../../presentation/restrictedRoles'
 import setupRestrictedRoles from '../../../middleware/route/restrictedRolesMiddleware'
 import { EventType, SubjectType } from '../../../services/auditService'
+import { HttpStatusCode } from '../../../utils/utils'
 
 export default (services: Services): Router => {
   const router = Router({ mergeParams: true })
@@ -27,7 +28,7 @@ export default (services: Services): Router => {
       })
       return res.redirect(paths.dpsUser.manage.details({ userId }))
     } catch (err) {
-      if (err.responseStatus === 400) {
+      if (err.responseStatus === HttpStatusCode.BAD_REQUEST) {
         // role already removed from user
         return res.redirect(paths.dpsUser.manage.details({ userId }))
       }

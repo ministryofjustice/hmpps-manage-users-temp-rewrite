@@ -2,6 +2,7 @@ import { expect, Locator, Page } from '@playwright/test'
 import tokenVerification from './mockApis/tokenVerification'
 import hmppsAuth, { type UserToken } from './mockApis/hmppsAuth'
 import { resetStubs } from './mockApis/wiremock'
+import { HttpStatusCode } from '../server/utils/utils'
 
 export { resetStubs }
 
@@ -39,6 +40,6 @@ export const attemptPostWithoutCsrf = async (page: Page, url: string) => {
     failOnStatusCode: false,
     maxRedirects: 0,
   })
-  expect(response.status()).toBe(302)
+  expect(response.status()).toBe(HttpStatusCode.FOUND)
   expect(response.headers().location).toEqual('/sign-out')
 }

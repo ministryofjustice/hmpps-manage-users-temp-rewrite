@@ -3,6 +3,7 @@ import { Services } from '../../../services'
 import { CaseloadParam } from './paramTypes'
 import { EventType, SubjectType } from '../../../services/auditService'
 import paths from '../../paths'
+import { HttpStatusCode } from '../../../utils/utils'
 
 export default ({ dpsUserService, auditService }: Services): Router => {
   const router = Router({ mergeParams: true })
@@ -24,9 +25,9 @@ export default ({ dpsUserService, auditService }: Services): Router => {
       return res.redirect(staffUrl)
     } catch (err) {
       switch (err.responseStatus) {
-        case 400: // role already removed from user
+        case HttpStatusCode.BAD_REQUEST: // role already removed from user
           return res.redirect(staffUrl)
-        case 404:
+        case HttpStatusCode.NOT_FOUND:
           return res.redirect(staffUrl)
         default:
           throw err

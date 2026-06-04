@@ -14,6 +14,7 @@ import AuthRole from '../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 import { validateGroupCode, validateGroupName } from '../../presentation/validation/groupValidation'
 import { EventType, SubjectType } from '../../services/auditService'
+import { HttpStatusCode } from '../../utils/utils'
 
 const validate = (body: CreateGroupRequest): FormError[] => {
   const errors: FormError[] = []
@@ -54,7 +55,7 @@ export default (services: Services): Router => {
       try {
         await groupsService.createGroup(res.locals.user.token, body)
       } catch (err) {
-        if (err.responseStatus === 409 && err.data) {
+        if (err.responseStatus === HttpStatusCode.CONFLICT && err.data) {
           errors.push({ href: '#groupCode', text: 'Group code already exists' })
         } else {
           throw err
