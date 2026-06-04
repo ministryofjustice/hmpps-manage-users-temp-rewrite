@@ -1,8 +1,9 @@
 import { Request, Router } from 'express'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import { Services } from '../../../services'
 import paths from '../../paths'
 import { RoleParam } from './paramTypes'
-import { appInsightsEvent, Event } from '../../../utils/azureAppInsights'
+import { Event } from '../../../utils/azureAppInsights'
 import { getRemovalMessage } from '../../../presentation/restrictedRoles'
 import setupRestrictedRoles from '../../../middleware/route/restrictedRolesMiddleware'
 import { EventType, SubjectType } from '../../../services/auditService'
@@ -42,7 +43,7 @@ export default (services: Services): Router => {
       const { username } = res.locals.user
       const staffDetailsUrl = paths.dpsUser.manage.details({ userId })
 
-      appInsightsEvent(Event.REQUEST_REMOVE_USER_ROLE_ATTEMPT, username, { userId, roleCode: role })
+      telemetry.trackEvent(Event.REQUEST_REMOVE_USER_ROLE_ATTEMPT, { username, userId, roleCode: role })
       const removalMessage = getRemovalMessage(role, res.locals.restrictedRoles)
 
       res.render('pages/dpsUser/requestUserRoleRemoval', {
