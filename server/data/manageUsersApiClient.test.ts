@@ -36,8 +36,9 @@ import { ParsedUrlQuery } from 'querystring'
 import config from '../config'
 import ManageUsersApiClient from './manageUsersApiClient'
 import createPagedList from '../testutils/pagedListHelper'
+import { HttpStatusCode } from '../utils/utils'
 
-const successResponse = 200
+const successResponse = HttpStatusCode.OK
 const token = 'test-system-token'
 const mockApi = (
   method: string,

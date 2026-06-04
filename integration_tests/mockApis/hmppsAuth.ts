@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { stubFor, getMatchingRequests } from './wiremock'
+import { HttpStatusCode } from '../../server/utils/utils'
 
 export interface UserToken {
   name?: string
@@ -39,7 +40,7 @@ export default {
         urlPattern: '/favicon.ico',
       },
       response: {
-        status: 200,
+        status: HttpStatusCode.OK,
       },
     }),
 
@@ -50,7 +51,7 @@ export default {
         urlPattern: '/auth/health/ping',
       },
       response: {
-        status: 200,
+        status: HttpStatusCode.OK,
       },
     }),
 
@@ -61,7 +62,7 @@ export default {
         urlPattern: '/auth/oauth/authorize\\?response_type=code&redirect_uri=.+?&state=.+?&client_id=clientid',
       },
       response: {
-        status: 200,
+        status: HttpStatusCode.OK,
         headers: {
           'Content-Type': 'text/html',
           Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
@@ -77,7 +78,7 @@ export default {
         urlPattern: '/auth/sign-out.*',
       },
       response: {
-        status: 200,
+        status: HttpStatusCode.OK,
         headers: {
           'Content-Type': 'text/html',
         },
@@ -92,11 +93,11 @@ export default {
         urlPattern: '/auth/account-details.*',
       },
       response: {
-        status: 200,
+        status: HttpStatusCode.OK,
         headers: {
           'Content-Type': 'text/html',
         },
-        body: '<html><body><h1>Your account details</h1></body></html>',
+        body: '<html lang="en"><body><h1>Your account details</h1></body></html>',
       },
     }),
 
@@ -107,7 +108,7 @@ export default {
         urlPattern: '/auth/oauth/token',
       },
       response: {
-        status: 200,
+        status: HttpStatusCode.OK,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
           Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',

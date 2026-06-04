@@ -15,6 +15,7 @@ import { EventType, SubjectType } from '../../../services/auditService'
 import { CreateLinkedDpsUserRequest } from '../../../interfaces/createLinkedDpsUserRequest'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../../interfaces/authRole'
+import { HttpStatusCode } from '../../../utils/utils'
 
 const validate = (body: CreateLinkedDpsUserRequest): FormError[] => {
   const errors: FormError[] = []
@@ -52,11 +53,11 @@ export default ({ dpsUserService, auditService }: Services): Router => {
           flashBody(req, updatedBody)
           return res.redirect(paths.dpsUser.createLinkedDpsUser.pattern)
         } catch (err) {
-          if (err.responseStatus === 400 && err.data) {
+          if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
             const { userMessage } = err.data
             const errorDetails = { text: userMessage }
             errors.push(errorDetails)
-          } else if (err.responseStatus === 404) {
+          } else if (err.responseStatus === HttpStatusCode.NOT_FOUND) {
             const notFoundError = { href: '#existingUsername', text: 'Existing username not found' }
             errors.push(notFoundError)
           } else {

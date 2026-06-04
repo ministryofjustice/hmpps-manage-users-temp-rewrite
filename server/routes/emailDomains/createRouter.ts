@@ -14,6 +14,7 @@ import { validateDomainDescription, validateDomainName } from '../../presentatio
 import { EventType, SubjectType } from '../../services/auditService'
 import AuthRole from '../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
+import { HttpStatusCode } from '../../utils/utils'
 
 const validate = (body: CreateEmailDomainRequest): FormError[] => {
   const errors: FormError[] = []
@@ -56,9 +57,8 @@ export default (services: Services): Router => {
       try {
         emailDomain = await emailDomainsService.createEmailDomain(res.locals.user.token, body)
       } catch (err) {
-        if (err.responseStatus === 409 && err.data) {
-          const emailDomainError = { href: '#name', text: err.data.userMessage }
-          errors.push(emailDomainError)
+        if (err.responseStatus === HttpStatusCode.CONFLICT && err.data) {
+          errors.push({ href: '#name', text: err.data.userMessage })
         } else {
           throw err
         }

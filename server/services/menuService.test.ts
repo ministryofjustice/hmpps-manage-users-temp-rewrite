@@ -176,7 +176,7 @@ describe('MenuService', () => {
         {
           title: `Create a group`,
           description: `Create a new group which will represent a cohort of users outside of HMPPS`,
-          href: '/manage-groups/create-group',
+          href: paths.groups.create.pattern,
           dataQa: 'create_groups_link',
         },
       ])
@@ -260,7 +260,7 @@ describe('MenuService', () => {
         {
           title: `Create a group`,
           description: `Create a new group which will represent a cohort of users outside of HMPPS`,
-          href: '/manage-groups/create-group',
+          href: paths.groups.create.pattern,
           dataQa: 'create_groups_link',
         },
         {

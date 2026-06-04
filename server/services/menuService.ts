@@ -92,7 +92,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Create a group`,
       `Create a new group which will represent a cohort of users outside of HMPPS`,
-      '/manage-groups/create-group',
+      paths.groups.create.pattern,
       'create_groups_link',
       7,
       ['MAINTAIN_OAUTH_USERS'],

@@ -1,4 +1,5 @@
 import superagent, { SuperAgentRequest, Response } from 'superagent'
+import { HttpStatusCode } from '../../server/utils/utils'
 
 const url = 'http://localhost:9091/__admin'
 
@@ -15,13 +16,13 @@ const stubJson = ({
   urlPattern,
   urlPath,
   method = 'GET',
-  status = 200,
+  status = HttpStatusCode.OK,
 }: {
   body?: unknown
   urlPattern?: string
   urlPath?: string
   method?: string
-  status?: number
+  status?: HttpStatusCode
 }) =>
   stubFor({
     request: {
