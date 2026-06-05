@@ -5,6 +5,7 @@ export enum Page {
   VIEW_DPS_USER = 'VIEW_DPS_USER',
   VIEW_EMAIL_DOMAINS = 'VIEW_EMAIL_DOMAINS',
   VIEW_GROUP_DETAILS = 'VIEW_GROUP_DETAILS',
+  VIEW_GROUP_LIST = 'VIEW_GROUP_LIST',
 }
 
 export interface PageViewEventDetails {

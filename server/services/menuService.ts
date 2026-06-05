@@ -84,7 +84,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `View the groups I administer`,
       `View and make changes to a group which contain users outside of HMPPS`,
-      '/manage-groups',
+      paths.groups.list.pattern,
       'manage_groups_link',
       6,
       ['MAINTAIN_OAUTH_USERS', 'AUTH_GROUP_MANAGER'],

@@ -7,6 +7,7 @@ import RolesService from './rolesService'
 import UserService from './userService'
 import EmailDomainsService from './emailDomainsService'
 import GroupsService from './groupsService'
+import ExternalUserService from './externalUserService'
 import paginationService from './paginationService'
 
 export const services = () => {
@@ -22,6 +23,7 @@ export const services = () => {
     userService: new UserService(manageUsersApiClient),
     emailDomainsService: new EmailDomainsService(manageUsersApiClient),
     groupsService: new GroupsService(manageUsersApiClient),
+    externalUserService: new ExternalUserService(manageUsersApiClient),
     paginationService,
   }
 }
