@@ -25,6 +25,12 @@ const deleteEmailDomain = path('/delete-email-domain')
 const manageGroups = path('/manage-groups')
 const createGroup = path('/create-group')
 const group = path('/:group')
+const changeGroupName = path('/change-group-name')
+const childGroup = path('/:childGroup')
+const changeChildGroupName = path('/change-child-group-name')
+const createChildGroup = path('/create-child-group')
+const deletePath = path('/delete')
+const deleteChildGroup = path('/delete-child-group')
 
 const roleRootAbsolute = manageDpsUser.path(roleRoot.pattern)
 const paths = {
@@ -78,6 +84,11 @@ const paths = {
     create: manageGroups.path(createGroup.pattern),
     list: manageGroups,
     details: manageGroups.path(group.pattern),
+    changeGroupName: manageGroups.path(group.pattern).path(changeGroupName.pattern),
+    delete: manageGroups.path(group.pattern).path(deletePath.pattern),
+    createChildGroup: manageGroups.path(group.pattern).path(createChildGroup.pattern),
+    changeChildGroupName: manageGroups.path(group.pattern).path(changeChildGroupName.pattern).path(childGroup.pattern),
+    deleteChildGroup: manageGroups.path(group.pattern).path(deleteChildGroup.pattern).path(childGroup.pattern),
   },
 }
 

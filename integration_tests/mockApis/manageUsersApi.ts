@@ -1,10 +1,12 @@
 import type { SuperAgentRequest } from 'superagent'
 import {
+  ChildGroup,
   EmailDomain,
   Group,
   PrisonUserGroupDetail,
   Role,
   RoleDetail,
+  UpdateGroupNameRequest,
   UserCaseloadDetail,
   UserGroup,
 } from 'manageUsersApiClient'
@@ -753,5 +755,38 @@ export default {
       method: 'GET',
       urlPath: `/manage-users-api/externalusers/me/assignable-groups`,
       body: assignableGroups,
+    }),
+
+  stubChangeGroupName: (groupCode: string, body: UpdateGroupNameRequest): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      urlPath: `/manage-users-api/groups/${groupCode}`,
+      body,
+    }),
+
+  stubChildGroupDetails: (group: ChildGroup): SuperAgentRequest =>
+    stubJson({
+      method: 'GET',
+      urlPath: `/manage-users-api/groups/child/${group.groupCode}`,
+      body: group,
+    }),
+
+  stubChangeChildGroupName: (groupCode: string, body: UpdateGroupNameRequest): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      urlPath: `/manage-users-api/groups/child/${groupCode}`,
+      body,
+    }),
+
+  stubDeleteGroup: (group: string): SuperAgentRequest =>
+    stubJson({
+      method: 'DELETE',
+      urlPath: `/manage-users-api/groups/${group}`,
+    }),
+
+  stubDeleteChildGroup: (group: string): SuperAgentRequest =>
+    stubJson({
+      method: 'DELETE',
+      urlPath: `/manage-users-api/groups/child/${group}`,
     }),
 }

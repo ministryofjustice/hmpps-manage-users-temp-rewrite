@@ -1,23 +1,11 @@
-import { expect, Page, test } from '@playwright/test'
-
-import { UserGroup } from 'manageUsersApiClient'
+import { expect, test } from '@playwright/test'
 import { attemptPostWithoutCsrf, fillAutocompleteSelect, login, resetStubs } from '../../testUtils'
 import manageUsersApi from '../../mockApis/manageUsersApi'
 import AuthRole from '../../../server/interfaces/authRole'
 import paths from '../../../server/routes/paths'
 import AuthErrorPage from '../../pages/authErrorPage'
-import HomePage from '../../pages/homePage'
-import GroupListPage from '../../pages/groups/groupListPage'
 import GroupDetailsPage from '../../pages/groups/groupDetailsPage'
-
-const gotoListGroups = async (page: Page, assignableGroups?: UserGroup[]) => {
-  await login(page, { roles: [AuthRole.MAINTAIN_OAUTH_USERS] })
-
-  await manageUsersApi.stubAssignableGroups(assignableGroups)
-  const homePage = await HomePage.verifyOnPage(page)
-  await homePage.selectTile('manage_groups_link')
-  return GroupListPage.verifyOnPage(page)
-}
+import { gotoListGroups } from '../../helpers/groups'
 
 const moreThan10Groups = [...Array(11).keys()].map(i => ({
   groupCode: `TEST_GROUP_${i}`,
@@ -25,16 +13,12 @@ const moreThan10Groups = [...Array(11).keys()].map(i => ({
 }))
 
 test.describe('List Groups', () => {
-  test.beforeEach(async () => {
-    await manageUsersApi.stubGetAllEmailDomains()
-  })
-
   test.afterEach(async () => {
     await resetStubs()
   })
 
   test('Should display a message if user has no groups', async ({ page }) => {
-    const groupListPage = await gotoListGroups(page, [])
+    const groupListPage = await gotoListGroups(page, [], [AuthRole.MAINTAIN_OAUTH_USERS])
 
     await expect(groupListPage.noGroups).toHaveText('You are not a member of any groups.')
     await expect(groupListPage.groupFilter).not.toBeVisible()
@@ -54,7 +38,7 @@ test.describe('List Groups', () => {
   })
 
   test('Should display filter for groups if more than 10', async ({ page }) => {
-    const groupListPage = await gotoListGroups(page, moreThan10Groups)
+    const groupListPage = await gotoListGroups(page, moreThan10Groups, [AuthRole.MAINTAIN_OAUTH_USERS])
 
     await expect(groupListPage.noGroups).not.toBeVisible()
     await expect(groupListPage.groupRows).not.toBeVisible()
@@ -75,7 +59,7 @@ test.describe('List Groups', () => {
   })
 
   test('Should go to the group details via filtering and clicking manage button', async ({ page }) => {
-    const groupListPage = await gotoListGroups(page, moreThan10Groups)
+    const groupListPage = await gotoListGroups(page, moreThan10Groups, [AuthRole.MAINTAIN_OAUTH_USERS])
 
     await manageUsersApi.stubGroupDetails(moreThan10Groups[10])
 
@@ -85,7 +69,7 @@ test.describe('List Groups', () => {
   })
 
   test('Shows an error if the manage button is pressed without filtering a group', async ({ page }) => {
-    const groupListPage = await gotoListGroups(page, moreThan10Groups)
+    const groupListPage = await gotoListGroups(page, moreThan10Groups, [AuthRole.MAINTAIN_OAUTH_USERS])
 
     await groupListPage.manageButton.click()
     await expect(groupListPage.errorSummary).toHaveText('There is a problem Enter a group code')

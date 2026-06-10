@@ -42,11 +42,7 @@
         {{ maintainUrl + "/" + groupDetails.groupCode + "/change-group-name" }}
       {% endset %}
       {% set deleteGroupLink %}
-        {% if groupDetails.children.length > 0 %}
-          {{ maintainUrl + "/" + groupDetails.groupCode + "/delete/children/some" }}
-        {% else %}
-          {{ maintainUrl + "/" + groupDetails.groupCode  + "/delete/children/none" }}
-        {% endif %}
+        {{ maintainUrl + "/" + groupDetails.groupCode + "/delete" }}
       {% endset %}
       {% set groupActionsHtml %}
         {{ groupActions(changeGroupLink, deleteGroupLink, groupDetails.groupCode) if hasMaintainAuthUsers else "" }}
@@ -58,7 +54,8 @@
             { html: heading },
             { html: groupActionsHtml, format: "numeric" }
           ]
-        ]
+        ],
+        attributes: { "data-qa": "header" }
       }) }}
 
       {{ govukTable({
@@ -69,7 +66,8 @@
             { text: groupDetails.groupCode },
             { text: "" }
           ]
-        ]
+        ],
+        attributes: { "data-qa": "details" }
       }) }}
 
       {% set rows = [] %}

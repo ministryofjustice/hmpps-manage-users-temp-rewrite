@@ -1,48 +1,29 @@
 {% extends "../../partials/layout.njk" %}
-{% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-{% block beforeContent %}
-  {{ govukBreadcrumbs({
-    items: [
-      { text: "Home", href: homeUrl },
-      { text: "Manage user accounts", href: '/' },
-      { text: title }
-    ]
-  }) }}
-{% endblock %}
+{% set title = title %}
 
 {% block content %}
   {% if errors.length > 0 %}
     {{ govukErrorSummary({
       titleText: "There is a problem",
       errorList: errors,
-      attributes: { 'data-qa': 'error-summary'}
+      attributes: { 'data-qa': 'error-summary' }
     }) }}
   {% endif %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">{{ title }}</h1>
       <form method="POST">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-        {{ govukInput({label: {
-          text: groupCodeText, classes: "govuk-label--s"
-        },
-          classes: "govuk-input--width-30",
-          value: groupCode,
-          id: "groupCode",
-          name: "groupCode",
-          errorMessage: errors | findError('groupCode')
-        }) }}
-
-        {{ govukInput({label: {
-          text: groupNameText, classes: "govuk-label--s"
-        },
-          classes: "govuk-input--width-30",
+        {{ govukInput({
+          label: {
+            text: title,
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
           value: groupName,
           id: "groupName",
           name: "groupName",
@@ -51,9 +32,9 @@
 
         <div class="govuk-button-group">
           {{ govukButton({
-            text: "Create",
+            text: "Confirm",
             type: "submit",
-            attributes: { "data-qa": "create-button" }
+            attributes: { "data-qa": "confirm-button" }
           }) }}
 
           {{ govukButton({
