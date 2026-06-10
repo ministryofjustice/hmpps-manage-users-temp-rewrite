@@ -17,7 +17,7 @@ export default function index(services: Services): Router {
     try {
       req.groupDetails = await groupsService.groupDetails(res.locals.user.token, group)
     } catch (err) {
-      logger.info(`An error occurred while fetching groupDetails for ${group}`, err)
+      logger.info(`An error occurred while fetching group details for ${group}`, err)
       return res.redirect(paths.groups.list.pattern)
     }
     return next()
