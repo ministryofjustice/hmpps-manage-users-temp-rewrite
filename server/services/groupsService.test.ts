@@ -1,4 +1,4 @@
-import { CreateGroupRequest, Group } from 'manageUsersApiClient'
+import { ChildGroup, CreateGroupRequest, Group, UpdateGroupNameRequest } from 'manageUsersApiClient'
 import { Response } from 'superagent'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import GroupsService from './groupsService'
@@ -13,6 +13,12 @@ describe('GroupsService', () => {
     apiClient = {
       createGroup: jest.fn(),
       groupDetails: jest.fn(),
+      changeGroupName: jest.fn(),
+      deleteGroup: jest.fn(),
+      createChildGroup: jest.fn(),
+      childGroupDetails: jest.fn(),
+      changeChildGroupName: jest.fn(),
+      deleteChildGroup: jest.fn(),
     } as unknown as jest.Mocked<ManageUsersApiClient>
 
     service = new GroupsService(apiClient)
@@ -49,6 +55,97 @@ describe('GroupsService', () => {
     const result = await service.groupDetails(token, 'TEST_GROUP')
 
     expect(apiClient.groupDetails).toHaveBeenCalledWith(token, 'TEST_GROUP')
+    expect(result).toBe(response)
+  })
+
+  it('Changes a group name', async () => {
+    const response = {
+      ok: true,
+    } as Response
+    const updatedGroupName = {
+      groupName: 'New group',
+    } as UpdateGroupNameRequest
+
+    apiClient.changeGroupName.mockResolvedValue(response)
+
+    const result = await service.changeGroupName(token, 'TEST_GROUP', updatedGroupName)
+
+    expect(apiClient.changeGroupName).toHaveBeenCalledWith(token, 'TEST_GROUP', updatedGroupName)
+    expect(result).toBe(response)
+  })
+
+  it('Deletes a group', async () => {
+    const response = {
+      ok: true,
+    } as Response
+
+    apiClient.deleteGroup.mockResolvedValue(response)
+
+    const result = await service.deleteGroup(token, 'TEST_GROUP')
+
+    expect(apiClient.deleteGroup).toHaveBeenCalledWith(token, 'TEST_GROUP')
+    expect(result).toBe(response)
+  })
+
+  it('Creates a child group', async () => {
+    const request: CreateGroupRequest = {
+      groupCode: 'TEST_GROUP',
+      groupName: 'Test Group',
+    }
+    const parentGroupCode = 'TEST_PARENT_GROUP'
+
+    const response = {
+      ok: true,
+    } as Response
+
+    apiClient.createChildGroup.mockResolvedValue(response)
+
+    const result = await service.createChildGroup(token, parentGroupCode, request)
+
+    expect(apiClient.createChildGroup).toHaveBeenCalledWith(token, { ...request, parentGroupCode })
+    expect(result).toBe(response)
+  })
+
+  it('Gets child group details', async () => {
+    const response: ChildGroup = {
+      groupCode: 'TEST_GROUP',
+      groupName: 'Test Group',
+    }
+
+    apiClient.childGroupDetails.mockResolvedValue(response)
+
+    const result = await service.childGroupDetails(token, 'TEST_GROUP')
+
+    expect(apiClient.childGroupDetails).toHaveBeenCalledWith(token, 'TEST_GROUP')
+    expect(result).toBe(response)
+  })
+
+  it('Changes a child group name', async () => {
+    const response = {
+      ok: true,
+    } as Response
+    const updatedGroupName = {
+      groupName: 'New group',
+    } as UpdateGroupNameRequest
+
+    apiClient.changeChildGroupName.mockResolvedValue(response)
+
+    const result = await service.changeChildGroupName(token, 'TEST_GROUP', updatedGroupName)
+
+    expect(apiClient.changeChildGroupName).toHaveBeenCalledWith(token, 'TEST_GROUP', updatedGroupName)
+    expect(result).toBe(response)
+  })
+
+  it('Deletes a child group', async () => {
+    const response = {
+      ok: true,
+    } as Response
+
+    apiClient.deleteChildGroup.mockResolvedValue(response)
+
+    const result = await service.deleteChildGroup(token, 'TEST_GROUP')
+
+    expect(apiClient.deleteChildGroup).toHaveBeenCalledWith(token, 'TEST_GROUP')
     expect(result).toBe(response)
   })
 })

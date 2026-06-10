@@ -1,5 +1,15 @@
 import type { SuperAgentRequest } from 'superagent'
-import { EmailDomain, Group, PrisonUserGroupDetail, Role, RoleDetail, UserCaseloadDetail } from 'manageUsersApiClient'
+import {
+  ChildGroup,
+  EmailDomain,
+  Group,
+  PrisonUserGroupDetail,
+  Role,
+  RoleDetail,
+  UpdateGroupNameRequest,
+  UserCaseloadDetail,
+  UserGroup,
+} from 'manageUsersApiClient'
 import { stubJson } from './wiremock'
 import { UserTypeKey } from '../../server/presentation/userType'
 import { HttpStatusCode } from '../../server/utils/utils'
@@ -620,13 +630,13 @@ export default {
       body: undefined,
     }),
 
-  stubDpsUserChangeEmail: () =>
+  stubDpsUserChangeEmail: (): SuperAgentRequest =>
     stubJson({
       method: 'POST',
       urlPattern: '/manage-users-api/prisonusers/[^/]*/email',
     }),
 
-  stubDpsUserChangeEmailInvalidDomain: () =>
+  stubDpsUserChangeEmailInvalidDomain: (): SuperAgentRequest =>
     stubJson({
       status: HttpStatusCode.BAD_REQUEST,
       method: 'POST',
@@ -636,7 +646,7 @@ export default {
       },
     }),
 
-  stubDpsUserChangeEmailAlreadyAssigned: () =>
+  stubDpsUserChangeEmailAlreadyAssigned: (): SuperAgentRequest =>
     stubJson({
       status: HttpStatusCode.BAD_REQUEST,
       method: 'POST',
@@ -646,19 +656,19 @@ export default {
       },
     }),
 
-  stubDpsUserEnable: () =>
+  stubDpsUserEnable: (): SuperAgentRequest =>
     stubJson({
       method: 'PUT',
       urlPattern: '/manage-users-api/prisonusers/.*/enable-user',
     }),
 
-  stubDpsUserDisable: () =>
+  stubDpsUserDisable: (): SuperAgentRequest =>
     stubJson({
       method: 'PUT',
       urlPattern: '/manage-users-api/prisonusers/.*/disable-user',
     }),
 
-  stubGetAllEmailDomains: (emailDomains?: EmailDomain[]) =>
+  stubGetAllEmailDomains: (emailDomains?: EmailDomain[]): SuperAgentRequest =>
     stubJson({
       urlPath: '/manage-users-api/email-domains',
       body: emailDomains || [
@@ -680,7 +690,7 @@ export default {
       ],
     }),
 
-  stubGetEmailDomain: (id: string) =>
+  stubGetEmailDomain: (id: string): SuperAgentRequest =>
     stubJson({
       urlPath: `/manage-users-api/email-domains/${id}`,
       body: {
@@ -690,19 +700,19 @@ export default {
       },
     }),
 
-  stubGetEmailDomainBadRequest: (id: string) =>
+  stubGetEmailDomainBadRequest: (id: string): SuperAgentRequest =>
     stubJson({
       status: HttpStatusCode.BAD_REQUEST,
       urlPath: `/manage-users-api/email-domains/${id}`,
     }),
 
-  stubGetEmailDomainNotFound: (id: string) =>
+  stubGetEmailDomainNotFound: (id: string): SuperAgentRequest =>
     stubJson({
       status: HttpStatusCode.NOT_FOUND,
       urlPath: `/manage-users-api/email-domains/${id}`,
     }),
 
-  stubCreateEmailDomain: () =>
+  stubCreateEmailDomain: (): SuperAgentRequest =>
     stubJson({
       method: 'POST',
       urlPath: `/manage-users-api/email-domains`,
@@ -713,23 +723,70 @@ export default {
       },
     }),
 
-  stubDeleteEmailDomain: (id: string) =>
+  stubDeleteEmailDomain: (id: string): SuperAgentRequest =>
     stubJson({
       method: 'DELETE',
       urlPath: `/manage-users-api/email-domains/${id}`,
     }),
 
-  stubCreateGroup: (status: HttpStatusCode = HttpStatusCode.OK) =>
+  stubCreateGroup: (status: HttpStatusCode = HttpStatusCode.OK): SuperAgentRequest =>
     stubJson({
       method: 'POST',
       urlPath: `/manage-users-api/groups`,
       status,
     }),
 
-  stubGroupDetails: (group: Group) =>
+  stubGroupDetails: (group: Group): SuperAgentRequest =>
     stubJson({
       method: 'GET',
       urlPath: `/manage-users-api/groups/${group.groupCode}`,
       body: group,
+    }),
+
+  stubAssignableGroups: (
+    assignableGroups: UserGroup[] = [
+      { groupCode: 'SOC_NORTH_WEST', groupName: 'SOCU North West' },
+      { groupCode: 'PECS_TVP', groupName: 'PECS Police Force Thames Valley' },
+      { groupCode: 'PECS_SOUTBC', groupName: 'PECS Court Southend Combined Court' },
+      { groupCode: 'SITE_1_GROUP_2', groupName: 'Site 1 - Group 2' },
+    ],
+  ): SuperAgentRequest =>
+    stubJson({
+      method: 'GET',
+      urlPath: `/manage-users-api/externalusers/me/assignable-groups`,
+      body: assignableGroups,
+    }),
+
+  stubChangeGroupName: (groupCode: string, body: UpdateGroupNameRequest): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      urlPath: `/manage-users-api/groups/${groupCode}`,
+      body,
+    }),
+
+  stubChildGroupDetails: (group: ChildGroup): SuperAgentRequest =>
+    stubJson({
+      method: 'GET',
+      urlPath: `/manage-users-api/groups/child/${group.groupCode}`,
+      body: group,
+    }),
+
+  stubChangeChildGroupName: (groupCode: string, body: UpdateGroupNameRequest): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      urlPath: `/manage-users-api/groups/child/${groupCode}`,
+      body,
+    }),
+
+  stubDeleteGroup: (group: string): SuperAgentRequest =>
+    stubJson({
+      method: 'DELETE',
+      urlPath: `/manage-users-api/groups/${group}`,
+    }),
+
+  stubDeleteChildGroup: (group: string): SuperAgentRequest =>
+    stubJson({
+      method: 'DELETE',
+      urlPath: `/manage-users-api/groups/child/${group}`,
     }),
 }

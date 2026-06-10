@@ -17,7 +17,7 @@ test.describe('Menu', () => {
 
   test('Banner text is displayed if the user has MAINTAIN_ACCESS_ROLES role', async ({ page }) => {
     await manageUsersApi.stubNotificationBannerMessage('DPSMENU', 'The service is being tested')
-    await login(page, { roles: ['ROLE_MAINTAIN_ACCESS_ROLES'] })
+    await login(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await expect(homePage.bannerMessage).toBeVisible()
@@ -26,7 +26,7 @@ test.describe('Menu', () => {
 
   test('Banner text is displayed if the user has MAINTAIN_ACCESS_ROLES_ADMIN role', async ({ page }) => {
     await manageUsersApi.stubNotificationBannerMessage('DPSMENU', 'The service is being tested')
-    await login(page, { roles: ['ROLE_MAINTAIN_ACCESS_ROLES_ADMIN'] })
+    await login(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await expect(homePage.bannerMessage).toBeVisible()
@@ -42,7 +42,7 @@ test.describe('Menu', () => {
   })
 
   test('Banner text is not displayed if their is no message', async ({ page }) => {
-    await login(page, { roles: ['ROLE_MAINTAIN_ACCESS_ROLES_ADMIN'] })
+    await login(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await expect(homePage.bannerMessage).not.toBeVisible()
@@ -59,7 +59,7 @@ test.describe('Menu', () => {
   })
 
   test('User with MAINTAIN_ACCESS_ROLES is presented with the Search for a DPS user tile', async ({ page }) => {
-    await login(page, { roles: ['ROLE_MAINTAIN_ACCESS_ROLES'] })
+    await login(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.verifyTileCount(1)
@@ -72,7 +72,7 @@ test.describe('Menu', () => {
   })
 
   test('User with MAINTAIN_ACCESS_ROLES_ADMIN is presented with the Search for a DPS user tile', async ({ page }) => {
-    await login(page, { roles: ['ROLE_MAINTAIN_ACCESS_ROLES_ADMIN'] })
+    await login(page, { roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.verifyTileCount(1)
@@ -98,20 +98,20 @@ test.describe('Menu', () => {
   })
 
   test('User with MAINTAIN_EMAIL_DOMAINS is presented with the Manage email domains tile', async ({ page }) => {
-    await login(page, { roles: ['ROLE_MAINTAIN_EMAIL_DOMAINS'] })
+    await login(page, { roles: [AuthRole.MAINTAIN_EMAIL_DOMAINS] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.verifyTileCount(1)
     await homePage.verifyTile(
       `Manage Email Domains`,
       `Create, Delete and View email domain listing`,
-      '/email-domains',
+      paths.emailDomains.list.pattern,
       'view_email_domains_link',
     )
   })
 
   test('User with MAINTAIN_OAUTH_USERS is presented with 4 tiles for the role', async ({ page }) => {
-    await login(page, { roles: ['ROLE_MAINTAIN_OAUTH_USERS'] })
+    await login(page, { roles: [AuthRole.MAINTAIN_OAUTH_USERS] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.verifyTileCount(4)
@@ -130,19 +130,19 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       `View the groups I administer`,
       `View and make changes to a group which contain users outside of HMPPS`,
-      '/manage-groups',
+      paths.groups.list.pattern,
       'manage_groups_link',
     )
     await homePage.verifyTile(
       `Create a group`,
       `Create a new group which will represent a cohort of users outside of HMPPS`,
-      '/manage-groups/create-group',
+      paths.groups.create.pattern,
       'create_groups_link',
     )
   })
 
   test('User with AUTH_GROUP_MANAGER is presented with 3 tiles for the role', async ({ page }) => {
-    await login(page, { roles: ['ROLE_AUTH_GROUP_MANAGER'] })
+    await login(page, { roles: [AuthRole.AUTH_GROUP_MANAGER] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.verifyTileCount(3)
@@ -161,7 +161,7 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       `View the groups I administer`,
       `View and make changes to a group which contain users outside of HMPPS`,
-      '/manage-groups',
+      paths.groups.list.pattern,
       'manage_groups_link',
     )
   })
@@ -233,7 +233,7 @@ test.describe('Menu', () => {
   })
 
   test('User with multiple roles is presented with all tiles for their roles', async ({ page }) => {
-    await login(page, { roles: ['ROLE_MAINTAIN_OAUTH_USERS', 'ROLE_ROLES_ADMIN', 'ROLE_MANAGE_USER_ALLOW_LIST'] })
+    await login(page, { roles: [AuthRole.MAINTAIN_OAUTH_USERS, 'ROLE_ROLES_ADMIN', 'ROLE_MANAGE_USER_ALLOW_LIST'] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.verifyTileCount(8)

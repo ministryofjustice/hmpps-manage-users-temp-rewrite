@@ -10,6 +10,7 @@ import { getMatchingRequests } from '../../mockApis/wiremock'
 import HomePage from '../../pages/homePage'
 import CreateGroupPage from '../../pages/groups/createGroupPage'
 import GroupDetailsPage from '../../pages/groups/groupDetailsPage'
+import GroupListPage from '../../pages/groups/groupListPage'
 import { HttpStatusCode } from '../../../server/utils/utils'
 
 const gotoCreateGroup = async (page: Page) => {
@@ -28,10 +29,6 @@ const getCreateGroupRequests = async () => {
 }
 
 test.describe('Create Group', () => {
-  test.beforeEach(async () => {
-    await manageUsersApi.stubGetAllEmailDomains()
-  })
-
   test.afterEach(async () => {
     await resetStubs()
   })
@@ -152,17 +149,16 @@ test.describe('Create Group', () => {
     await GroupDetailsPage.verifyOnPage(page, 'Test group name')
   })
 
-  // TODO: enable this test when the group list page is implemented
-  // test('Goes to groups list page if creating a group is cancelled', async ({ page }) => {
-  //   const createGroupPage = await gotoCreateGroup(page)
-  //
-  //   await manageUsersApi.stubCreateEmailDomain()
-  //   await createGroupPage.groupName.fill('Test group name')
-  //   await createGroupPage.groupCode.fill('TEST_GROUP')
-  //   await createGroupPage.cancel.click()
-  //
-  //   await GroupListPage.verifyOnPage(page)
-  // })
+  test('Goes to groups list page if creating a group is cancelled', async ({ page }) => {
+    const createGroupPage = await gotoCreateGroup(page)
+
+    await manageUsersApi.stubAssignableGroups()
+    await createGroupPage.groupName.fill('Test group name')
+    await createGroupPage.groupCode.fill('TEST_GROUP')
+    await createGroupPage.cancel.click()
+
+    await GroupListPage.verifyOnPage(page)
+  })
 
   test('Should fail attempting to create group if unauthorised', async ({ page }) => {
     await login(page, { roles: ['ROLE_NOT_MAINTAIN_OAUTH_USERS'] })

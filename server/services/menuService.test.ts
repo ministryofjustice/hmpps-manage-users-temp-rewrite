@@ -170,7 +170,7 @@ describe('MenuService', () => {
         {
           title: `View the groups I administer`,
           description: `View and make changes to a group which contain users outside of HMPPS`,
-          href: '/manage-groups',
+          href: paths.groups.list.pattern,
           dataQa: 'manage_groups_link',
         },
         {
@@ -200,7 +200,7 @@ describe('MenuService', () => {
         {
           title: `View the groups I administer`,
           description: `View and make changes to a group which contain users outside of HMPPS`,
-          href: '/manage-groups',
+          href: paths.groups.list.pattern,
           dataQa: 'manage_groups_link',
         },
       ])
@@ -254,7 +254,7 @@ describe('MenuService', () => {
         {
           title: `View the groups I administer`,
           description: `View and make changes to a group which contain users outside of HMPPS`,
-          href: '/manage-groups',
+          href: paths.groups.list.pattern,
           dataQa: 'manage_groups_link',
         },
         {
