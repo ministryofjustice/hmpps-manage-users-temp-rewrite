@@ -789,4 +789,18 @@ export default {
       method: 'DELETE',
       urlPath: `/manage-users-api/groups/child/${group}`,
     }),
+
+  stubCreateRole: (status: HttpStatusCode = HttpStatusCode.OK): SuperAgentRequest =>
+    stubJson({
+      method: 'POST',
+      urlPath: `/manage-users-api/roles`,
+      status,
+    }),
+
+  stubRoleDetails: (role: Role): SuperAgentRequest =>
+    stubJson({
+      method: 'GET',
+      urlPath: `/manage-users-api/roles/${role.roleCode}`,
+      body: role,
+    }),
 }

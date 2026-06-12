@@ -167,20 +167,20 @@ test.describe('Menu', () => {
   })
 
   test('User with ROLES_ADMIN is presented with 2 tiles for the role', async ({ page }) => {
-    await login(page, { roles: ['ROLE_ROLES_ADMIN'] })
+    await login(page, { roles: [AuthRole.ROLES_ADMIN] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.verifyTileCount(2)
     await homePage.verifyTile(
       `View roles`,
       `View roles that are available to be assigned to users`,
-      '/manage-roles',
+      paths.roles.list.pattern,
       'view_roles_link',
     )
     await homePage.verifyTile(
       `Create a role`,
       `Create a new role that can later be assigned to users`,
-      '/manage-roles/create-role',
+      paths.roles.create.pattern,
       'create_roles_link',
     )
   })
@@ -193,7 +193,7 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       `View roles`,
       `View roles that are available to be assigned to users`,
-      '/manage-roles',
+      paths.roles.list.pattern,
       'view_roles_link',
     )
   })
@@ -233,7 +233,7 @@ test.describe('Menu', () => {
   })
 
   test('User with multiple roles is presented with all tiles for their roles', async ({ page }) => {
-    await login(page, { roles: [AuthRole.MAINTAIN_OAUTH_USERS, 'ROLE_ROLES_ADMIN', 'ROLE_MANAGE_USER_ALLOW_LIST'] })
+    await login(page, { roles: [AuthRole.MAINTAIN_OAUTH_USERS, AuthRole.ROLES_ADMIN, 'ROLE_MANAGE_USER_ALLOW_LIST'] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.verifyTileCount(8)

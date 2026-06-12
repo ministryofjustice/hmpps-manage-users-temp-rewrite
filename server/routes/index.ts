@@ -5,6 +5,7 @@ import menuRouter from './menuRouter'
 import dpsUserRouter from './dpsUser'
 import emailDomainsRouter from './emailDomains'
 import groupsRouter from './groups'
+import rolesRouter from './roles'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -13,6 +14,7 @@ export default function routes(services: Services): Router {
   router.use(dpsUserRouter(services))
   router.use(emailDomainsRouter(services))
   router.use(groupsRouter(services))
+  router.use(rolesRouter(services))
 
   return router
 }

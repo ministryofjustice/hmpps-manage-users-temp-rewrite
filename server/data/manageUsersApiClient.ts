@@ -9,6 +9,7 @@ import {
   CreateLinkedCentralAdminRequest,
   CreateLinkedGeneralUserRequest,
   CreateLinkedLocalAdminRequest,
+  CreateRoleRequest,
   CreateUserRequest,
   DpsUserSearchQuery,
   EmailAddress,
@@ -314,7 +315,7 @@ export default class ManageUsersApiClient extends RestClient {
     return this.delete({ path: `/prisonusers/${username}/roles/${roleCode}` }, asUser(token))
   }
 
-  async createRole(token: string, role: string): Promise<Response> {
+  async createRole(token: string, role: CreateRoleRequest): Promise<Response> {
     return this.post({ path: '/roles', data: role }, asUser(token))
   }
 
