@@ -100,7 +100,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `View roles`,
       `View roles that are available to be assigned to users`,
-      '/manage-roles',
+      paths.roles.list.pattern,
       'view_roles_link',
       8,
       ['ROLES_ADMIN', 'VIEW_ADMINISTRABLE_USER_ROLES'],
@@ -108,7 +108,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Create a role`,
       `Create a new role that can later be assigned to users`,
-      '/manage-roles/create-role',
+      paths.roles.create.pattern,
       'create_roles_link',
       9,
       ['ROLES_ADMIN'],

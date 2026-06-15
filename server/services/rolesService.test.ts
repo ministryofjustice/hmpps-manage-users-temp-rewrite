@@ -1,4 +1,4 @@
-import { NotificationMessage } from 'manageUsersApiClient'
+import { CreateRoleRequest, NotificationMessage, Role } from 'manageUsersApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import RolesService from './rolesService'
 import { PrisonUser } from '../interfaces/hmppsUser'
@@ -13,6 +13,8 @@ describe('RolesService', () => {
     apiClient = {
       getRoles: jest.fn(),
       getNotificationBannerMessage: jest.fn(),
+      createRole: jest.fn(),
+      getRoleDetails: jest.fn(),
     } as unknown as jest.Mocked<ManageUsersApiClient>
 
     service = new RolesService(apiClient)
@@ -261,5 +263,78 @@ describe('RolesService', () => {
 
     expect(apiClient.getNotificationBannerMessage).toHaveBeenCalledWith(token, 'ROLES')
     expect(result).toEqual(message)
+  })
+
+  describe('Create role', () => {
+    it('removes ROLE_ from the start of the role code', async () => {
+      const role: Role = {
+        roleCode: 'ROLES_ADMIN',
+        roleName: 'Roles Admin',
+        roleDescription: 'Test role to allow this test to pass',
+        adminType: [
+          {
+            adminTypeCode: 'DPS_ADM',
+            adminTypeName: 'Central Admin',
+          },
+        ],
+      }
+      const roleRequest: CreateRoleRequest = {
+        roleCode: 'ROLE_ROLES_ADMIN',
+        roleName: 'Roles Admin',
+        roleDescription: 'Test role to allow this test to pass',
+        adminType: ['DPS_ADM'],
+      }
+      apiClient.createRole.mockResolvedValue(role)
+      const result = await service.createRole(token, roleRequest)
+
+      expect(apiClient.createRole).toHaveBeenCalledWith(token, { ...roleRequest, roleCode: 'ROLES_ADMIN' })
+      expect(result).toEqual(role)
+    })
+
+    it('ensures the adminType is an array', async () => {
+      const role: Role = {
+        roleCode: 'ROLES_ADMIN',
+        roleName: 'Roles Admin',
+        roleDescription: 'Test role to allow this test to pass',
+        adminType: [
+          {
+            adminTypeCode: 'DPS_ADM',
+            adminTypeName: 'Central Admin',
+          },
+        ],
+      }
+      const roleRequest: CreateRoleRequest = {
+        roleCode: 'ROLES_ADMIN',
+        roleName: 'Roles Admin',
+        roleDescription: 'Test role to allow this test to pass',
+        adminType: 'DPS_ADM',
+      }
+      apiClient.createRole.mockResolvedValue(role)
+      const result = await service.createRole(token, roleRequest)
+
+      expect(apiClient.createRole).toHaveBeenCalledWith(token, { ...roleRequest, adminType: ['DPS_ADM'] })
+      expect(result).toEqual(role)
+    })
+  })
+
+  it('gets role details', async () => {
+    const role: Role = {
+      roleCode: 'ROLES_ADMIN',
+      roleName: 'Roles Admin',
+      roleDescription: 'Test role to allow this test to pass',
+      adminType: [
+        {
+          adminTypeCode: 'DPS_ADM',
+          adminTypeName: 'Central Admin',
+        },
+      ],
+    }
+
+    apiClient.getRoleDetails.mockResolvedValue(role)
+
+    const result = await service.getRoleDetails(token, 'ROLES_ADMIN')
+
+    expect(apiClient.getRoleDetails).toHaveBeenCalledWith(token, 'ROLES_ADMIN')
+    expect(result).toBe(role)
   })
 })

@@ -104,7 +104,7 @@ export const deleteRouter = (services: Services): Router => {
   router.get(
     '/',
     async (req: GroupRequest, res, next) => {
-      if (req.groupDetails.children && req.groupDetails.children.length > 0) {
+      if (req.groupDetails.children?.length > 0) {
         flashErrors(req, [
           { href: '#groupCode', text: 'Group has child groups please delete before trying to delete parent group' },
         ])

@@ -1,7 +1,8 @@
-import { Role } from 'manageUsersApiClient'
+import { CreateRoleRequest, Role } from 'manageUsersApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { hasRole, HmppsUser } from '../interfaces/hmppsUser'
 import AuthRole from '../interfaces/authRole'
+import { toArray } from '../utils/utils'
 
 export default class RolesService {
   constructor(private readonly manageUsersApiClient: ManageUsersApiClient) {}
@@ -22,4 +23,17 @@ export default class RolesService {
 
   getBannerMessage = async (token: string): Promise<string> =>
     this.manageUsersApiClient.getNotificationBannerMessage(token, 'ROLES').then(res => res.message)
+
+  createRole = async (token: string, request: CreateRoleRequest): Promise<Role> =>
+    this.manageUsersApiClient.createRole(token, {
+      ...request,
+      roleCode: request.roleCode
+        .toUpperCase()
+        .trim()
+        .replace(/^ROLE_/, ''),
+      adminType: toArray(request.adminType),
+    })
+
+  getRoleDetails = async (token: string, roleCode: string): Promise<Role> =>
+    this.manageUsersApiClient.getRoleDetails(token, roleCode)
 }

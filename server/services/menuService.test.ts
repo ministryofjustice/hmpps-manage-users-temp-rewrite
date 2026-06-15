@@ -212,13 +212,13 @@ describe('MenuService', () => {
         {
           title: `View roles`,
           description: `View roles that are available to be assigned to users`,
-          href: '/manage-roles',
+          href: paths.roles.list.pattern,
           dataQa: 'view_roles_link',
         },
         {
           title: `Create a role`,
           description: `Create a new role that can later be assigned to users`,
-          href: '/manage-roles/create-role',
+          href: paths.roles.create.pattern,
           dataQa: 'create_roles_link',
         },
       ])
@@ -230,7 +230,7 @@ describe('MenuService', () => {
         {
           title: `View roles`,
           description: `View roles that are available to be assigned to users`,
-          href: '/manage-roles',
+          href: paths.roles.list.pattern,
           dataQa: 'view_roles_link',
         },
       ])
@@ -266,7 +266,7 @@ describe('MenuService', () => {
         {
           title: `View roles`,
           description: `View roles that are available to be assigned to users`,
-          href: '/manage-roles',
+          href: paths.roles.list.pattern,
           dataQa: 'view_roles_link',
         },
       ])

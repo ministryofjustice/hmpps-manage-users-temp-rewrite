@@ -16,7 +16,7 @@ import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddlew
 import { validateGroupCode, validateGroupName } from '../../presentation/validation/groupValidation'
 import { EventType, SubjectType } from '../../services/auditService'
 import { HttpStatusCode } from '../../utils/utils'
-import { AuditDetailsProvider, bodyWithoutCsrf, GroupRequest, StringFromRequestProvider } from './types'
+import { AuditDetailsProvider, GroupRequest, StringFromRequestProvider } from './types'
 import GroupsService from '../../services/groupsService'
 
 export const createGroupRouter = (services: Services): Router => {
@@ -30,7 +30,7 @@ export const createGroupRouter = (services: Services): Router => {
     (_req, body: CreateGroupRequest) => paths.groups.details({ group: body.groupCode }),
     (groupsService, token, _req, body) => groupsService.createGroup(token, body),
     (_req, body: CreateGroupRequest) => {
-      return bodyWithoutCsrf(body)
+      return body
     },
   )
 }
@@ -47,7 +47,7 @@ export const createChildGroupRouter = (services: Services): Router => {
     (groupsService, token, req, body) => groupsService.createChildGroup(token, req.groupDetails.groupCode, body),
     (req, body) => {
       const parentGroupCode = req.groupDetails.groupCode
-      return { ...bodyWithoutCsrf(body), parentGroupCode }
+      return { body, parentGroupCode }
     },
   )
 }

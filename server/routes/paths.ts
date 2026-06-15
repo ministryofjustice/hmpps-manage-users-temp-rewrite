@@ -10,7 +10,8 @@ const searchDpsUserLsaDownload = searchDpsUser.path('lsa-download')
 const manageDpsUser = path('/manage-dps-users/:userId')
 const details = path('/details')
 const selectRoles = path('/select-roles')
-const roleRoot = path('/roles/:role')
+const role = path('/:role')
+const roleRoot = path('/roles').path(role.pattern)
 const remove = path('/remove')
 const requestRemoval = path('/request-removal')
 const selectCaseloads = path('/select-caseloads')
@@ -31,6 +32,8 @@ const changeChildGroupName = path('/change-child-group-name')
 const createChildGroup = path('/create-child-group')
 const deletePath = path('/delete')
 const deleteChildGroup = path('/delete-child-group')
+const manageRoles = path('/manage-roles')
+const createRole = path('/create-role')
 
 const roleRootAbsolute = manageDpsUser.path(roleRoot.pattern)
 const paths = {
@@ -89,6 +92,11 @@ const paths = {
     createChildGroup: manageGroups.path(group.pattern).path(createChildGroup.pattern),
     changeChildGroupName: manageGroups.path(group.pattern).path(changeChildGroupName.pattern).path(childGroup.pattern),
     deleteChildGroup: manageGroups.path(group.pattern).path(deleteChildGroup.pattern).path(childGroup.pattern),
+  },
+  roles: {
+    list: manageRoles,
+    create: manageRoles.path(createRole.pattern),
+    details: manageRoles.path(role.pattern),
   },
 }
 

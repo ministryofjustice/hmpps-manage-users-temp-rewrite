@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { ChildGroup, Group, UpdateGroupNameRequest } from 'manageUsersApiClient'
+import { ChildGroup, Group } from 'manageUsersApiClient'
 
 export type GroupRequest = Request & {
   groupDetails: Group
@@ -18,8 +18,3 @@ export type AuditDetailsProvider<GroupRequestType extends Request, Body = unknow
   req: GroupRequestType,
   body?: Body,
 ) => object
-
-export const bodyWithoutCsrf = (body: UpdateGroupNameRequest) => {
-  const { _csrf, ...withoutCsrf } = body
-  return withoutCsrf
-}

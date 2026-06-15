@@ -29,10 +29,12 @@ describe('validateGroupName', () => {
 
   it('returns error when group name has invalid characters', () => {
     const result = validateGroupName('*%Test^Group')
-    expect(result).toContainEqual<FormError>({
-      href: '#groupName',
-      text: "Group name can only contain 0-9, a-z and ( ) & , - . ' characters",
-    })
+    expect(result).toEqual<FormError[]>([
+      {
+        href: '#groupName',
+        text: "Group name can only contain 0-9, a-z and ( ) & , - . ' characters",
+      },
+    ])
   })
 
   it('returns no errors for valid groupName', () => {

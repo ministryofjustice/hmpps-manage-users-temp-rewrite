@@ -9,6 +9,7 @@ declare module 'manageUsersApiClient' {
   type CreateLinkedCentralAdminRequest = components['schemas']['CreateLinkedCentralAdminUserRequest']
   type CreateLinkedGeneralUserRequest = components['schemas']['CreateLinkedGeneralUserRequest']
   type CreateLinkedLocalAdminRequest = components['schemas']['CreateLinkedLocalAdminUserRequest']
+  type CreateRoleRequest = components['schemas']['CreateRoleDto']
   type CreateUserRequest = components['schemas']['CreateUserRequest']
   type EmailAddress = components['schemas']['EmailAddressDto']
   type EmailDomain = components['schemas']['EmailDomainDto']

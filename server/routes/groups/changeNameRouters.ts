@@ -16,13 +16,7 @@ import { validateGroupName } from '../../presentation/validation/groupValidation
 import { EventType, SubjectType } from '../../services/auditService'
 import { HttpStatusCode } from '../../utils/utils'
 import GroupsService from '../../services/groupsService'
-import {
-  AuditDetailsProvider,
-  bodyWithoutCsrf,
-  ChildGroupRequest,
-  GroupRequest,
-  StringFromRequestProvider,
-} from './types'
+import { AuditDetailsProvider, ChildGroupRequest, GroupRequest, StringFromRequestProvider } from './types'
 import paths from '../paths'
 
 type GroupNameUpdater = (
@@ -120,7 +114,7 @@ export const changeGroupNameRouter = (services: Services): Router => {
     req => req.groupDetails.groupCode,
     (groupsService, token, groupCode, body) => groupsService.changeGroupName(token, groupCode, body),
     (_req, body) => {
-      return bodyWithoutCsrf(body)
+      return body
     },
   )
 }
@@ -140,7 +134,7 @@ export const changeChildGroupNameRouter = (services: Services): Router => {
     (groupsService, token, groupCode, body) => groupsService.changeChildGroupName(token, groupCode, body),
     (req, body) => {
       const parentGroupCode = req.groupDetails.groupCode
-      return { ...bodyWithoutCsrf(body), parentGroupCode }
+      return { body, parentGroupCode }
     },
   )
 }
