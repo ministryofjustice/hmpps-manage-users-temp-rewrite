@@ -17,6 +17,11 @@ describe('validateRoleName', () => {
     ])
   })
 
+  it('accepts 4 characters', () => {
+    const result = validateRoleName('xxxx')
+    expect(result).toEqual([])
+  })
+
   it('returns error when role name is longer than than 100 characters', () => {
     const result = validateRoleName('x'.repeat(101))
     expect(result).toEqual<FormError[]>([
@@ -25,6 +30,11 @@ describe('validateRoleName', () => {
         text: 'Role name must be 100 characters or less',
       },
     ])
+  })
+
+  it('accepts 100 characters', () => {
+    const result = validateRoleName('x'.repeat(10))
+    expect(result).toEqual([])
   })
 
   it('returns error when role name has invalid characters', () => {
@@ -54,9 +64,19 @@ describe('validateRoleCode', () => {
     expect(result).toEqual<FormError[]>([{ href: '#roleCode', text: 'Role code must be 2 characters or more' }])
   })
 
+  it('accepts 2 characters', () => {
+    const result = validateRoleCode('XX')
+    expect(result).toEqual([])
+  })
+
   it('returns error when role code is too long', () => {
     const result = validateRoleCode('X'.repeat(31))
     expect(result).toEqual<FormError[]>([{ href: '#roleCode', text: 'Role code must be 30 characters or less' }])
+  })
+
+  it('accepts 30 characters', () => {
+    const result = validateRoleCode('X'.repeat(30))
+    expect(result).toEqual([])
   })
 
   it('returns error when role code has lowercase characters', () => {
@@ -100,6 +120,11 @@ describe('validateRoleDescription', () => {
     expect(result).toEqual<FormError[]>([
       { href: '#roleDescription', text: 'Role description must be 1024 characters or less' },
     ])
+  })
+
+  it('accepts 1024 characters', () => {
+    const result = validateRoleDescription('x'.repeat(1024))
+    expect(result).toEqual([])
   })
 
   it('returns no errors for valid description', () => {
