@@ -3,6 +3,10 @@ import { Services } from '../../services'
 import paths from '../paths'
 import createRouter from './createRouter'
 import detailsRouter from './detailsRouter'
+import listRouter from './listRouter'
+import changeNameRouter from './changeNameRouter'
+import changeDescriptionRouter from './changeDescriptionRouter'
+import changeAdminTypeRouter from './changeAdminTypeRouter'
 import logger from '../../../logger'
 import { RoleRequest } from './types'
 
@@ -22,6 +26,10 @@ export default function index(services: Services): Router {
 
   router.use(paths.roles.create.pattern, createRouter(services))
   router.use(paths.roles.details.pattern, detailsRouter(services))
+  router.use(paths.roles.list.pattern, listRouter(services))
+  router.use(paths.roles.changeRoleName.pattern, changeNameRouter(services))
+  router.use(paths.roles.changeRoleDescription.pattern, changeDescriptionRouter(services))
+  router.use(paths.roles.changeRoleAdminType.pattern, changeAdminTypeRouter(services))
 
   return router
 }

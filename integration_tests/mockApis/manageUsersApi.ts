@@ -7,6 +7,9 @@ import {
   Role,
   RoleDetail,
   UpdateGroupNameRequest,
+  UpdateRoleAdminTypeRequest,
+  UpdateRoleDescriptionRequest,
+  UpdateRoleNameRequest,
   UserCaseloadDetail,
   UserGroup,
 } from 'manageUsersApiClient'
@@ -158,6 +161,40 @@ const replicateUser = (times: number) =>
     dpsRoleCount: i,
     email: `ITAG_USER${i}@gov.uk`,
     staffStatus: 'ACTIVE',
+  }))
+
+// Alternate having 1, 2, or 3 admin types
+const generateAdminTypes = (i: number) => {
+  const types = []
+  types.push({
+    adminTypeCode: 'EXT_ADM',
+    adminTypeName: 'External Administrator',
+  })
+  if (i % 3 === 1) {
+    types.push({
+      adminTypeCode: 'DPS_ADM',
+      adminTypeName: 'DPS Central Administrator',
+    })
+  }
+  if (i % 3 === 2) {
+    types.push({
+      adminTypeCode: 'DPS_ADM',
+      adminTypeName: 'DPS Central Administrator',
+    })
+    types.push({
+      adminTypeCode: 'DPS_LSA',
+      adminTypeName: 'DPS Local System Administrator',
+    })
+  }
+  return types
+}
+
+const replicateRoles = (times: number) =>
+  [...Array(times).keys()].map(i => ({
+    roleName: `Role Name ${i}`,
+    roleCode: `ROLE_CODE_${i}`,
+    roleDescription: `Role Description ${i}`,
+    adminType: generateAdminTypes(i),
   }))
 
 const stubDpsRoles = (adminTypes: string, body: Role[] = defaultDpsAdminRoles): SuperAgentRequest =>
@@ -802,5 +839,43 @@ export default {
       method: 'GET',
       urlPath: `/manage-users-api/roles/${role.roleCode}`,
       body: role,
+    }),
+
+  stubPagedRoles: ({
+    totalElements = 1,
+    page = 0,
+    size = 10,
+    content = replicateRoles(Math.floor(totalElements / size) === page ? totalElements % size : size),
+  }): SuperAgentRequest =>
+    stubJson({
+      urlPath: '/manage-users-api/roles/paged',
+      body: {
+        content,
+        size,
+        totalElements,
+        number: page,
+        numberOfElements: totalElements < size ? totalElements : size,
+      },
+    }),
+
+  stubChangeRoleName: (roleCode: string, body: UpdateRoleNameRequest): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      urlPath: `/manage-users-api/roles/${roleCode}`,
+      body,
+    }),
+
+  stubChangeRoleDescription: (roleCode: string, body: UpdateRoleDescriptionRequest): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      urlPath: `/manage-users-api/roles/${roleCode}/description`,
+      body,
+    }),
+
+  stubChangeRoleAdminType: (roleCode: string, body: UpdateRoleAdminTypeRequest): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      urlPath: `/manage-users-api/roles/${roleCode}/admintype`,
+      body,
     }),
 }

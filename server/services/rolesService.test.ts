@@ -1,4 +1,13 @@
-import { CreateRoleRequest, NotificationMessage, Role } from 'manageUsersApiClient'
+import {
+  CreateRoleRequest,
+  NotificationMessage,
+  PagedList,
+  Role,
+  UpdateRoleAdminTypeRequest,
+  UpdateRoleDescriptionRequest,
+  UpdateRoleNameRequest,
+} from 'manageUsersApiClient'
+import { Response } from 'superagent'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import RolesService from './rolesService'
 import { PrisonUser } from '../interfaces/hmppsUser'
@@ -15,6 +24,10 @@ describe('RolesService', () => {
       getNotificationBannerMessage: jest.fn(),
       createRole: jest.fn(),
       getRoleDetails: jest.fn(),
+      getPagedRoles: jest.fn(),
+      changeRoleName: jest.fn(),
+      changeRoleDescription: jest.fn(),
+      changeRoleAdminType: jest.fn(),
     } as unknown as jest.Mocked<ManageUsersApiClient>
 
     service = new RolesService(apiClient)
@@ -336,5 +349,82 @@ describe('RolesService', () => {
 
     expect(apiClient.getRoleDetails).toHaveBeenCalledWith(token, 'ROLES_ADMIN')
     expect(result).toBe(role)
+  })
+
+  it('gets paged roles', async () => {
+    const roles = {
+      content: [
+        {
+          roleCode: 'ROLES_ADMIN',
+          roleName: 'Roles Admin',
+          roleDescription: 'Test role to allow this test to pass',
+          adminType: [
+            {
+              adminTypeCode: 'DPS_ADM',
+              adminTypeName: 'Central Admin',
+            },
+          ],
+        },
+      ],
+      size: 10,
+      totalElements: 1,
+      number: 0,
+      numberOfElements: 1,
+    } as PagedList<Role>
+
+    apiClient.getPagedRoles.mockResolvedValue(roles)
+
+    const result = await service.getPagedRoles(token, { roleCode: 'ROLES_ADMIN', size: 10, page: 0 })
+
+    expect(apiClient.getPagedRoles).toHaveBeenCalledWith(token, { roleCode: 'ROLES_ADMIN', size: 10, page: 0 })
+    expect(result).toBe(roles)
+  })
+
+  it('Changes a role name', async () => {
+    const response = {
+      ok: true,
+    } as Response
+    const updatedRoleName = {
+      roleName: 'New role name',
+    } as UpdateRoleNameRequest
+
+    apiClient.changeRoleName.mockResolvedValue(response)
+
+    const result = await service.changeRoleName(token, 'TEST_ROLE', updatedRoleName)
+
+    expect(apiClient.changeRoleName).toHaveBeenCalledWith(token, 'TEST_ROLE', updatedRoleName)
+    expect(result).toBe(response)
+  })
+
+  it('Changes a role description', async () => {
+    const response = {
+      ok: true,
+    } as Response
+    const updatedRoleDescription = {
+      roleDescription: 'New description',
+    } as UpdateRoleDescriptionRequest
+
+    apiClient.changeRoleDescription.mockResolvedValue(response)
+
+    const result = await service.changeRoleDescription(token, 'TEST_ROLE', updatedRoleDescription)
+
+    expect(apiClient.changeRoleDescription).toHaveBeenCalledWith(token, 'TEST_ROLE', updatedRoleDescription)
+    expect(result).toBe(response)
+  })
+
+  it('Changes a role admin type', async () => {
+    const response = {
+      ok: true,
+    } as Response
+    const updatedRoleAdminType = {
+      adminType: ['DPS_ADM', 'DPS_LSA'],
+    } as UpdateRoleAdminTypeRequest
+
+    apiClient.changeRoleAdminType.mockResolvedValue(response)
+
+    const result = await service.changeRoleAdminType(token, 'TEST_ROLE', updatedRoleAdminType)
+
+    expect(apiClient.changeRoleAdminType).toHaveBeenCalledWith(token, 'TEST_ROLE', updatedRoleAdminType)
+    expect(result).toBe(response)
   })
 })

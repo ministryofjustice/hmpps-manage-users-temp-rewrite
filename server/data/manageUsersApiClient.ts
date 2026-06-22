@@ -27,6 +27,7 @@ import {
   PrisonUserDownloadSummary,
   PrisonUserSearchSummary,
   Role,
+  RoleSearchQuery,
   UpdateGroupNameRequest,
   UpdateRoleAdminTypeRequest,
   UpdateRoleDescriptionRequest,
@@ -325,13 +326,8 @@ export default class ManageUsersApiClient extends RestClient {
 
   async getPagedRoles(
     token: string,
-    page: number,
-    size: number,
-    roleName: string,
-    roleCode: string,
-    adminType: string,
+    { roleName, roleCode, adminTypes, size = 20, page = 0 }: RoleSearchQuery,
   ): Promise<PagedList<Role>> {
-    const adminTypes = adminType === 'ALL' ? '' : adminType
     const query = {
       page,
       size,

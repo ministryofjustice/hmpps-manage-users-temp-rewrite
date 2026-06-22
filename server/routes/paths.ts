@@ -34,6 +34,9 @@ const deletePath = path('/delete')
 const deleteChildGroup = path('/delete-child-group')
 const manageRoles = path('/manage-roles')
 const createRole = path('/create-role')
+const changeRoleName = path('/change-role-name')
+const changeRoleDescription = path('/change-role-description')
+const changeRoleAdminType = path('/change-role-admin-type')
 
 const roleRootAbsolute = manageDpsUser.path(roleRoot.pattern)
 const paths = {
@@ -97,6 +100,9 @@ const paths = {
     list: manageRoles,
     create: manageRoles.path(createRole.pattern),
     details: manageRoles.path(role.pattern),
+    changeRoleName: manageRoles.path(role.pattern).path(changeRoleName.pattern),
+    changeRoleDescription: manageRoles.path(role.pattern).path(changeRoleDescription.pattern),
+    changeRoleAdminType: manageRoles.path(role.pattern).path(changeRoleAdminType.pattern),
   },
 }
 

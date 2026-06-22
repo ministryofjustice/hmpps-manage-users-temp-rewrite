@@ -28,6 +28,7 @@ declare module 'manageUsersApiClient' {
   type PrisonUserDownloadSummary = components['schemas']['PrisonUserDownloadSummary']
   type PrisonUserSummary = components['schemas']['PrisonUserSummary']
   type Role = components['schemas']['RoleDto']
+  type RoleAdminType = components['schemas']['AdminTypeReturn']
   type RoleDetail = components['schemas']['RoleDetail']
   type UpdateGroupNameRequest = components['schemas']['GroupAmendmentDto']
   type UpdateRoleAdminTypeRequest = components['schemas']['RoleAdminTypeAmendmentDto']
@@ -75,6 +76,13 @@ declare module 'manageUsersApiClient' {
     activeCaseload?: string
     inclusiveRoles?: boolean
     showOnlyLSAs?: boolean
+    size?: number
+    page?: number
+  }
+  interface RoleSearchQuery {
+    roleName?: string
+    roleCode?: string
+    adminTypes?: string[]
     size?: number
     page?: number
   }
