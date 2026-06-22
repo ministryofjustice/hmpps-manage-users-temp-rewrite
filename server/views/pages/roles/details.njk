@@ -42,7 +42,7 @@
       {% endif %}
     {% endset %}
     {% set roleDescriptionWithWrapping %}
-      <pre class="govuk-body govuk-!-margin-bottom-0">{{ "" if roleDetails.roleDescription == null else roleDetails.roleDescription }}</pre>
+      <pre class="govuk-body govuk-!-margin-bottom-0 wrapped-pre">{{ "" if roleDetails.roleDescription == null else roleDetails.roleDescription }}</pre>
     {% endset %}
     {% set caption = '<b>Admin type</b>' %}
     {% set changeRoleAdminTypeLink %}
