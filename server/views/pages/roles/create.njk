@@ -1,10 +1,8 @@
 {% extends "../../partials/layout.njk" %}
-{% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
@@ -35,7 +33,7 @@
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
         {{ govukInput({label: {
-          text: "Role code"
+          text: "Role code", classes: "govuk-label--s"
         },
           classes: "govuk-input--width-30",
           value: roleCode,
@@ -45,7 +43,7 @@
         }) }}
 
         {{ govukInput({label: {
-          text: "Role name"
+          text: "Role name", classes: "govuk-label--s"
         },
           classes: "govuk-input--width-30",
           value: roleName,
@@ -55,7 +53,7 @@
         }) }}
 
         {{ govukCharacterCount({label: {
-          text: "Role description"
+          text: "Role description", classes: "govuk-label--s"
         },
           classes: "govuk-input--width-50",
           value: roleDescription,

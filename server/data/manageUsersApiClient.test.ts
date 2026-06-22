@@ -36,7 +36,7 @@ import { ParsedUrlQuery } from 'querystring'
 import config from '../config'
 import ManageUsersApiClient from './manageUsersApiClient'
 import createPagedList from '../testutils/pagedListHelper'
-import { HttpStatusCode } from '../utils/utils'
+import { HttpStatusCode, toArray } from '../utils/utils'
 
 const successResponse = HttpStatusCode.OK
 const token = 'test-system-token'
@@ -1086,7 +1086,13 @@ describe('ManageUsersApiClient', () => {
           adminTypes: adminType,
         })
 
-        const response = await manageUsersApiClient.getPagedRoles(token, page, size, roleName, roleCode, adminType)
+        const response = await manageUsersApiClient.getPagedRoles(token, {
+          page,
+          size,
+          roleName,
+          roleCode,
+          adminTypes: toArray<'DPS_ADM' | 'DPS_LSA' | 'EXT_ADM' | 'IMS_HIDDEN'>(adminType),
+        })
         expect(response).toEqual(roles)
       })
     })

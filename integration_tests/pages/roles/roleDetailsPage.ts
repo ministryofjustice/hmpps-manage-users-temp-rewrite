@@ -33,8 +33,8 @@ export default class RoleDetailsPage extends AbstractPage {
     this.errorSummary = page.getByTestId('error-summary')
   }
 
-  static async verifyOnPage(page: Page, groupName: string): Promise<RoleDetailsPage> {
-    const roleDetailsPage = new RoleDetailsPage(page, groupName)
+  static async verifyOnPage(page: Page, roleName: string): Promise<RoleDetailsPage> {
+    const roleDetailsPage = new RoleDetailsPage(page, roleName)
     await expect(roleDetailsPage.header).toBeVisible()
     return roleDetailsPage
   }

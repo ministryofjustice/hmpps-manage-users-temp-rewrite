@@ -11,6 +11,7 @@ import HomePage from '../../pages/homePage'
 import { HttpStatusCode } from '../../../server/utils/utils'
 import CreateRolePage from '../../pages/roles/createRolePage'
 import RoleDetailsPage from '../../pages/roles/roleDetailsPage'
+import RoleListPage from '../../pages/roles/roleListPage'
 
 const gotoCreateRole = async (page: Page) => {
   await login(page, { roles: [AuthRole.ROLES_ADMIN] })
@@ -137,6 +138,32 @@ test.describe('Create Role', () => {
     await expect(createRolePage.errorSummary).toHaveText('There is a problem Role code already exists')
   })
 
+  test('Shows an error if role description is more than 1024 characters', async ({ page }) => {
+    const createRolePage = await gotoCreateRole(page)
+
+    await createRolePage.roleName.fill('Test role name')
+    await createRolePage.roleCode.fill('TEST_ROLE_CODE')
+    await createRolePage.roleDescription.fill('x'.repeat(1025))
+    await createRolePage.extAdminCheckbox.click()
+    await createRolePage.submit.click()
+    await expect(createRolePage.errorSummary).toHaveText(
+      'There is a problem Role description must be 1024 characters or less',
+    )
+  })
+
+  test('Shows an error if role description has invalid characters', async ({ page }) => {
+    const createRolePage = await gotoCreateRole(page)
+
+    await createRolePage.roleName.fill('Test role name')
+    await createRolePage.roleCode.fill('TEST_ROLE_CODE')
+    await createRolePage.roleDescription.fill('&Test description*')
+    await createRolePage.extAdminCheckbox.click()
+    await createRolePage.submit.click()
+    await expect(createRolePage.errorSummary).toHaveText(
+      "There is a problem Role description can only contain 0-9, a-z, newline and ( ) & , - . ' characters",
+    )
+  })
+
   test('Shows an error if no admin type selected', async ({ page }) => {
     const createRolePage = await gotoCreateRole(page)
 
@@ -173,17 +200,16 @@ test.describe('Create Role', () => {
     await RoleDetailsPage.verifyOnPage(page, 'Test role name')
   })
 
-  // TODO renable this test when the list page is implemented
-  // test('Goes to roles list page if creating a role is cancelled', async ({ page }) => {
-  //   const createRolePage = await gotoCreateRole(page)
-  //
-  //   await manageUsersApi.stubAssignableGroups()
-  //   await createRolePage.roleName.fill('Test role name')
-  //   await createRolePage.roleCode.fill('TEST_ROLE')
-  //   await createRolePage.cancel.click()
-  //
-  //   await RoleListPage.verifyOnPage(page)
-  // })
+  test('Goes to roles list page if creating a role is cancelled', async ({ page }) => {
+    const createRolePage = await gotoCreateRole(page)
+
+    await manageUsersApi.stubPagedRoles({})
+    await createRolePage.roleName.fill('Test role name')
+    await createRolePage.roleCode.fill('TEST_ROLE')
+    await createRolePage.cancel.click()
+
+    await RoleListPage.verifyOnPage(page)
+  })
 
   test('Should fail attempting to create role if unauthorised', async ({ page }) => {
     await login(page, { roles: ['ROLE_NOT_ROLES_ADMIN'] })

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { login, resetStubs } from '../../testUtils'
+import { attemptPostWithoutCsrf, login, resetStubs } from '../../testUtils'
 import AuthRole from '../../../server/interfaces/authRole'
 import paths from '../../../server/routes/paths'
 import AuthErrorPage from '../../pages/authErrorPage'
@@ -260,6 +260,12 @@ test.describe('Group Details', () => {
       expect(requests.length).toBe(1)
       expect(JSON.parse(requests[0].body)).toEqual({ groupName: 'New group name' })
     })
+
+    test('Should check for CSRF token', async ({ page }) => {
+      await login(page, { roles: [AuthRole.MAINTAIN_OAUTH_USERS] })
+
+      await attemptPostWithoutCsrf(page, paths.groups.changeGroupName({ group: 'TEST_PARENT_GROUP' }))
+    })
   })
 
   test.describe('Changing a child group name', () => {
@@ -389,6 +395,15 @@ test.describe('Group Details', () => {
       expect(requests.length).toBe(1)
       expect(JSON.parse(requests[0].body)).toEqual({ groupName: 'New group name' })
     })
+
+    test('Should check for CSRF token', async ({ page }) => {
+      await login(page, { roles: [AuthRole.MAINTAIN_OAUTH_USERS] })
+
+      await attemptPostWithoutCsrf(
+        page,
+        paths.groups.changeChildGroupName({ group: 'TEST_PARENT_GROUP', childGroup: 'TEST_CHILD_GROUP_1' }),
+      )
+    })
   })
 
   test.describe('Deleting the group', () => {
@@ -476,6 +491,12 @@ test.describe('Group Details', () => {
       await page.goto(paths.groups.delete({ group: 'TEST_PARENT_GROUP' }))
       await AuthErrorPage.verifyOnPage(page)
     })
+
+    test('Should check for CSRF token', async ({ page }) => {
+      await login(page, { roles: [AuthRole.MAINTAIN_OAUTH_USERS] })
+
+      await attemptPostWithoutCsrf(page, paths.groups.delete({ group: 'TEST_PARENT_GROUP' }))
+    })
   })
 
   test.describe('Deleting a child group', () => {
@@ -554,6 +575,15 @@ test.describe('Group Details', () => {
       )
       await page.goto(paths.groups.deleteChildGroup({ group: 'TEST_PARENT_GROUP', childGroup: 'TEST_CHILD_GROUP_1' }))
       await AuthErrorPage.verifyOnPage(page)
+    })
+
+    test('Should check for CSRF token', async ({ page }) => {
+      await login(page, { roles: [AuthRole.MAINTAIN_OAUTH_USERS] })
+
+      await attemptPostWithoutCsrf(
+        page,
+        paths.groups.deleteChildGroup({ group: 'TEST_PARENT_GROUP', childGroup: 'TEST_CHILD_GROUP_1' }),
+      )
     })
   })
 

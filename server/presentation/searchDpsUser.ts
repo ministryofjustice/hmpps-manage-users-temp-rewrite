@@ -4,6 +4,7 @@ import AuthRole from '../interfaces/authRole'
 import Category, { CategoryItem } from '../interfaces/filter'
 import paths from '../routes/paths'
 import { statusDisplay, StatusKey } from './status'
+import SearchParamsHelper from './searchParams'
 
 export interface Filter {
   user?: string
@@ -149,15 +150,14 @@ export const filterCategories = (
   return categories
 }
 
+const searchParamsHelper = new SearchParamsHelper(paths.dpsUser.search.pattern)
+
 const removeField = (searchParams: URLSearchParams, fieldName: string, fieldValue?: string): URLSearchParams => {
-  const searchParamsCopy = new URLSearchParams(searchParams)
-  searchParamsCopy.delete(fieldName, fieldValue)
-  return searchParamsCopy
+  return searchParamsHelper.removeField(searchParams, fieldName, fieldValue)
 }
 
 const hrefToRemoveFilter = (searchParams: URLSearchParams, fieldName: string, fieldValue?: string): string => {
-  const searchParamsCopy = removeField(searchParams, fieldName, fieldValue)
-  return `${paths.dpsUser.search.pattern}?${searchParamsCopy.toString()}`
+  return searchParamsHelper.hrefToRemoveFilter(searchParams, fieldName, fieldValue)
 }
 
 export type DownloadAuthorisationCheck = (user: HmppsUser) => boolean

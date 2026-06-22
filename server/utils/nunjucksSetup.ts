@@ -21,8 +21,12 @@ import {
 } from '../presentation/userType'
 import caseloadDropdownValues from '../presentation/caseloads'
 import paths from '../routes/paths'
-import { roleDropdownValues } from '../presentation/roles'
-import { Filter, filterCategories } from '../presentation/searchDpsUser'
+import {
+  roleDropdownValues,
+  Filter as RoleFilter,
+  filterCategories as roleFilterCategories,
+} from '../presentation/roles'
+import { Filter as DpsUserFilter, filterCategories as dpsUserFilterCategories } from '../presentation/searchDpsUser'
 import { isRestrictedRoleCode, RestrictedRoles } from '../presentation/restrictedRoles'
 
 export default function nunjucksSetup(app: express.Express): void {
@@ -112,13 +116,13 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter(
     'toUserSearchFilter',
     (
-      currentFilter: Filter,
+      currentFilter: DpsUserFilter,
       prisons: PrisonCaseload[],
       roles: Role[],
       filterOptionsHtml: string,
       showGroupOrPrisonFilter: boolean,
     ) => {
-      const categories = filterCategories(currentFilter, roles, prisons, showGroupOrPrisonFilter)
+      const categories = dpsUserFilterCategories(currentFilter, roles, prisons, showGroupOrPrisonFilter)
 
       return {
         heading: {
@@ -138,4 +142,24 @@ export default function nunjucksSetup(app: express.Express): void {
       }
     },
   )
+  njkEnv.addFilter('toRoleFilter', (currentFilter: RoleFilter, filterOptionsHtml: string) => {
+    const categories = roleFilterCategories(currentFilter)
+
+    return {
+      heading: {
+        text: 'Filters',
+      },
+      selectedFilters: {
+        heading: {
+          html: '<div class="moj-action-bar__filter"></div>',
+        },
+        clearLink: {
+          text: 'Clear filters',
+          href: `${paths.roles.list.pattern}`,
+        },
+        categories: categories.filter(category => category.items),
+      },
+      optionsHtml: filterOptionsHtml,
+    }
+  })
 }

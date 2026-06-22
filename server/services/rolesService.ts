@@ -1,4 +1,13 @@
-import { CreateRoleRequest, Role } from 'manageUsersApiClient'
+import {
+  CreateRoleRequest,
+  PagedList,
+  Role,
+  RoleSearchQuery,
+  UpdateRoleAdminTypeRequest,
+  UpdateRoleDescriptionRequest,
+  UpdateRoleNameRequest,
+} from 'manageUsersApiClient'
+import { Response } from 'superagent'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { hasRole, HmppsUser } from '../interfaces/hmppsUser'
 import AuthRole from '../interfaces/authRole'
@@ -36,4 +45,22 @@ export default class RolesService {
 
   getRoleDetails = async (token: string, roleCode: string): Promise<Role> =>
     this.manageUsersApiClient.getRoleDetails(token, roleCode)
+
+  getPagedRoles = async (token: string, query: RoleSearchQuery): Promise<PagedList<Role>> =>
+    this.manageUsersApiClient.getPagedRoles(token, query)
+
+  changeRoleName = async (token: string, roleCode: string, roleName: UpdateRoleNameRequest): Promise<Response> =>
+    this.manageUsersApiClient.changeRoleName(token, roleCode, roleName)
+
+  changeRoleDescription = async (
+    token: string,
+    roleCode: string,
+    roleDescription: UpdateRoleDescriptionRequest,
+  ): Promise<Response> => this.manageUsersApiClient.changeRoleDescription(token, roleCode, roleDescription)
+
+  changeRoleAdminType = async (
+    token: string,
+    roleCode: string,
+    adminType: UpdateRoleAdminTypeRequest,
+  ): Promise<Response> => this.manageUsersApiClient.changeRoleAdminType(token, roleCode, adminType)
 }
