@@ -15,7 +15,50 @@ generic-service:
   ingress:
     enabled: true
     host: app-hostname.local # override per environment
+    annotations:
+      # note this limit is per ingress replica
+      nginx.ingress.kubernetes.io/limit-rpm: "120"
+      # setting to 429 (default is 503) so we can alert on this
+      nginx.ingress.kubernetes.io/server-snippet: |
+        add_header X-Robots-Tag "noindex, nofollow";
+        limit_req_status 429;
     tlsSecretName: hmpps-manage-users-temp-rewrite-cert
+    modsecurity_enabled: true
+    modsecurity_snippet: |
+      SecRuleEngine On
+      # Block Detectify scanner with 418
+      SecRule REQUEST_HEADERS:User-Agent "@pm detectify Detectify DETECTIFY" "id:800003,phase:1,deny,status:418,log,tag:github_team=haha,tag:namespace={{ .Release.Namespace }}"
+      SecDefaultAction "phase:2,pass,log,tag:github_team=haha"
+      SecDefaultAction "phase:4,pass,log,tag:github_team=haha"
+      {{ if .Values.ingress.modsecurity_audit_enabled -}}
+      SecAuditEngine RelevantOnly
+      SecAuditLog /var/log/nginx/error.log
+      SecAuditLogType Serial
+      {{ end -}}
+      SecRuleRemoveById 920300
+      SecRuleUpdateTargetById 942440 "!REQUEST_COOKIES:/hmpps-session-dev/"
+      SecRuleUpdateTargetById 942440 "!REQUEST_COOKIES:/hmpps-session-preprod/"
+      SecRuleUpdateTargetById 942440 "!REQUEST_COOKIES:/hmpps-session-prod/"
+      SecRuleUpdateTargetById 949110 "!REQUEST_COOKIES:/hmpps-session-dev/"
+      SecRuleUpdateTargetById 949110 "!REQUEST_COOKIES:/hmpps-session-preprod/"
+      SecRuleUpdateTargetById 949110 "!REQUEST_COOKIES:/hmpps-session-prod/"
+      SecRuleUpdateActionById 949110 "t:none,deny,status:406,logdata:%{SERVER_NAME}"
+      SecRuleUpdateActionById 959100 "t:none,deny,status:406,logdata:%{SERVER_NAME}"
+      SecRuleUpdateActionById 950010 "t:none,deny,status:406,logdata:%{SERVER_NAME}"
+      SecRuleUpdateActionById 932300 "t:none,deny,status:406,logdata:%{SERVER_NAME}"
+      SecRuleUpdateActionById 932301 "t:none,deny,status:406,logdata:%{SERVER_NAME}"
+      SecRuleUpdateActionById 921200 "t:none,deny,status:406,logdata:%{SERVER_NAME}"
+      SecRuleUpdateTargetById 942100 "!ARGS"  # disable libinjection testing on request args. to disable all SQLi testing, modify rules in the range 942100-942999
+      SecRuleUpdateTargetById 942430 "!ARGS:returnTo"
+      SecRuleUpdateTargetById 930120 "!ARGS:/email/"
+      SecRuleUpdateTargetById 930120 "!ARGS:/user/"
+      SecAction \
+        "id:900000,\
+         phase:1,\
+         nolog,\
+         pass,\
+         t:none,\
+         setvar:tx.paranoia_level=2"
 
   livenessProbe:
     httpGet:
@@ -56,6 +99,7 @@ generic-service:
     hmpps-manage-users-application-insights:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
 
+# TODO: remove allowlist when merged with hmpps-manage-users as is open when live
   allowlist:
     groups:
       - internal
