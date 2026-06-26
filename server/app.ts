@@ -14,6 +14,7 @@ import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setUpRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
+import configureDebugRoutes from './routes/debugRoutes'
 
 import routes from './routes'
 import type { Services } from './services'
@@ -31,6 +32,14 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
   nunjucksSetup(app)
+
+  // SECURITY WARNING: Debug routes are registered here, before setUpAuthentication, so they are
+  // accessible without authentication. They are only registered when NODE_ENV !== 'production'.
+  // See server/routes/debugRoutes.ts for full security notes.
+  if (process.env.NODE_ENV !== 'production') {
+    configureDebugRoutes(app)
+  }
+
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
