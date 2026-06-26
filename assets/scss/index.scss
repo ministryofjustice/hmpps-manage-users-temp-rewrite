@@ -21,9 +21,11 @@ $govuk-page-width: $moj-page-width;
 }
 
 .wrapped-pre {
-  white-space: pre-wrap;
+  white-space: pre-line;
 }
 
 .preformatted {
   white-space: pre-line;
 }
+
+@import './debug-session';
