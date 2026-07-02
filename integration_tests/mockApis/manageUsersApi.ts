@@ -13,7 +13,7 @@ import {
   UserCaseloadDetail,
   UserGroup,
 } from 'manageUsersApiClient'
-import { stubJson } from './wiremock'
+import { stubJson, stubPing } from './wiremock'
 import { UserTypeKey } from '../../server/presentation/userType'
 import { HttpStatusCode } from '../../server/utils/utils'
 
@@ -283,12 +283,7 @@ const stubOAuthAdminDpsRoles = () => {
 }
 
 export default {
-  stubPing: (httpStatus = HttpStatusCode.OK): SuperAgentRequest =>
-    stubJson({
-      urlPattern: '/manage-users-api/health/ping',
-      body: { status: httpStatus === HttpStatusCode.OK ? 'UP' : 'DOWN' },
-      status: httpStatus,
-    }),
+  stubPing: (httpStatus = HttpStatusCode.OK): SuperAgentRequest => stubPing('/manage-users-api', httpStatus),
 
   stubNotificationBannerMessage: (notificationType: string, message: string): SuperAgentRequest =>
     stubJson({

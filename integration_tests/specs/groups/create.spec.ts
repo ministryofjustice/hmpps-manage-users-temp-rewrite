@@ -25,7 +25,7 @@ const getCreateGroupRequests = async () => {
   return getMatchingRequests({
     method: 'POST',
     urlPathPattern: '/manage-users-api/groups',
-  }).then(data => data.body.requests)
+  })
 }
 
 test.describe('Create Group', () => {

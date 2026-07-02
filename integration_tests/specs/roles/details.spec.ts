@@ -36,21 +36,21 @@ const getChangeRoleNameRequests = async () => {
   return getMatchingRequests({
     method: 'PUT',
     urlPathPattern: '/manage-users-api/roles/.*',
-  }).then(data => data.body.requests)
+  })
 }
 
 const getChangeRoleDescriptionRequests = async () => {
   return getMatchingRequests({
     method: 'PUT',
     urlPathPattern: '/manage-users-api/roles/.*/description',
-  }).then(data => data.body.requests)
+  })
 }
 
 const getChangeRoleAdminTypeRequests = async () => {
   return getMatchingRequests({
     method: 'PUT',
     urlPathPattern: '/manage-users-api/roles/.*/admintype',
-  }).then(data => data.body.requests)
+  })
 }
 
 test.describe('Role Details', () => {

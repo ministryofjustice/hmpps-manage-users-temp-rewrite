@@ -25,7 +25,7 @@ const getCreateRoleRequests = async () => {
   return getMatchingRequests({
     method: 'POST',
     urlPathPattern: '/manage-users-api/roles',
-  }).then(data => data.body.requests)
+  })
 }
 
 test.describe('Create Role', () => {

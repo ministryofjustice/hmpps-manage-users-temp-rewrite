@@ -17,42 +17,42 @@ const getDpsAddUserRoleRequests = async () => {
   return getMatchingRequests({
     method: 'POST',
     urlPathPattern: '/manage-users-api/prisonusers/.*/roles',
-  }).then(data => data.body.requests)
+  })
 }
 
 const getDpsRemoveUserRoleRequests = async () => {
   return getMatchingRequests({
     method: 'DELETE',
     urlPathPattern: '/manage-users-api/prisonusers/.*/roles/.*',
-  }).then(data => data.body.requests)
+  })
 }
 
 const getDpsRemoveUserCaseloadRequests = async () => {
   return getMatchingRequests({
     method: 'DELETE',
     urlPathPattern: '/manage-users-api/prisonusers/.*/caseloads/.*',
-  }).then(data => data.body.requests)
+  })
 }
 
 const getDpsAddUserCaseloadRequests = async () => {
   return getMatchingRequests({
     method: 'POST',
     urlPathPattern: '/manage-users-api/prisonusers/.*/caseloads',
-  }).then(data => data.body.requests)
+  })
 }
 
 const getDpsUserDisableRequests = async () => {
   return getMatchingRequests({
     method: 'PUT',
     urlPathPattern: '/manage-users-api/prisonusers/.*/disable-user',
-  }).then(data => data.body.requests)
+  })
 }
 
 const getDpsUserEnableRequests = async () => {
   return getMatchingRequests({
     method: 'PUT',
     urlPathPattern: '/manage-users-api/prisonusers/.*/enable-user',
-  }).then(data => data.body.requests)
+  })
 }
 
 test.describe('Manage a DPS user', () => {
