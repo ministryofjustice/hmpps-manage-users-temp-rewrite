@@ -1,7 +1,6 @@
 import HmppsAuditClient, { AuditEvent } from '../data/hmppsAuditClient'
 
 export enum Page {
-  EXAMPLE_PAGE = 'EXAMPLE_PAGE',
   VIEW_DPS_USER = 'VIEW_DPS_USER',
   VIEW_EMAIL_DOMAINS = 'VIEW_EMAIL_DOMAINS',
   VIEW_GROUP_DETAILS = 'VIEW_GROUP_DETAILS',
