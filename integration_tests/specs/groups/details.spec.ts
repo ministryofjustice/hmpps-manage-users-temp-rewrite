@@ -46,28 +46,28 @@ const getChangeGroupNameRequests = async () => {
   return getMatchingRequests({
     method: 'PUT',
     urlPathPattern: '/manage-users-api/groups/.*',
-  }).then(data => data.body.requests)
+  })
 }
 
 const getChangeChildGroupNameRequests = async () => {
   return getMatchingRequests({
     method: 'PUT',
     urlPathPattern: '/manage-users-api/groups/child/.*',
-  }).then(data => data.body.requests)
+  })
 }
 
 const getDeleteGroupRequests = async () => {
   return getMatchingRequests({
     method: 'DELETE',
     urlPathPattern: '/manage-users-api/groups/.*',
-  }).then(data => data.body.requests)
+  })
 }
 
 const getDeleteChildGroupRequests = async () => {
   return getMatchingRequests({
     method: 'DELETE',
     urlPathPattern: '/manage-users-api/groups/child/.*',
-  }).then(data => data.body.requests)
+  })
 }
 
 test.describe('Group Details', () => {

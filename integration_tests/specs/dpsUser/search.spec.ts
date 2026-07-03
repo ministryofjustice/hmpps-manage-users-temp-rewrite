@@ -12,7 +12,7 @@ const getDpsUserSearchRequests = async () => {
   return getMatchingRequests({
     method: 'GET',
     urlPathPattern: '/manage-users-api/prisonusers/search',
-  }).then(data => data.body.requests)
+  })
 }
 
 test.describe('Search DPS user', () => {

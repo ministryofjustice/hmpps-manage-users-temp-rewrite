@@ -20,7 +20,7 @@ const getCreateEmailDomainRequests = async () => {
   return getMatchingRequests({
     method: 'POST',
     urlPathPattern: '/manage-users-api/email-domains',
-  }).then(data => data.body.requests)
+  })
 }
 
 test.describe('Create Email Domain', () => {

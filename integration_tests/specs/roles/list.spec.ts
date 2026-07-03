@@ -12,7 +12,7 @@ const getListRoleRequests = async () => {
   return getMatchingRequests({
     method: 'GET',
     urlPathPattern: '/manage-users-api/roles/paged',
-  }).then(data => data.body.requests)
+  })
 }
 
 test.describe('List Roles', () => {

@@ -20,7 +20,7 @@ const getDeleteEmailDomainRequests = async () => {
   return getMatchingRequests({
     method: 'DELETE',
     urlPathPattern: '/manage-users-api/email-domains/.*',
-  }).then(data => data.body.requests)
+  })
 }
 
 test.describe('Delete Email Domain', () => {
