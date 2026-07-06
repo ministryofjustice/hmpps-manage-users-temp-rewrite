@@ -37,6 +37,8 @@ const createRole = path('/create-role')
 const changeRoleName = path('/change-role-name')
 const changeRoleDescription = path('/change-role-description')
 const changeRoleAdminType = path('/change-role-admin-type')
+const crsGroupSelection = path('/crs-group-selection')
+const download = path('/download')
 
 const roleRootAbsolute = manageDpsUser.path(roleRoot.pattern)
 const paths = {
@@ -103,6 +105,10 @@ const paths = {
     changeRoleName: manageRoles.path(role.pattern).path(changeRoleName.pattern),
     changeRoleDescription: manageRoles.path(role.pattern).path(changeRoleDescription.pattern),
     changeRoleAdminType: manageRoles.path(role.pattern).path(changeRoleAdminType.pattern),
+  },
+  crsGroups: {
+    select: crsGroupSelection,
+    download: crsGroupSelection.path(download.pattern),
   },
 }
 

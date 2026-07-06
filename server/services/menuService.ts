@@ -134,7 +134,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Download CRS Group members`,
       `Select CRS Group and download list of members`,
-      '/crs-group-selection',
+      paths.crsGroups.select.pattern,
       'view_crs_group_users_link',
       12,
       ['CONTRACT_MANAGER_VIEW_GROUP'],

@@ -2,6 +2,7 @@ import type { SuperAgentRequest } from 'superagent'
 import {
   ChildGroup,
   EmailDomain,
+  ExternalUser,
   Group,
   PrisonUserGroupDetail,
   Role,
@@ -872,5 +873,40 @@ export default {
       method: 'PUT',
       urlPath: `/manage-users-api/roles/${roleCode}/admintype`,
       body,
+    }),
+
+  stubGetAllCRSGroups: ({
+    crsGroups = [
+      { groupCode: 'INT_CR_PRJ_6166', groupName: 'CRS Accommodation for South Wales' },
+      { groupCode: 'INT_CR_PRJ_6158', groupName: 'CRS Accommodation Services - Dyfed-Powys' },
+      { groupCode: 'INT_CR_PRJ_5549', groupName: 'CRS Accommodation Services - East Midlands' },
+    ],
+  }): SuperAgentRequest =>
+    stubJson({
+      urlPattern: '/manage-users-api/groups/subset/crs',
+      body: crsGroups,
+    }),
+
+  stubGetUsersInCRSGroup: ({
+    users = [
+      {
+        userId: '2e285ccd-dcfd-4497-9e28-d6e8e10a2d3f',
+        username: 'AUTH_ADM',
+        email: 'auth_test2@digital.justice.gov.uk',
+        enabled: true,
+        locked: false,
+        verified: false,
+        firstName: 'Auth',
+        lastName: 'Adm',
+        lastLoggedIn: '2025-10-15T10:01:58.614221',
+        inactiveReason: 'Retired',
+      },
+    ],
+  }: {
+    users?: ExternalUser[]
+  }): SuperAgentRequest =>
+    stubJson({
+      urlPattern: '/manage-users-api/externalusers/crsgroup/.*',
+      body: users,
     }),
 }
