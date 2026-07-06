@@ -8,12 +8,12 @@ import AuthRole from '../../interfaces/authRole'
 export default function index(services: Services): Router {
   const router = Router()
 
-  router.use(paths.crsGroups.select.pattern, selectionRouter(services))
   router.use(
     paths.crsGroups.download.pattern,
     authRoleGuardMiddleware([AuthRole.CONTRACT_MANAGER_VIEW_GROUP]),
     downloadHandler(services),
   )
+  router.use(paths.crsGroups.select.pattern, selectionRouter(services))
 
   return router
 }

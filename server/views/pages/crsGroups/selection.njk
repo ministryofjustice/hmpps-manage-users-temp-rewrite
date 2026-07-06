@@ -77,7 +77,7 @@
             hint: {
               text: "Start typing to filter the CRS groups"
             },
-            items: groupValues | setSelected(group.groupCode) | addBlankOptions('Select a CRS Group')
+            items: groupValues | addBlankOptions('Select a CRS Group')
           }) }}
 
           {{ govukButton({
