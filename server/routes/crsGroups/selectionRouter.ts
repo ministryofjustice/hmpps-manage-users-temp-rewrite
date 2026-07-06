@@ -26,7 +26,7 @@ export default (services: Services): Router => {
     const { group } = req.query
     const errors: FormError[] = []
     let groupSize = 0
-    let matchedGroup: UserGroup
+    let matchedGroup: UserGroup | undefined
     if (group) {
       matchedGroup = crsGroups.find(crsGroup => crsGroup.groupCode === group)
       if (!matchedGroup) {
@@ -59,10 +59,9 @@ export const downloadHandler = ({
     auditService,
     (query, token): Promise<ExternalUser[]> => externalUserService.getUsersInCRSGroup(token, query.group),
     (data: ExternalUser[]): string => {
-      const fields = data.map(({ userId, username, locked, verified, ...exposedFields }) => exposedFields)
-
-      const json2csvParser = new Parser()
-      return json2csvParser.parse(fields)
+      const fields = ['email', 'enabled', 'firstName', 'lastName', 'lastLoggedIn', 'inactiveReason']
+      const json2csvParser = new Parser({ fields })
+      return json2csvParser.parse(data)
     },
     (user: HmppsUser): boolean => hasRole(user, AuthRole.CONTRACT_MANAGER_VIEW_GROUP),
   )
