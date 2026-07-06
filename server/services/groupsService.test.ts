@@ -1,4 +1,4 @@
-import { ChildGroup, CreateGroupRequest, Group, UpdateGroupNameRequest } from 'manageUsersApiClient'
+import { ChildGroup, CreateGroupRequest, Group, UpdateGroupNameRequest, UserGroup } from 'manageUsersApiClient'
 import { Response } from 'superagent'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import GroupsService from './groupsService'
@@ -19,6 +19,7 @@ describe('GroupsService', () => {
       childGroupDetails: jest.fn(),
       changeChildGroupName: jest.fn(),
       deleteChildGroup: jest.fn(),
+      getAllCRSGroups: jest.fn(),
     } as unknown as jest.Mocked<ManageUsersApiClient>
 
     service = new GroupsService(apiClient)
@@ -146,6 +147,26 @@ describe('GroupsService', () => {
     const result = await service.deleteChildGroup(token, 'TEST_GROUP')
 
     expect(apiClient.deleteChildGroup).toHaveBeenCalledWith(token, 'TEST_GROUP')
+    expect(result).toBe(response)
+  })
+
+  it('Gets all CRS groups', async () => {
+    const response: UserGroup[] = [
+      {
+        groupCode: 'CRS_GROUP_ONE',
+        groupName: 'Test CRS Group One',
+      },
+      {
+        groupCode: 'CRS_GROUP_TWO',
+        groupName: 'Test CRS Group Two',
+      },
+    ]
+
+    apiClient.getAllCRSGroups.mockResolvedValue(response)
+
+    const result = await service.getAllCRSGroups(token)
+
+    expect(apiClient.getAllCRSGroups).toHaveBeenCalledWith(token)
     expect(result).toBe(response)
   })
 })

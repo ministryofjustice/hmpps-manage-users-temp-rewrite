@@ -146,7 +146,7 @@ describe('MenuService', () => {
         {
           title: `Download CRS Group members`,
           description: `Select CRS Group and download list of members`,
-          href: '/crs-group-selection',
+          href: paths.crsGroups.select.pattern,
           dataQa: 'view_crs_group_users_link',
         },
       ])

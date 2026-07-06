@@ -1,4 +1,4 @@
-import { ChildGroup, CreateGroupRequest, Group, UpdateGroupNameRequest } from 'manageUsersApiClient'
+import { ChildGroup, CreateGroupRequest, Group, UpdateGroupNameRequest, UserGroup } from 'manageUsersApiClient'
 import { Response } from 'superagent'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 
@@ -28,4 +28,6 @@ export default class GroupsService {
 
   deleteChildGroup = async (token: string, group: string): Promise<Response> =>
     this.manageUsersApiClient.deleteChildGroup(token, group)
+
+  getAllCRSGroups = async (token: string): Promise<UserGroup[]> => this.manageUsersApiClient.getAllCRSGroups(token)
 }

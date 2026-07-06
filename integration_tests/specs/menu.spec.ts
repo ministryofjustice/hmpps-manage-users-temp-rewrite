@@ -220,14 +220,14 @@ test.describe('Menu', () => {
   test('User with CONTRACT_MANAGER_VIEW_GROUP is presented with the Download CRS Group members tile', async ({
     page,
   }) => {
-    await login(page, { roles: ['ROLE_CONTRACT_MANAGER_VIEW_GROUP'] })
+    await login(page, { roles: [AuthRole.CONTRACT_MANAGER_VIEW_GROUP] })
 
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.verifyTileCount(1)
     await homePage.verifyTile(
       `Download CRS Group members`,
       `Select CRS Group and download list of members`,
-      '/crs-group-selection',
+      paths.crsGroups.select.pattern,
       'view_crs_group_users_link',
     )
   })
