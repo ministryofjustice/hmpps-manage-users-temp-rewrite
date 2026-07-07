@@ -42,12 +42,12 @@ const validate = (body: Form, _req: Request, res: Response): FormError[] => {
   return errors
 }
 
-const convertBody = (body: Form) => {
-  const createRequest: CreateExternalUserRequest = {
-    ...body,
-    groupCodes: body.groupCode === '' ? [] : toArray(body.groupCode),
+const convertBody = (body: Form): CreateExternalUserRequest => {
+  const { groupCode, ...withoutGroupCode } = body
+  return {
+    ...withoutGroupCode,
+    groupCodes: groupCode === '' ? [] : toArray(groupCode),
   }
-  return createRequest
 }
 
 export default ({ externalUserService, auditService }: Services): Router => {
