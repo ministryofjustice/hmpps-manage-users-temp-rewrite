@@ -909,4 +909,12 @@ export default {
       urlPattern: '/manage-users-api/externalusers/crsgroup/.*',
       body: users,
     }),
+
+  stubCreateExternalUser: (status: HttpStatusCode = HttpStatusCode.OK): SuperAgentRequest =>
+    stubJson({
+      method: 'POST',
+      urlPath: '/manage-users-api/externalusers/create',
+      status,
+      body: { userId: '2e285ccd-dcfd-4497-9e28-d6e8e10a2d3f' },
+    }),
 }

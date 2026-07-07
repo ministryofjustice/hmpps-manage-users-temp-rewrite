@@ -68,7 +68,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Search for an external user`,
       `Search for users that typically do not have a DPS or Delius account`,
-      '/search-external-users',
+      paths.externalUser.search.pattern,
       'maintain_auth_users_link',
       4,
       ['MAINTAIN_OAUTH_USERS', 'AUTH_GROUP_MANAGER'],
@@ -76,7 +76,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Create an external user`,
       `Create an account for people who do not have a DPS or Delius account`,
-      '/create-external-user',
+      paths.externalUser.create.pattern,
       'create_auth_user_link',
       5,
       ['MAINTAIN_OAUTH_USERS', 'AUTH_GROUP_MANAGER'],

@@ -6,6 +6,7 @@ export default () => {
       selectElement: select,
       showAllValues: true,
       preserveNullOptions: true,
+      menuClasses: 'govuk-list',
     })
   })
 }
