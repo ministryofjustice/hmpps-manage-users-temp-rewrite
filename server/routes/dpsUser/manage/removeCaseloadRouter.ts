@@ -4,9 +4,13 @@ import { CaseloadParam } from './paramTypes'
 import { EventType, SubjectType } from '../../../services/auditService'
 import paths from '../../paths'
 import { HttpStatusCode } from '../../../utils/utils'
+import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
+import AuthRole from '../../../interfaces/authRole'
 
 export default ({ dpsUserService, auditService }: Services): Router => {
   const router = Router({ mergeParams: true })
+
+  router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]))
 
   router.post('/', async (req: Request<CaseloadParam>, res) => {
     const { userId, caseload } = req.params

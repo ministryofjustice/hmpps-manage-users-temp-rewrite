@@ -58,13 +58,8 @@ const paths = {
       details: manageDpsUser.path(details.pattern),
       selectRoles: manageDpsUser.path(selectRoles.pattern),
       roles: {
-        root: roleRootAbsolute,
         remove: roleRootAbsolute.path(remove.pattern),
         requestRemoval: roleRootAbsolute.path(requestRemoval.pattern),
-        relative: {
-          remove,
-          requestRemoval,
-        },
       },
       selectCaseloads: manageDpsUser.path(selectCaseloads.pattern),
       removeCaseload: manageDpsUser.path(removeCaseload.pattern),
@@ -72,17 +67,6 @@ const paths = {
       changeEmailSuccess: manageDpsUser.path(changeEmailSuccess.pattern),
       activate: manageDpsUser.path(activate.pattern),
       deactivate: manageDpsUser.path(deactivate.pattern),
-      relative: {
-        details,
-        selectRoles,
-        roleRoot,
-        selectCaseloads,
-        removeCaseload,
-        changeEmail,
-        changeEmailSuccess,
-        activate,
-        deactivate,
-      },
     },
   },
   emailDomains: {
