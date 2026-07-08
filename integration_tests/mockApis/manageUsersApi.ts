@@ -14,7 +14,7 @@ import {
   UserCaseloadDetail,
   UserGroup,
 } from 'manageUsersApiClient'
-import { stubJson, stubPing } from './wiremock'
+import { stubFor, stubJson, stubPing } from './wiremock'
 import { UserTypeKey } from '../../server/presentation/userType'
 import { HttpStatusCode } from '../../server/utils/utils'
 
@@ -908,5 +908,20 @@ export default {
     stubJson({
       urlPattern: '/manage-users-api/externalusers/crsgroup/.*',
       body: users,
+    }),
+
+  stubCreateExternalUser: (status: HttpStatusCode = HttpStatusCode.OK): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'POST',
+        urlPath: '/manage-users-api/externalusers/create',
+      },
+      response: {
+        status,
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+        body: '2e285ccd-dcfd-4497-9e28-d6e8e10a2d3f',
+      },
     }),
 }

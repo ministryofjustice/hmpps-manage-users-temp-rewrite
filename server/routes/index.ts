@@ -7,6 +7,7 @@ import emailDomainsRouter from './emailDomains'
 import groupsRouter from './groups'
 import rolesRouter from './roles'
 import crsGroupsRouter from './crsGroups'
+import externalUserRouter from './externalUser'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -17,6 +18,7 @@ export default function routes(services: Services): Router {
   router.use(groupsRouter(services))
   router.use(rolesRouter(services))
   router.use(crsGroupsRouter(services))
+  router.use(externalUserRouter(services))
 
   return router
 }

@@ -129,15 +129,16 @@ describe('ManageUsersApiClient', () => {
 
   describe('External Users Endpoints', () => {
     describe('create external user', () => {
-      it('should return 200 status', async () => {
-        mockApi('post', '/externalusers/create', successResponse, { status: successResponse })
+      it('should return created user UUID', async () => {
+        const createdUserId = '3b6b739a-a076-4d14-a3be-ebe302ada5f7'
+        mockApi('post', '/externalusers/create', successResponse, createdUserId)
 
         const response = await manageUsersApiClient.createExternalUser(token, {
           firstName: 'Tresa',
           lastName: 'Brigman',
           email: 'tresa.brigman@justice.gov.uk',
         })
-        expect(response.status).toEqual(successResponse)
+        expect(response).toEqual(createdUserId)
       })
     })
 

@@ -1,4 +1,4 @@
-import { validateEmail, validateUsername } from './userValidation'
+import { validateEmail, validateName, validateUsername } from './userValidation'
 import { FormError } from '../../interfaces/formError'
 
 describe('validateEmail', () => {
@@ -65,5 +65,45 @@ describe('validateUsername', () => {
   it('supports custom fieldName and messages', () => {
     const result = validateUsername('', 'staffId', 'a staff ID', 'Staff ID')
     expect(result).toEqual<FormError[]>([{ href: '#staffId', text: 'Enter a staff ID' }])
+  })
+})
+
+describe('validateName', () => {
+  it('returns error when name is missing', () => {
+    const result = validateName('', 'firstName', 'First name', 2, 35)
+    expect(result).toEqual<FormError[]>([{ href: '#firstName', text: 'Enter a first name' }])
+  })
+
+  it('returns error when name is too short', () => {
+    const result = validateName('A', 'firstName', 'First name', 2, 35)
+    expect(result).toEqual<FormError[]>([{ href: '#firstName', text: 'First name must be 2 characters or more' }])
+  })
+
+  it('returns error when name is too long', () => {
+    const result = validateName('A'.repeat(36), 'lastName', 'Last name', 2, 35)
+    expect(result).toEqual<FormError[]>([{ href: '#lastName', text: 'Last name must be 35 characters or less' }])
+  })
+
+  it('returns error when name has invalid characters', () => {
+    const result = validateName('Kayce&%$', 'firstName', 'First name', 2, 35)
+    expect(result).toEqual<FormError[]>([
+      {
+        href: '#firstName',
+        text: 'First name must consist of letters, an apostrophe & a hyphen only',
+      },
+    ])
+  })
+
+  it('returns no errors for valid name', () => {
+    const result = validateName("O'Connor-Smith", 'lastName', 'Last name', 2, 35)
+    expect(result).toEqual([])
+  })
+
+  it('uses provided min/max values in error messages', () => {
+    const tooShort = validateName('Al', 'firstName', 'First name', 3, 10)
+    const tooLong = validateName('A'.repeat(11), 'firstName', 'First name', 3, 10)
+
+    expect(tooShort).toEqual<FormError[]>([{ href: '#firstName', text: 'First name must be 3 characters or more' }])
+    expect(tooLong).toEqual<FormError[]>([{ href: '#firstName', text: 'First name must be 10 characters or less' }])
   })
 })

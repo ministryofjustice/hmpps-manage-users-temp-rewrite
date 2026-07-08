@@ -67,8 +67,10 @@ export default class ManageUsersApiClient extends RestClient {
     return this.get({ path: '/email-domains' }, asUser(token))
   }
 
-  async createExternalUser(token: string, user: CreateExternalUserRequest): Promise<Response> {
-    return this.post({ path: '/externalusers/create', data: user }, asUser(token))
+  async createExternalUser(token: string, user: CreateExternalUserRequest): Promise<string> {
+    return this.post<Response>({ path: '/externalusers/create', data: user, raw: true }, asUser(token)).then(
+      response => response.text,
+    )
   }
 
   async getUsersInCRSGroup(token: string, groupCode: string): Promise<ExternalUser[]> {

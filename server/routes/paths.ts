@@ -39,6 +39,9 @@ const changeRoleDescription = path('/change-role-description')
 const changeRoleAdminType = path('/change-role-admin-type')
 const crsGroupSelection = path('/crs-group-selection')
 const download = path('/download')
+const createExternalUser = path('/create-external-user')
+const searchExternalUser = path('/search-external-users')
+const manageExternalUser = path('/manage-external-users/:userId')
 
 const roleRootAbsolute = manageDpsUser.path(roleRoot.pattern)
 const paths = {
@@ -109,6 +112,13 @@ const paths = {
   crsGroups: {
     select: crsGroupSelection,
     download: crsGroupSelection.path(download.pattern),
+  },
+  externalUser: {
+    create: createExternalUser,
+    search: searchExternalUser,
+    manage: {
+      details: manageExternalUser.path(details.pattern),
+    },
   },
 }
 

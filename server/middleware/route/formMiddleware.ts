@@ -1,7 +1,7 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
 import { FormError } from '../../interfaces/formError'
 
-export type Validator<T, Param> = (form: T, req: Request<Param>) => FormError[]
+export type Validator<T, Param> = (form: T, req: Request<Param>, res: Response) => FormError[]
 export type RedirectProvider<Param> = (req: Request<Param>) => string
 
 export const validateFormOrRedirect =
@@ -12,7 +12,7 @@ export const validateFormOrRedirect =
   async (req: Request<Param>, res: Response, next: NextFunction) => {
     const { body } = req
     const { _csrf, ...form } = body // remove the _csrf from the flashed body
-    const errors: FormError[] = validator(form, req)
+    const errors: FormError[] = validator(form, req, res)
     flashBody(req, form)
     if (errors.length > 0) {
       flashErrors(req, errors)

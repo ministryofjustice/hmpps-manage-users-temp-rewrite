@@ -3,7 +3,7 @@ import { CreateUserRequest, PrisonStaffNewUser } from 'manageUsersApiClient'
 import paths from '../../paths'
 import { FormError } from '../../../interfaces/formError'
 import { caseloadText, showCaseloadDropdown, UserTypeKey } from '../../../presentation/userType'
-import { validateEmail, validateUsername } from '../../../presentation/validation/userValidation'
+import { validateEmail, validateName, validateUsername } from '../../../presentation/validation/userValidation'
 import {
   bodyFromFlash,
   flashBody,
@@ -13,7 +13,7 @@ import {
 } from '../../../middleware/route/formMiddleware'
 import { Services } from '../../../services'
 import { EventType, SubjectType } from '../../../services/auditService'
-import { HttpStatusCode, isAlphaStringOrSpecialChars } from '../../../utils/utils'
+import { HttpStatusCode } from '../../../utils/utils'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../../interfaces/authRole'
 
@@ -33,31 +33,8 @@ const validate = (body: Form): FormError[] => {
 
   errors.push(...validateEmail(body.email))
 
-  if (!body.firstName) {
-    errors.push({ href: '#firstName', text: 'Enter a first name' })
-  } else if (body.firstName.length < 2) {
-    errors.push({ href: '#firstName', text: 'First name must be 2 characters or more' })
-  } else if (body.firstName.length > 35) {
-    errors.push({ href: '#firstName', text: 'First name must be 35 characters or less' })
-  } else if (!isAlphaStringOrSpecialChars(body.firstName)) {
-    errors.push({
-      href: '#firstName',
-      text: 'First name must consist of letters, an apostrophe & a hyphen only',
-    })
-  }
-
-  if (!body.lastName) {
-    errors.push({ href: '#lastName', text: 'Enter a last name' })
-  } else if (body.lastName.length < 2) {
-    errors.push({ href: '#lastName', text: 'Last name must be 2 characters or more' })
-  } else if (body.lastName.length > 35) {
-    errors.push({ href: '#lastName', text: 'Last name must be 35 characters or less' })
-  } else if (!isAlphaStringOrSpecialChars(body.lastName)) {
-    errors.push({
-      href: '#lastName',
-      text: 'Last name must consist of letters, an apostrophe & a hyphen only',
-    })
-  }
+  errors.push(...validateName(body.firstName, 'firstName', 'First name', 2, 35))
+  errors.push(...validateName(body.lastName, 'lastName', 'Last name', 2, 35))
 
   const userTypeKey = body.userType as UserTypeKey
   if (showCaseloadDropdown(userTypeKey) && (!body.defaultCaseloadId || body.defaultCaseloadId === '--')) {

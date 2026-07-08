@@ -1,4 +1,5 @@
 import { FormError } from '../../interfaces/formError'
+import { isAlphaStringOrSpecialChars } from '../../utils/utils'
 
 export const validateEmail = (email: string): FormError[] => {
   const errors: FormError[] = []
@@ -37,6 +38,29 @@ export const validateUsername = (
     errors.push({ href: `#${fieldName}`, text: `${lengthMessagePrefix} must be 2 characters or more` })
   } else if (username.length > 30) {
     errors.push({ href: `#${fieldName}`, text: `${lengthMessagePrefix} must be 30 characters or less` })
+  }
+  return errors
+}
+
+export const validateName = (
+  value: string,
+  fieldId: 'firstName' | 'lastName',
+  fieldLabel: string,
+  minLength: number,
+  maxLength: number,
+): FormError[] => {
+  const errors: FormError[] = []
+  if (!value) {
+    errors.push({ href: `#${fieldId}`, text: `Enter a ${fieldLabel.toLowerCase()}` })
+  } else if (value.length < minLength) {
+    errors.push({ href: `#${fieldId}`, text: `${fieldLabel} must be ${minLength} characters or more` })
+  } else if (value.length > maxLength) {
+    errors.push({ href: `#${fieldId}`, text: `${fieldLabel} must be ${maxLength} characters or less` })
+  } else if (!isAlphaStringOrSpecialChars(value)) {
+    errors.push({
+      href: `#${fieldId}`,
+      text: `${fieldLabel} must consist of letters, an apostrophe & a hyphen only`,
+    })
   }
   return errors
 }
