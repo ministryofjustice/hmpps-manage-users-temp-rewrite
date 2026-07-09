@@ -57,13 +57,16 @@ export default function index(services: Services): Router {
     authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]),
     changeEmailSuccessHandler(services),
   )
+  // having two authRoleGuardMiddleware after each other is effectively an AND
   router.post(
     paths.dpsUser.manage.activate.pattern,
+    authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]),
     authRoleGuardMiddleware([AuthRole.MANAGE_NOMIS_USER_ACCOUNT]),
     activateHandler(services),
   )
   router.post(
     paths.dpsUser.manage.deactivate.pattern,
+    authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]),
     authRoleGuardMiddleware([AuthRole.MANAGE_NOMIS_USER_ACCOUNT]),
     deactivateHandler(services),
   )
