@@ -9,6 +9,8 @@ import { roleDropdownValuesWithHint } from '../../../presentation/roles'
 import { formErrorsFromFlash, validateFormOrRedirect } from '../../../middleware/route/formMiddleware'
 import { FormError } from '../../../interfaces/formError'
 import { toArray } from '../../../utils/utils'
+import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
+import AuthRole from '../../../interfaces/authRole'
 
 interface Form {
   roles: string[]
@@ -40,6 +42,8 @@ const validate = (form: Form): FormError[] => {
 export default (services: Services): Router => {
   const router = Router({ mergeParams: true })
   const { auditService, dpsUserService } = services
+
+  router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]))
 
   router.get('/', async (req: Request<UserParam>, res) => {
     const { userId } = req.params

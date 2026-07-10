@@ -7,6 +7,7 @@ import paths from '../../paths'
 import { Page, SubjectType } from '../../../services/auditService'
 import { hasRole } from '../../../interfaces/hmppsUser'
 import AuthRole from '../../../interfaces/authRole'
+import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 
 const getPageData = async (token: string, username: string, { dpsUserService, userService }: Services) => {
   const [user, roles, email, caseloads] = await Promise.all([
@@ -41,6 +42,8 @@ const sortAlphabetically = (caseload1: PrisonCaseload, caseload2: PrisonCaseload
 export default (services: Services): Router => {
   const router = Router({ mergeParams: true })
   const { auditService } = services
+
+  router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]))
 
   router.get('/', setupRestrictedRoles<UserParam>(services), async (req: Request<UserParam>, res) => {
     const { userId } = req.params
