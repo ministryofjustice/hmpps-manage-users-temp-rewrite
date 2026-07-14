@@ -39,6 +39,7 @@ export const editUser = async (
     administratorOfUserGroups,
     email = 'ITAG_USER@gov.uk',
     emailVerified,
+    emailToVerify,
     dpsRoles,
     active = true,
     enabled = true,
@@ -50,6 +51,7 @@ export const editUser = async (
     administratorOfUserGroups?: PrisonUserGroupDetail[]
     email?: string
     emailVerified?: boolean
+    emailToVerify?: string
     dpsRoles?: RoleDetail[]
     active?: boolean
     enabled?: boolean
@@ -62,7 +64,7 @@ export const editUser = async (
   await manageUsersApi.stubGetDpsUser({ administratorOfUserGroups, email, active, enabled, accountStatus })
   await manageUsersApi.stubDpsUserRoles({ dpsRoles })
   await manageUsersApi.stubDpsUserCaseloads(userCaseloads)
-  await manageUsersApi.stubEmail({ email, verified: emailVerified })
+  await manageUsersApi.stubEmail({ email: emailToVerify || email, verified: emailVerified })
   await searchPage.userDetailsLink('ITAG_USER5').click()
   return UserPage.verifyOnPage(page, 'Itag User')
 }
