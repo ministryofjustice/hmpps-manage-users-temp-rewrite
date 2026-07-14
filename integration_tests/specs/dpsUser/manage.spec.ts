@@ -158,6 +158,19 @@ test.describe('Manage a DPS user', () => {
     await expect(userPage.userRows.nth(2)).toHaveText('Verified No')
   })
 
+  test('Should show Email change awaiting verification if email new is not yet confirmed', async ({ page }) => {
+    const userPage = await editUser(page, {
+      roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN],
+      email: "ITAG_USER@gov.uk",
+      emailToVerify: "bob@gov.uk",
+      emailVerified: false,
+
+    })
+    await expect(userPage.userRows.nth(1)).toHaveText('Email ITAG_USER@gov.uk Change email')
+    await expect(userPage.userRows.nth(2)).toHaveText('Email change awaiting verification bob@gov.uk')
+    await expect(userPage.userRows.nth(3)).toHaveText('Last logged in 25 December 2023 - 12:57:50')
+  })
+
   test('Should fail attempting to view user details if unauthorised', async ({ page }) => {
     await login(page, { roles: [AuthRole.CREATE_USER] })
 
