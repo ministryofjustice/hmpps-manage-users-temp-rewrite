@@ -158,7 +158,7 @@ test.describe('Manage a DPS user', () => {
     await expect(userPage.userRows.nth(2)).toHaveText('Verified No')
   })
 
-  test('Should show Email change awaiting verification if email new is not yet confirmed', async ({ page }) => {
+  test('Should show Email change awaiting verification if new email is not yet confirmed', async ({ page }) => {
     const userPage = await editUser(page, {
       roles: [AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN],
       email: 'ITAG_USER@gov.uk',
