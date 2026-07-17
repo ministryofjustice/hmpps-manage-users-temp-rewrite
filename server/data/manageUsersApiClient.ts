@@ -45,6 +45,7 @@ import {
 } from 'manageUsersApiClient'
 import config from '../config'
 import logger from '../../logger'
+import { toStringArray } from '../utils/utils'
 
 export default class ManageUsersApiClient extends RestClient {
   constructor() {
@@ -95,8 +96,8 @@ export default class ManageUsersApiClient extends RestClient {
     page?: number,
     size?: number,
   ): Promise<PagedList<ExternalUser>> {
-    const groups = group ? [group] : null
-    const roles = role ? [role] : null
+    const groups = toStringArray(group)
+    const roles = toStringArray(role)
     const query = {
       name: nameFilter,
       groups,

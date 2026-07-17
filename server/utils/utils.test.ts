@@ -1,4 +1,11 @@
-import { convertToTitleCase, initialiseName, isAlphaStringOrSpecialChars, toArray, toBoolean } from './utils'
+import {
+  convertToTitleCase,
+  initialiseName,
+  isAlphaStringOrSpecialChars,
+  toArray,
+  toBoolean,
+  toStringArray,
+} from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -131,6 +138,35 @@ describe('toArray', () => {
 
       expect(a).not.toBe(b)
     })
+  })
+})
+
+describe('toStringArray', () => {
+  it('returns the same array reference when input is an array', () => {
+    const input = ['a', 'b']
+
+    const result = toStringArray(input)
+
+    expect(result).toBe(input)
+    expect(result).toEqual(['a', 'b'])
+  })
+
+  it('wraps a non-empty string in an array', () => {
+    const result = toStringArray('hello')
+
+    expect(result).toEqual(['hello'])
+  })
+
+  it('returns an empty array for empty string', () => {
+    const result = toStringArray('')
+
+    expect(result).toEqual([])
+  })
+
+  it('returns an empty array for undefined', () => {
+    const result = toStringArray(undefined)
+
+    expect(result).toEqual([])
   })
 })
 

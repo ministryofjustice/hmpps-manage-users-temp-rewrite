@@ -11,7 +11,7 @@ import {
 } from '../../middleware/route/formMiddleware'
 import type { Services } from '../../services'
 import { EventType, SubjectType } from '../../services/auditService'
-import { HttpStatusCode, toArray } from '../../utils/utils'
+import { HttpStatusCode, toStringArray } from '../../utils/utils'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../interfaces/authRole'
 import groupValues from '../../presentation/groups'
@@ -46,7 +46,7 @@ const convertBody = (body: Form): CreateExternalUserRequest => {
   const { groupCode, ...withoutGroupCode } = body
   return {
     ...withoutGroupCode,
-    groupCodes: groupCode === '' ? [] : toArray(groupCode),
+    groupCodes: toStringArray(groupCode),
   }
 }
 

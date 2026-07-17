@@ -2,35 +2,18 @@ import { Request, Response } from 'express'
 import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import { Services } from '../../../services'
 import paths from '../../paths'
-import { RoleParam } from './paramTypes'
+import { RoleParam } from '../../userCommon/paramTypes'
 import { Event } from '../../../utils/azureAppInsights'
 import { getRemovalMessage } from '../../../presentation/restrictedRoles'
-import { EventType, SubjectType } from '../../../services/auditService'
-import { HttpStatusCode } from '../../../utils/utils'
+import { dpsUserDetailsUrlProvider } from './common'
+import removeRoleHandlerCommon from '../../userCommon/roleRemovalHandlers'
 
-export const removeRoleHandler = (services: Services) => async (req: Request<RoleParam>, res: Response) => {
-  const { userId, role } = req.params
-  const { username, token } = res.locals.user
-  const { dpsUserService, auditService } = services
-
-  try {
-    await dpsUserService.removeRole(token, userId, role)
-    await auditService.logAuditEvent({
-      what: EventType.REMOVE_USER_ROLE,
-      who: username,
-      subjectId: userId,
-      subjectType: SubjectType.USER_ID,
-      details: { role },
-    })
-    return res.redirect(paths.dpsUser.manage.details({ userId }))
-  } catch (err) {
-    if (err.responseStatus === HttpStatusCode.BAD_REQUEST) {
-      // role already removed from user
-      return res.redirect(paths.dpsUser.manage.details({ userId }))
-    }
-    throw err
-  }
-}
+export const removeRoleHandler = (services: Services) =>
+  removeRoleHandlerCommon(
+    services,
+    ({ dpsUserService }, token, userId, role) => dpsUserService.removeRole(token, userId, role),
+    dpsUserDetailsUrlProvider,
+  )
 
 export const requestRoleRemovalHandler = async (req: Request<RoleParam>, res: Response) => {
   const { userId, role } = req.params

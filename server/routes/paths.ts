@@ -42,6 +42,9 @@ const download = path('/download')
 const createExternalUser = path('/create-external-user')
 const searchExternalUser = path('/search-external-users')
 const manageExternalUser = path('/manage-external-users/:userId')
+const selectGroup = path('/select-group')
+const removeGroup = path('/groups').path(group.pattern).path(remove.pattern)
+const reason = path('/reason')
 
 const roleRootAbsolute = manageDpsUser.path(roleRoot.pattern)
 const paths = {
@@ -100,8 +103,23 @@ const paths = {
   externalUser: {
     create: createExternalUser,
     search: searchExternalUser,
+    download: searchExternalUser.path(download.pattern),
     manage: {
+      root: manageExternalUser,
       details: manageExternalUser.path(details.pattern),
+      selectRoles: manageExternalUser.path(selectRoles.pattern),
+      roles: {
+        remove: manageExternalUser.path(roleRoot.pattern).path(remove.pattern),
+      },
+      selectGroup: manageExternalUser.path(selectGroup.pattern),
+      groups: {
+        remove: manageExternalUser.path(removeGroup.pattern),
+      },
+      changeEmail: manageExternalUser.path(changeEmail.pattern),
+      changeEmailSuccess: manageExternalUser.path(changeEmailSuccess.pattern),
+      activate: manageExternalUser.path(activate.pattern),
+      deactivate: manageExternalUser.path(deactivate.pattern),
+      deactivateReason: manageExternalUser.path(deactivate.pattern).path(reason.pattern),
     },
   },
 }

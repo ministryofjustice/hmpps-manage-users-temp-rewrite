@@ -158,13 +158,13 @@ describe('MenuService', () => {
         {
           title: `Search for an external user`,
           description: `Search for users that typically do not have a DPS or Delius account`,
-          href: '/search-external-users',
+          href: paths.externalUser.search.pattern,
           dataQa: 'maintain_auth_users_link',
         },
         {
           title: `Create an external user`,
           description: `Create an account for people who do not have a DPS or Delius account`,
-          href: '/create-external-user',
+          href: paths.externalUser.create.pattern,
           dataQa: 'create_auth_user_link',
         },
         {
@@ -188,13 +188,13 @@ describe('MenuService', () => {
         {
           title: `Search for an external user`,
           description: `Search for users that typically do not have a DPS or Delius account`,
-          href: '/search-external-users',
+          href: paths.externalUser.search.pattern,
           dataQa: 'maintain_auth_users_link',
         },
         {
           title: `Create an external user`,
           description: `Create an account for people who do not have a DPS or Delius account`,
-          href: '/create-external-user',
+          href: paths.externalUser.create.pattern,
           dataQa: 'create_auth_user_link',
         },
         {
@@ -242,13 +242,13 @@ describe('MenuService', () => {
         {
           title: `Search for an external user`,
           description: `Search for users that typically do not have a DPS or Delius account`,
-          href: '/search-external-users',
+          href: paths.externalUser.search.pattern,
           dataQa: 'maintain_auth_users_link',
         },
         {
           title: `Create an external user`,
           description: `Create an account for people who do not have a DPS or Delius account`,
-          href: '/create-external-user',
+          href: paths.externalUser.create.pattern,
           dataQa: 'create_auth_user_link',
         },
         {

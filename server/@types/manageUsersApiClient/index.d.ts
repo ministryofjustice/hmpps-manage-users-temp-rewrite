@@ -42,7 +42,11 @@ declare module 'manageUsersApiClient' {
   type UserCaseloadDetail = components['schemas']['UserCaseloadDetail']
   type UserDetails = components['schemas']['UserDetailsDto']
   type UserGroup = components['schemas']['UserGroup']
-  type UserRole = components['schemas']['UserRole']
+  type UserRole = {
+    roleCode: string
+    roleName: string
+    roleDescription: string
+  }
   type UserRoleDetail = components['schemas']['UserRoleDetail']
   interface PagedList<T> {
     content: T[]

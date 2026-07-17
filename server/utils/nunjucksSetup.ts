@@ -4,7 +4,7 @@ import moment from 'moment'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { PrisonCaseload, Role } from 'manageUsersApiClient'
+import { PrisonCaseload, Role, UserGroup, UserRole } from 'manageUsersApiClient'
 import { initialiseName } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -19,7 +19,7 @@ import {
   UserTypeKey,
   userTypeShorthand,
 } from '../presentation/userType'
-import caseloadDropdownValues from '../presentation/caseloads'
+import { caseloadDropdownValues } from '../presentation/caseloads'
 import paths from '../routes/paths'
 import {
   roleDropdownValues,
@@ -27,7 +27,12 @@ import {
   filterCategories as roleFilterCategories,
 } from '../presentation/roles'
 import { Filter as DpsUserFilter, filterCategories as dpsUserFilterCategories } from '../presentation/searchDpsUser'
+import {
+  Filter as ExternalUserFilter,
+  filterCategories as externalUserFilterCategories,
+} from '../presentation/searchExternalUser'
 import { isRestrictedRoleCode, RestrictedRoles } from '../presentation/restrictedRoles'
+import groupValues from '../presentation/groups'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -79,6 +84,11 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('caseloadTitle', (userType: string) => caseloadText(userType as UserTypeKey))
   njkEnv.addFilter('caseloadDropdownValues', (caseloads: PrisonCaseload[]) => caseloadDropdownValues(caseloads))
   njkEnv.addFilter('roleDropdownValues', (roles: Role[]) => roleDropdownValues(roles))
+  njkEnv.addFilter('groupDropdownValues', (groups: UserGroup[]) => groupValues(groups))
+  njkEnv.addFilter(
+    'externalUserRoleDropdownValues',
+    (roles: UserRole[]) => roles?.map(r => ({ text: r.roleName, value: r.roleCode })) ?? [],
+  )
 
   njkEnv.addFilter('formatDate', (value: string, format: string) => (value ? moment(value).format(format) : null))
   njkEnv.addFilter('formatYesNo', (value: boolean) => (value ? 'Yes' : 'No'))
@@ -86,6 +96,7 @@ export default function nunjucksSetup(app: express.Express): void {
     isRestrictedRoleCode(roleCode, restrictedRoles),
   )
   njkEnv.addFilter('manageUserDetailsLink', (userId: string) => paths.dpsUser.manage.details({ userId }))
+  njkEnv.addFilter('manageExternalUserDetailsLink', (userId: string) => paths.externalUser.manage.details({ userId }))
   njkEnv.addFilter('deleteEmailDomainLink', (id: string) => paths.emailDomains.deleteWithId({ id }))
 
   njkEnv.addFilter(
@@ -162,4 +173,19 @@ export default function nunjucksSetup(app: express.Express): void {
       optionsHtml: filterOptionsHtml,
     }
   })
+  njkEnv.addFilter(
+    'toExternalUserSearchFilter',
+    (currentFilter: ExternalUserFilter, groups: UserGroup[], roles: UserRole[], filterOptionsHtml: string) => {
+      const categories = externalUserFilterCategories(currentFilter, roles, groups)
+      return {
+        heading: { text: 'Filters' },
+        selectedFilters: {
+          heading: { html: '<div class="moj-action-bar__filter"></div>' },
+          clearLink: { text: 'Clear filters', href: `${paths.externalUser.search.pattern}` },
+          categories: categories.filter(category => category.items),
+        },
+        optionsHtml: filterOptionsHtml,
+      }
+    },
+  )
 }
