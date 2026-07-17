@@ -62,3 +62,13 @@ export interface AzureADUser extends BaseUser {
 export type HmppsUser = PrisonUser | ProbationUser | ExternalUser | AzureADUser
 
 export const hasRole = (user: HmppsUser, role: AuthRole): boolean => user.userRoles.map(r => `ROLE_${r}`).includes(role)
+
+type BasicRole = {
+  roleCode: string
+}
+
+export const filterProtectedRoles = <RoleType extends BasicRole>(user: HmppsUser, allAssignableRoles: RoleType[]) => {
+  return hasRole(user, AuthRole.OAUTH_ADMIN)
+    ? allAssignableRoles
+    : allAssignableRoles.filter((role: RoleType) => role.roleCode !== 'OAUTH_ADMIN')
+}

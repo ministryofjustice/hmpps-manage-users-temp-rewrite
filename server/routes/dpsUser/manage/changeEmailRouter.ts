@@ -1,33 +1,22 @@
-import { Request, RequestHandler, Response, Router } from 'express'
+import { Router } from 'express'
 import { Services } from '../../../services'
-import { UserParam } from './paramTypes'
-import { FormError } from '../../../interfaces/formError'
-import { validateEmail } from '../../../presentation/validation/userValidation'
-import {
-  bodyFromFlash,
-  flashBody,
-  flashErrors,
-  formErrorsFromFlash,
-  validateFormOrRedirect,
-} from '../../../middleware/route/formMiddleware'
+import { UserParam } from '../../userCommon/paramTypes'
+import { validateFormOrRedirect } from '../../../middleware/route/formMiddleware'
 import paths from '../../paths'
-import { EventType, SubjectType } from '../../../services/auditService'
-import emailVerificationError from '../../../presentation/errors'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../../interfaces/authRole'
-import { HttpStatusCode } from '../../../utils/utils'
-
-interface Form {
-  email: string
-}
-
-const validate = (body: Form): FormError[] => {
-  const errors: FormError[] = []
-
-  errors.push(...validateEmail(body.email))
-
-  return errors
-}
+import {
+  dpsUserChangeEmailSuccessUrlProvider,
+  dpsUserChangeEmailUrlProvider,
+  dpsUserDetailsUrlProvider,
+} from './common'
+import {
+  changeEmailGetHandler,
+  changeEmailPostHandler,
+  changeEmailSuccessHandler as commonChangeEmailSuccessHandler,
+  Form,
+  validate,
+} from '../../userCommon/changeEmailHandlers'
 
 const getUser = async (token: string, username: string, { dpsUserService, userService }: Services) => {
   const [user, email] = await Promise.all([
@@ -42,76 +31,30 @@ export const changeEmailRouter = (services: Services): Router => {
 
   router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]))
 
-  router.get('/', async (req: Request<UserParam>, res) => {
-    const { userId } = req.params
-    const staffUrl = paths.dpsUser.manage.details({ userId })
-    const searchTitle = 'Search for a DPS user'
-    const searchUrl = paths.dpsUser.search.pattern
-
-    const user = await getUser(res.locals.user.token, userId, services)
-    const body = bodyFromFlash<Form>(req)
-    const email = body.email != null && body.email.length > 0 ? body.email : user.email
-
-    return res.render('pages/changeEmail', {
-      staff: { username: user.username, name: `${user.firstName} ${user.lastName}` },
-      searchTitle,
-      searchUrl,
-      staffUrl,
-      currentEmail: email,
-      errors: formErrorsFromFlash(req),
-    })
-  })
+  router.get(
+    '/',
+    changeEmailGetHandler(
+      services,
+      'Search for a DPS user',
+      paths.dpsUser.search.pattern,
+      dpsUserDetailsUrlProvider,
+      getUser,
+    ),
+  )
 
   router.post(
     '/',
-    validateFormOrRedirect<Form, UserParam>(validate, req =>
-      paths.dpsUser.manage.changeEmail({ userId: req.params.userId }),
+    validateFormOrRedirect<Form, UserParam>(validate, req => dpsUserChangeEmailUrlProvider(req.params.userId)),
+    changeEmailPostHandler(
+      services,
+      ({ dpsUserService }, token, userId, email) => dpsUserService.changeEmail(token, userId, email),
+      dpsUserChangeEmailUrlProvider,
+      dpsUserChangeEmailSuccessUrlProvider,
     ),
-    async (req: Request<UserParam>, res) => {
-      const { auditService, dpsUserService } = services
-      const { userId } = req.params
-      const body = bodyFromFlash<Form>(req)
-      const errors: FormError[] = []
-
-      try {
-        await dpsUserService.changeEmail(res.locals.user.token, userId, body.email)
-      } catch (err) {
-        if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
-          const errorDetails = { href: '#email', text: emailVerificationError(err) }
-          errors.push(errorDetails)
-        } else {
-          throw err
-        }
-      }
-
-      flashBody(req, body)
-      if (errors.length) {
-        flashErrors(req, errors)
-        return res.redirect(paths.dpsUser.manage.changeEmail({ userId }))
-      }
-      await auditService.logAuditEvent({
-        what: EventType.UPDATE_USER,
-        who: res.locals.user.username,
-        subjectId: userId,
-        subjectType: SubjectType.USER_ID,
-        details: body,
-      })
-      return res.redirect(paths.dpsUser.manage.changeEmailSuccess({ userId }))
-    },
   )
 
   return router
 }
 
-export const changeEmailSuccessHandler =
-  (services: Services): RequestHandler<UserParam> =>
-  async (req: Request<UserParam>, res: Response) => {
-    const { userId } = req.params
-    const staffUrl = paths.dpsUser.manage.details({ userId })
-
-    const body = bodyFromFlash<Form>(req)
-    const user = await getUser(res.locals.user.token, userId, services)
-    const usernameChanged = user.username.includes('@')
-
-    return res.render('pages/changeEmailSuccess', { email: body.email, detailsLink: staffUrl, usernameChanged })
-  }
+export const changeEmailSuccessHandler = (services: Services) =>
+  commonChangeEmailSuccessHandler(services, dpsUserDetailsUrlProvider, getUser)

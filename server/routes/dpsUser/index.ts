@@ -16,7 +16,7 @@ import detailsRouter from './manage/detailsRouter'
 import { changeEmailRouter, changeEmailSuccessHandler } from './manage/changeEmailRouter'
 import { activateHandler, deactivateHandler } from './manage/activationHandlers'
 import setupRestrictedRoles from '../../middleware/route/restrictedRolesMiddleware'
-import { RoleParam } from './manage/paramTypes'
+import { RoleParam } from '../userCommon/paramTypes'
 
 export default function index(services: Services): Router {
   const router = Router()

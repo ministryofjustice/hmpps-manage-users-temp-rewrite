@@ -206,6 +206,8 @@ describe('ManageUsersApiClient', () => {
         const roles: UserRole[] = [
           {
             roleCode: 'ROLE_TEST',
+            roleName: 'Test role',
+            roleDescription: 'Test role description',
           },
         ]
         mockApi('get', '/externalusers/me/searchable-roles', successResponse, roles)
@@ -258,6 +260,8 @@ describe('ManageUsersApiClient', () => {
         const roles: UserRole[] = [
           {
             roleCode: 'ROLE_TEST',
+            roleName: 'Test role',
+            roleDescription: 'Test role description',
           },
         ]
         mockApi('get', `/externalusers/${userId}/assignable-roles`, successResponse, roles)

@@ -31,9 +31,17 @@ export const toArray = <T>(value: T | T[] | undefined): T[] => {
   return value === undefined ? [] : [value]
 }
 
+export const toStringArray = (value: string | string[] | undefined): string[] => {
+  if (value === '') {
+    return []
+  }
+  return toArray(value)
+}
+
 export const toBoolean = (maybeString: string | undefined): boolean | undefined =>
   maybeString === undefined ? undefined : maybeString.trim().toLowerCase() === 'true'
 
+// noinspection JSUnusedGlobalSymbols
 export enum HttpStatusCode {
   // 1xx Informational
   CONTINUE = 100,

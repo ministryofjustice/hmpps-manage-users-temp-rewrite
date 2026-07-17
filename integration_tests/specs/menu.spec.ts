@@ -118,13 +118,13 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       `Search for an external user`,
       `Search for users that typically do not have a DPS or Delius account`,
-      '/search-external-users',
+      paths.externalUser.search.pattern,
       'maintain_auth_users_link',
     )
     await homePage.verifyTile(
       `Create an external user`,
       `Create an account for people who do not have a DPS or Delius account`,
-      '/create-external-user',
+      paths.externalUser.create.pattern,
       'create_auth_user_link',
     )
     await homePage.verifyTile(
@@ -149,13 +149,13 @@ test.describe('Menu', () => {
     await homePage.verifyTile(
       `Search for an external user`,
       `Search for users that typically do not have a DPS or Delius account`,
-      '/search-external-users',
+      paths.externalUser.search.pattern,
       'maintain_auth_users_link',
     )
     await homePage.verifyTile(
       `Create an external user`,
       `Create an account for people who do not have a DPS or Delius account`,
-      '/create-external-user',
+      paths.externalUser.create.pattern,
       'create_auth_user_link',
     )
     await homePage.verifyTile(

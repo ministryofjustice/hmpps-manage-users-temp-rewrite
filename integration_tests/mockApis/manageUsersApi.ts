@@ -13,6 +13,7 @@ import {
   UpdateRoleNameRequest,
   UserCaseloadDetail,
   UserGroup,
+  UserRole,
 } from 'manageUsersApiClient'
 import { stubFor, stubJson, stubPing } from './wiremock'
 import { UserTypeKey } from '../../server/presentation/userType'
@@ -163,6 +164,22 @@ const replicateUser = (times: number) =>
     email: `ITAG_USER${i}@gov.uk`,
     staffStatus: 'ACTIVE',
   }))
+
+function replicateExternalUser(times: number): ExternalUser[] {
+  return [...Array(times).keys()].map(i => ({
+    userId: `2e285ccd-dcfd-4497-9e28-d6e8e10a2d${String(i).padStart(3, '0')}`,
+    username: `AUTH_USER${i}`,
+    email: `auth_user${i}@digital.justice.gov.uk`,
+    firstName: 'Auth',
+    lastName: `User${i}`,
+    enabled: i % 2 === 0,
+    locked: i % 2 !== 0,
+    verified: i % 2 === 0,
+    active: i % 2 === 0,
+    inactiveReason: i % 2 === 0 ? undefined : 'Retired',
+    lastLoggedIn: '2025-10-15T10:01:58.614221',
+  }))
+}
 
 // Alternate having 1, 2, or 3 admin types
 const generateAdminTypes = (i: number) => {
@@ -923,5 +940,173 @@ export default {
         },
         body: '2e285ccd-dcfd-4497-9e28-d6e8e10a2d3f',
       },
+    }),
+
+  stubSearchExternalUsers: ({
+    totalElements = 1,
+    page = 0,
+    size = 20,
+    content,
+  }: {
+    totalElements?: number
+    page?: number
+    size?: number
+    content?: ExternalUser[]
+  } = {}): SuperAgentRequest =>
+    stubJson({
+      urlPath: '/manage-users-api/externalusers/search',
+      body: {
+        content:
+          content ?? replicateExternalUser(Math.floor(totalElements / size) === page ? totalElements % size : size),
+        size,
+        totalElements,
+        number: page,
+        numberOfElements: totalElements < size ? totalElements : size,
+      },
+    }),
+
+  stubGetExternalUser: ({
+    userId = '2e285ccd-dcfd-4497-9e28-d6e8e10a2d3f',
+    username = 'AUTH_ADM',
+    email = 'auth_test2@digital.justice.gov.uk',
+    firstName = 'Auth',
+    lastName = 'Adm',
+    enabled = true,
+    locked = false,
+    verified = true,
+    active = true,
+    inactiveReason,
+    lastLoggedIn = '2023-10-15T10:01:58.614221',
+  }: {
+    userId?: string
+    username?: string
+    email?: string
+    firstName?: string
+    lastName?: string
+    enabled?: boolean
+    locked?: boolean
+    verified?: boolean
+    active?: boolean
+    inactiveReason?: string
+    lastLoggedIn?: string
+  } = {}): SuperAgentRequest =>
+    stubJson({
+      urlPattern: `/manage-users-api/externalusers/id/${userId}`,
+      body: {
+        userId,
+        username,
+        email,
+        firstName,
+        lastName,
+        enabled,
+        locked,
+        verified,
+        active,
+        inactiveReason,
+        lastLoggedIn,
+      },
+    }),
+
+  stubExternalUserRoles: (
+    roles: UserRole[] = [
+      { roleCode: 'GLOBAL_SEARCH', roleName: 'Global Search', roleDescription: 'Is allowed to search' },
+      { roleCode: 'LICENCE_RO', roleName: 'Licence Responsible Officer', roleDescription: 'Responsible license' },
+    ],
+  ): SuperAgentRequest =>
+    stubJson({
+      urlPattern: `/manage-users-api/externalusers/.*/roles`,
+      body: roles,
+    }),
+
+  stubExternalUserAssignableRoles: (
+    roles: UserRole[] = [
+      { roleCode: 'LICENCE_VARY', roleName: 'Licence Vary', roleDescription: 'Vary a license' },
+      { roleCode: 'GLOBAL_SEARCH', roleName: 'Global Search', roleDescription: 'Is allowed to search' },
+    ],
+  ): SuperAgentRequest =>
+    stubJson({
+      urlPattern: `/manage-users-api/externalusers/.*/assignable-roles`,
+      body: roles,
+    }),
+
+  stubUserGroups: (
+    groups: UserGroup[] = [
+      { groupCode: 'SITE_1_GROUP_1', groupName: 'Site 1 - Group 1' },
+      { groupCode: 'SITE_1_GROUP_2', groupName: 'Site 1 - Group 2' },
+    ],
+  ): SuperAgentRequest =>
+    stubJson({
+      urlPattern: `/manage-users-api/externalusers/.*/groups\\?.*`,
+      body: groups,
+    }),
+
+  stubSearchableRoles: (
+    roles: UserRole[] = [
+      { roleCode: 'GLOBAL_SEARCH', roleName: 'Global Search', roleDescription: 'Is allowed to search' },
+      { roleCode: 'LICENCE_VARY', roleName: 'Licence Vary', roleDescription: 'Vary a license' },
+    ],
+  ): SuperAgentRequest =>
+    stubJson({
+      urlPath: `/manage-users-api/externalusers/me/searchable-roles`,
+      body: roles,
+    }),
+
+  stubExternalUserAddRoles: (): SuperAgentRequest =>
+    stubJson({
+      method: 'POST',
+      urlPattern: `/manage-users-api/externalusers/.*/roles`,
+      body: {},
+    }),
+
+  stubExternalUserRemoveRole: (): SuperAgentRequest =>
+    stubJson({
+      method: 'DELETE',
+      urlPattern: `/manage-users-api/externalusers/.*/roles/.*`,
+    }),
+
+  stubExternalUserAddGroup: (): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      urlPattern: `/manage-users-api/externalusers/.*/groups/.*`,
+    }),
+
+  stubExternalUserAddGroupForbidden: (): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      status: HttpStatusCode.FORBIDDEN,
+      urlPattern: `/manage-users-api/externalusers/.*/groups/.*`,
+      body: { userMessage: 'Cannot maintain user' },
+    }),
+
+  stubExternalUserRemoveGroup: (): SuperAgentRequest =>
+    stubJson({
+      method: 'DELETE',
+      urlPattern: `/manage-users-api/externalusers/.*/groups/.*`,
+    }),
+
+  stubExternalUserRemoveGroupLastGroupError: (): SuperAgentRequest =>
+    stubJson({
+      method: 'DELETE',
+      status: HttpStatusCode.FORBIDDEN,
+      urlPattern: `/manage-users-api/externalusers/.*/groups/.*`,
+      body: { userMessage: 'Last group' },
+    }),
+
+  stubExternalUserChangeEmail: (): SuperAgentRequest =>
+    stubJson({
+      method: 'POST',
+      urlPattern: `/manage-users-api/externalusers/.*/email`,
+    }),
+
+  stubExternalUserEnable: (): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      urlPattern: `/manage-users-api/externalusers/.*/enable`,
+    }),
+
+  stubExternalUserDisable: (): SuperAgentRequest =>
+    stubJson({
+      method: 'PUT',
+      urlPattern: `/manage-users-api/externalusers/.*/disable`,
     }),
 }

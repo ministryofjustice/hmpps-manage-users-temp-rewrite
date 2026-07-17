@@ -1,87 +1,65 @@
-import { Request, Router } from 'express'
-import { PrisonCaseload, RoleDetail } from 'manageUsersApiClient'
+import { Router } from 'express'
+import { PrisonCaseload, PrisonUserDetails, RoleDetail, UserRole } from 'manageUsersApiClient'
 import { Services } from '../../../services'
-import { UserParam } from './paramTypes'
+import { UserParam } from '../../userCommon/paramTypes'
 import setupRestrictedRoles from '../../../middleware/route/restrictedRolesMiddleware'
 import paths from '../../paths'
-import { Page, SubjectType } from '../../../services/auditService'
-import { hasRole } from '../../../interfaces/hmppsUser'
+import { Page } from '../../../services/auditService'
+import { HmppsUser } from '../../../interfaces/hmppsUser'
 import AuthRole from '../../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
+import { dpsUserRootUrlProvider } from './common'
+import { userDetailsGetHandler, UserGroupWithShowRemove } from '../../userCommon/userDetailsHandlers'
 
-const getPageData = async (token: string, username: string, { dpsUserService, userService }: Services) => {
+const getPageData = async (
+  hmppsUser: HmppsUser,
+  username: string,
+  { dpsUserService, userService }: Services,
+): Promise<
+  [PrisonUserDetails, UserRole[], UserGroupWithShowRemove[] | undefined, PrisonCaseload[] | undefined, boolean]
+> => {
+  const { token } = hmppsUser
   const [user, roles, email, caseloads] = await Promise.all([
     dpsUserService.getDpsUser(token, username, true),
     dpsUserService.getRoles(token, username),
     userService.getUserEmail(token, username),
     dpsUserService.getUserCaseloads(token, username),
   ])
+  const staffUser = {
+    ...user,
+    email: user.primaryEmail,
+    emailToVerify: email.email,
+    verified: email.verified,
+    activeCaseload: roles.activeCaseload,
+  }
   return [
-    {
-      ...user,
-      email: user.primaryEmail,
-      emailToVerify: email.email,
-      verified: email.verified,
-      activeCaseload: roles.activeCaseload,
-    },
+    staffUser,
     roles.dpsRoles.map((r: RoleDetail) => ({ roleCode: r.code, roleName: r.name })),
+    undefined,
     caseloads.caseloads,
+    !staffUser.verified && staffUser.emailToVerify && staffUser.emailToVerify !== staffUser.email,
   ]
-}
-
-const sortAlphabetically = (caseload1: PrisonCaseload, caseload2: PrisonCaseload): number => {
-  if (caseload1.name < caseload2.name) {
-    return -1
-  }
-  if (caseload1.name > caseload2.name) {
-    return 1
-  }
-  return 0
 }
 
 export default (services: Services): Router => {
   const router = Router({ mergeParams: true })
-  const { auditService } = services
 
   router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_ACCESS_ROLES, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN]))
 
-  router.get('/', setupRestrictedRoles<UserParam>(services), async (req: Request<UserParam>, res) => {
-    const { userId } = req.params
-    const { user } = res.locals
-    await auditService.logPageView(Page.VIEW_DPS_USER, {
-      who: user.username,
-      subjectId: userId,
-      subjectType: SubjectType.USER_ID,
-    })
-
-    const staffUrl = `${paths.dpsUser.manage.root({ userId })}`
-    const hasMaintainDpsUsersAdmin = hasRole(user, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
-    const hasManageDPSUserAccount = hasRole(user, AuthRole.MANAGE_NOMIS_USER_ACCOUNT)
-
-    const searchTitle = 'Search for a DPS user'
-    const searchUrl = paths.dpsUser.search.pattern
-    const restrictedRoles = res.locals?.restrictedRoles ? res.locals.restrictedRoles : []
-
-    const [dpsUser, roles, caseloads] = await getPageData(user.token, userId, services)
-    return res.render('pages/userDetails', {
-      searchTitle,
-      searchUrl,
-      staff: { ...dpsUser, name: `${dpsUser.firstName} ${dpsUser.lastName}` },
-      staffUrl,
-      roles,
-      caseloads: caseloads?.sort(sortAlphabetically),
-      hasMaintainDpsUsersAdmin,
-      errors: req.flash('deleteGroupErrors'),
-      canAutoEnableDisableUser: false,
-      showEnableDisable: hasManageDPSUserAccount,
-      showGroups: false,
-      showExtraUserDetails: false,
-      showUsername: dpsUser.email !== dpsUser.username.toLowerCase(),
-      displayEmailChangeInProgress:
-        !dpsUser.verified && dpsUser.emailToVerify && dpsUser.emailToVerify !== dpsUser.email,
-      restrictedRoles,
-    })
-  })
+  router.get(
+    '/',
+    setupRestrictedRoles<UserParam>(services),
+    userDetailsGetHandler(
+      services,
+      Page.VIEW_DPS_USER,
+      dpsUserRootUrlProvider,
+      'Search for a DPS user',
+      paths.dpsUser.search.pattern,
+      getPageData,
+      false,
+      false,
+    ),
+  )
 
   return router
 }

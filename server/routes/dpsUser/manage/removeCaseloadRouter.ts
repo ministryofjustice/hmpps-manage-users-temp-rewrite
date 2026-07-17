@@ -1,6 +1,6 @@
 import { Router, Request } from 'express'
 import { Services } from '../../../services'
-import { CaseloadParam } from './paramTypes'
+import { CaseloadParam } from '../../userCommon/paramTypes'
 import { EventType, SubjectType } from '../../../services/auditService'
 import paths from '../../paths'
 import { HttpStatusCode } from '../../../utils/utils'

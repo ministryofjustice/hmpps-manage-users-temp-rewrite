@@ -1,4 +1,4 @@
-import { Role } from 'manageUsersApiClient'
+import { Role, UserRole } from 'manageUsersApiClient'
 import { SelectItem, SelectItemWithHint } from '../interfaces/selectItem'
 import SearchParamsHelper from './searchParams'
 import paths from '../routes/paths'
@@ -10,7 +10,7 @@ export const roleDropdownValues = (roles: Role[]): SelectItem[] =>
     value: role.roleCode,
   }))
 
-export const roleDropdownValuesWithHint = (roles: Role[]): SelectItemWithHint[] =>
+export const roleDropdownValuesWithHint = (roles: UserRole[]): SelectItemWithHint[] =>
   roles.map((r: Role) => ({
     text: r.roleName,
     value: r.roleCode,

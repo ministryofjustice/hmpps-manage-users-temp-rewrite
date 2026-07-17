@@ -9,7 +9,7 @@ import {
 } from 'manageUsersApiClient'
 import { Response } from 'superagent'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
-import { hasRole, HmppsUser } from '../interfaces/hmppsUser'
+import { filterProtectedRoles, hasRole, HmppsUser } from '../interfaces/hmppsUser'
 import AuthRole from '../interfaces/authRole'
 import { toArray } from '../utils/utils'
 
@@ -18,9 +18,7 @@ export default class RolesService {
 
   getAssignableRoles = async (user: HmppsUser): Promise<Role[]> => {
     return this.getRolesForMaintainAccessRolesUser(user).then(allAssignableRoles =>
-      hasRole(user, AuthRole.OAUTH_ADMIN)
-        ? allAssignableRoles
-        : allAssignableRoles.filter((role: Role) => role.roleCode !== 'OAUTH_ADMIN'),
+      filterProtectedRoles(user, allAssignableRoles),
     )
   }
 
