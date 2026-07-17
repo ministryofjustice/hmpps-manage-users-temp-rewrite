@@ -11,7 +11,7 @@ export const roleDropdownValues = (roles: Role[]): SelectItem[] =>
   }))
 
 export const roleDropdownValuesWithHint = (roles: UserRole[]): SelectItemWithHint[] =>
-  roles.map((r: Role) => ({
+  roles.map((r: UserRole) => ({
     text: r.roleName,
     value: r.roleCode,
     ...(r.roleDescription && {

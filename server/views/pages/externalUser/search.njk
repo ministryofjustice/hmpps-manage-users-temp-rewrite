@@ -11,7 +11,7 @@
 {% from "moj/components/filter/macro.njk" import mojFilter %}
 {% from "moj/components/pagination/macro.njk" import mojPagination %}
 
-{% set title = "Search for an external user " %}
+{% set title = "Search for an external user" %}
 {% set groupDropdownValues = groups | groupDropdownValues %}
 {% set roleDropdownValues = roles | externalUserRoleDropdownValues %}
 
@@ -192,13 +192,15 @@
                       }) }}
                       <div class="pull-right">
                         <form id="downloadExternalUsersForm" method="GET" action="{{ downloadUrl }}">
-                        {{ govukButton({
-                          text: "Download results",
-                          href: downloadUrl,
-                          preventDoubleClick: true,
-                          classes: "govuk-button downloadButton",
-                          attributes: { "data-qa": "download" }
-                        }) }}
+                          {{ govukButton({
+                            id: "downloadExternalUsersButton",
+                            text: "Download results",
+                            element: "button",
+                            type: "submit",
+                            preventDoubleClick: true,
+                            classes: "govuk-button downloadButton",
+                            attributes: { "data-qa": "download" }
+                          }) }}
 
                         </form>
                       </div>

@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { PrisonUserDetails, UserRole } from 'manageUsersApiClient'
+import { ExternalUser, UserRole } from 'manageUsersApiClient'
 import { Services } from '../../../services'
 import { UserParam } from '../../userCommon/paramTypes'
 import paths from '../../paths'
@@ -14,7 +14,7 @@ const getPageData = async (
   user: HmppsUser,
   username: string,
   services: Services,
-): Promise<[PrisonUserDetails, UserRole[], string]> => {
+): Promise<[ExternalUser, UserRole[], string]> => {
   const { externalUserService } = services
   const { token } = user
   return Promise.all([

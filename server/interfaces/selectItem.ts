@@ -7,7 +7,7 @@ export interface SelectItem {
 }
 
 export interface SelectItemWithHint extends SelectItem {
-  hint: {
+  hint?: {
     text: string
   }
 }
