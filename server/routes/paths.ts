@@ -38,6 +38,8 @@ const changeRoleName = path('/change-role-name')
 const changeRoleDescription = path('/change-role-description')
 const changeRoleAdminType = path('/change-role-admin-type')
 const crsGroupSelection = path('/crs-group-selection')
+const userAllowList = path('/user-allow-list')
+const addUserToAllowList = userAllowList.path('/add')
 const download = path('/download')
 const createExternalUser = path('/create-external-user')
 const searchExternalUser = path('/search-external-users')
@@ -99,6 +101,10 @@ const paths = {
   crsGroups: {
     select: crsGroupSelection,
     download: crsGroupSelection.path(download.pattern),
+  },
+  userAllowList: {
+    search: userAllowList,
+    addUser: addUserToAllowList,
   },
   externalUser: {
     create: createExternalUser,

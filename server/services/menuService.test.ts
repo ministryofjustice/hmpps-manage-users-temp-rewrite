@@ -50,17 +50,14 @@ describe('MenuService', () => {
       expect(tiles).toEqual([])
     })
     it('should return empty list of tiles when manager user allow list user but manage allowlist is disabled', async () => {
+      manageUserAllowListHelper.isEnabled = jest.fn(() => false)
       const tiles = menuService.getTiles(['MANAGE_USER_ALLOW_LIST'])
 
       expect(tiles).toEqual([])
     })
     it('should return list containing manager user allow list tiles when manage allowlist is enabled', async () => {
-      manageUserAllowListHelper.isEnabled = jest.fn(() => {
-        return true
-      })
-      manageUserAllowListHelper.environmentLabel = jest.fn(() => {
-        return 'Stage'
-      })
+      manageUserAllowListHelper.isEnabled = jest.fn(() => true)
+      manageUserAllowListHelper.environmentLabel = jest.fn(() => 'Stage')
       menuService = new MenuService(manageUsersApiClient)
       const tiles: MenuTile[] = menuService.getTiles(['MANAGE_USER_ALLOW_LIST'])
 
