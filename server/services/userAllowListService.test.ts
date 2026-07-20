@@ -54,7 +54,7 @@ describe('UserAllowListService', () => {
     })
 
     it('returns false when the API throws (user not found)', async () => {
-      apiClient.getAllowlistUser.mockRejectedValue(new Error('Not found'))
+      apiClient.getAllowlistUser.mockRejectedValue({ responseStatus: 404 })
 
       const result = await service.usernameExists(token, 'UNKNOWN_USER')
 

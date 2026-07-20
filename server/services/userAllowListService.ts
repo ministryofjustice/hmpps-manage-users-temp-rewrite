@@ -1,5 +1,6 @@
 import { UserAllowlistAddRequest, UserAllowlistDetail } from 'manageUsersApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
+import { HttpStatusCode } from '../utils/utils'
 
 export default class UserAllowListService {
   constructor(private readonly manageUsersApiClient: ManageUsersApiClient) {}
@@ -11,8 +12,11 @@ export default class UserAllowListService {
     try {
       await this.getAllowListUser(token, username)
       return true
-    } catch {
-      return false
+    } catch (err) {
+      if (err.responseStatus === HttpStatusCode.NOT_FOUND) {
+        return false
+      }
+      throw err
     }
   }
 
