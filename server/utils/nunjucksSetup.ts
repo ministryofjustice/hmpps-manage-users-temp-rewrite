@@ -33,6 +33,7 @@ import {
 } from '../presentation/searchExternalUser'
 import { isRestrictedRoleCode, RestrictedRoles } from '../presentation/restrictedRoles'
 import groupValues from '../presentation/groups'
+import manageUserAllowListHelper from './manageUserAllowListHelper'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -65,6 +66,7 @@ export default function nunjucksSetup(app: express.Express): void {
     },
   )
   njkEnv.addGlobal('homeUrl', config.apis.hmppsAuth.externalUrl)
+  njkEnv.addGlobal('allowListEnvironment', manageUserAllowListHelper.environmentLabel())
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('findError', (array: FormError[], formFieldId: string) => {

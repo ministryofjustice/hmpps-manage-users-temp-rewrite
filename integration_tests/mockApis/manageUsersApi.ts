@@ -11,6 +11,7 @@ import {
   UpdateRoleAdminTypeRequest,
   UpdateRoleDescriptionRequest,
   UpdateRoleNameRequest,
+  UserAllowlistAddRequest,
   UserCaseloadDetail,
   UserGroup,
   UserRole,
@@ -1108,5 +1109,48 @@ export default {
     stubJson({
       method: 'PUT',
       urlPattern: `/manage-users-api/externalusers/.*/disable`,
+    }),
+
+  stubAddAllowlistUser: (): SuperAgentRequest =>
+    stubJson({
+      method: 'POST',
+      urlPath: '/manage-users-api/users/allowlist',
+      status: HttpStatusCode.CREATED,
+    }),
+
+  stubGetAllowlistUser: (user: UserAllowlistAddRequest): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/manage-users-api/users/allowlist/${user.username}`,
+      },
+      response: {
+        status: HttpStatusCode.OK,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          id: 'a073bfc1-2f81-4b6d-9b9c-fd7c367fe4c7',
+          username: user.username,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          reason: user.reason,
+          accessPeriod: user.accessPeriod,
+          createdOn: '2024-03-19T04:39:08',
+          allowlistEndDate: '2024-04-19',
+          lastUpdated: '2024-03-19T04:39:08',
+          lastUpdatedBy: 'ADMIN',
+        },
+      },
+    }),
+
+  stubGetAllowlistUserNotFound: (username: string): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/manage-users-api/users/allowlist/${username}`,
+      },
+      response: {
+        status: HttpStatusCode.NOT_FOUND,
+      },
     }),
 }

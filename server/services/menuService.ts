@@ -116,7 +116,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Search the ${this.allowlistEnvironment} allow list`,
       `Search for a user and update their access to ${this.allowlistEnvironment}`,
-      '/user-allow-list',
+      paths.userAllowList.search.pattern,
       'search_user_allow_list',
       10,
       this.manageAllowlistRoles,
@@ -125,7 +125,7 @@ export default class MenuService {
     new RoleSpecificMenuTile(
       `Add a user to the ${this.allowlistEnvironment} allow list`,
       `Add an existing user to the ${this.allowlistEnvironment} allow list`,
-      '/user-allow-list/add',
+      paths.userAllowList.addUser.pattern,
       'add_user_to_allow_list',
       11,
       this.manageAllowlistRoles,
