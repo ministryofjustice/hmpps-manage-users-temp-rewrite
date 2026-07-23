@@ -6,16 +6,30 @@
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "../components/linkbutton/macro.njk" import linkButton %}
 
- {% block beforeContent %}
-   {{ govukBreadcrumbs({
-     items: [
-       { text: "Home", href: homeUrl },
-       { text: "Manage user accounts", href: '/' },
-       { text: searchTitle, href: searchUrl },
-       { text: staff.name}
-     ]
-   }) }}
- {% endblock %}
+
+{% block beforeContent %}
+  {% if searchUrl === searchResultsUrl %}
+    {% set breadcrumbs =
+      [
+        { text: "Home", href: homeUrl },
+        { text: "Manage user accounts", href: '/' },
+        { text: searchTitle, href: searchUrl },
+        { text: staff.name}
+      ] %}
+  {% else %}
+    {% set breadcrumbs =
+      [
+        { text: "Home", href: homeUrl },
+        { text: "Manage user accounts", href: '/' },
+        { text: searchTitle, href: searchUrl },
+        { text: "Search results", href: searchResultsUrl },
+        { text: staff.name}
+      ] %}
+  {% endif %}
+  {{ govukBreadcrumbs({
+    items: breadcrumbs
+  }) }}
+{% endblock %}
 
 {% block content %}
   {% if errors.length > 0 %}
@@ -27,7 +41,7 @@
   {% endif %}
 
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-three-quarters">
       <h1 class="govuk-heading-l">{{ staff.name }}</h1>
       <table class="govuk-table">
         <tbody class="govuk-table__body">
@@ -42,7 +56,7 @@
                   attributes: { "data-qa": "enabled" }
                 }) }}
               </td>
-              <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-width-one-quarter">
+              <td class="govuk-table__cell govuk-table__cell--numeric">
                 <a href="{{ staffUrl }}/deactivate/reason" class="govuk-link" data-qa="enable-button">Deactivate account</a>
               </td>
             {% else %}
@@ -53,7 +67,7 @@
                   attributes: { "data-qa": "enabled" }
                 }) }}
               </td>
-              <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-width-one-quarter">
+              <td class="govuk-table__cell govuk-table__cell--numeric">
                 {{ linkButton(csrfToken, {
                   text: "Activate account",
                   action: staffUrl + "/activate",
@@ -71,7 +85,7 @@
                 }) }}
               </td>
               {% if showEnableDisable and staff.enabled %}
-                <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-width-one-quarter">
+                <td class="govuk-table__cell govuk-table__cell--numeric">
                   {{ linkButton(csrfToken, {
                     text: "Deactivate account",
                     action: staffUrl + "/deactivate",
@@ -89,7 +103,7 @@
                 }) }}
                 </td>
                 {% if showEnableDisable %}
-                  <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-width-one-quarter">
+                  <td class="govuk-table__cell govuk-table__cell--numeric">
                     {{ linkButton(csrfToken, {
                       text: "Deactivate account",
                       action: staffUrl + "/deactivate",
@@ -107,7 +121,7 @@
                 }) }}
                 </td>
                 {% if showEnableDisable and not staff.enabled %}
-                  <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-width-one-quarter">
+                  <td class="govuk-table__cell govuk-table__cell--numeric">
                     {{ linkButton(csrfToken, {
                       text: "Activate account",
                       action: staffUrl + "/activate",
@@ -125,7 +139,6 @@
       {% set userDetails = [] %}
       {% set changeEmailLink = {
         html: '<a href="' + staffUrl + '/change-email" class="govuk-link" data-qa="amend-link">Change email</a>',
-        classes: 'govuk-!-width-one-quarter',
         format: "numeric"
       } if showExtraUserDetails or hasMaintainDpsUsersAdmin else {} %}
 
@@ -141,8 +154,8 @@
         {% endif %}
         {% set userDetails = userDetails.concat([
           [
-            {text: ("Email" if showUsername else "Username / email"), classes: 'govuk-!-width-one-quarter' },
-            {text: staff.email, classes: 'govuk-!-width-one-half' },
+            { text: ("Email" if showUsername else "Username / email") },
+            { text: staff.email },
             changeEmailLink
           ],
           [
@@ -170,8 +183,8 @@
             {text: ''}
           ],
           [
-            {text: "Email", classes: 'govuk-!-width-one-quarter' },
-            {text: staff.email, classes: 'govuk-!-width-one-half' },
+            {text: "Email" },
+            {text: staff.email },
             changeEmailLink
           ]
         ]) %}
@@ -238,7 +251,7 @@
         {% endset %}
         {% set rows = (rows.push([
           { text: userRole.roleName },
-          { html: roleLink, classes: 'govuk-!-width-one-quarter', format: "numeric"}
+          { html: roleLink, format: "numeric"}
         ]), rows) %}
       {% endfor %}
 
@@ -269,7 +282,7 @@
             {% endset %}
             {% set rows = (rows.push([
               { text: userGroup.groupName },
-              { html: groupLink, classes: 'govuk-!-width-one-quarter', format: "numeric" }
+              { html: groupLink, format: "numeric" }
             ]), rows) %}
           {% else %}
             {% set rows = (rows.push([
@@ -300,7 +313,7 @@
           attributes: { "data-qa": "user-active-caseload" },
           rows: [
             [
-              { text: staff.activeCaseload.name, classes: 'govuk-!-width-one-half'  }
+              { text: staff.activeCaseload.name  }
             ]
           ]
         }) }}
@@ -319,7 +332,7 @@
 
           {% set rows = (rows.push([
               { text: caseload.name },
-              { html: caseloadLink, classes: 'govuk-!-width-one-quarter', format: "numeric" }
+              { html: caseloadLink, format: "numeric" }
             ]), rows) %}
         {% endfor %}
 

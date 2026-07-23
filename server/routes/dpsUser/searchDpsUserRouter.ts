@@ -75,6 +75,7 @@ export const searchDpsUserRouter = ({
       )
 
       const queryString = searchParams.toString()
+      req.session.searchResultsUrl = req.originalUrl
       return res.render('pages/dpsUser/search', {
         showPrisonDropdown,
         roles,

@@ -37,6 +37,7 @@ export const userDetailsGetHandler = <UserType extends CommonUser>(
     })
 
     const staffUrl = staffUrlProvider(userId)
+    const searchResultsUrl = req.session.searchResultsUrl ? req.session.searchResultsUrl : searchUrl
     const hasMaintainDpsUsersAdmin = hasRole(user, AuthRole.MAINTAIN_ACCESS_ROLES_ADMIN)
     const hasManageDPSUserAccount = hasRole(user, AuthRole.MANAGE_NOMIS_USER_ACCOUNT)
 
@@ -51,6 +52,7 @@ export const userDetailsGetHandler = <UserType extends CommonUser>(
     return res.render('pages/userDetails', {
       searchTitle,
       searchUrl,
+      searchResultsUrl,
       staff: { ...staffUser, name: `${staffUser.firstName} ${staffUser.lastName}` },
       staffUrl,
       roles,
