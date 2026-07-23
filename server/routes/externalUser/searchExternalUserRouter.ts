@@ -66,6 +66,7 @@ export const searchExternalUserRouter = ({
       )
 
       const queryString = searchParams.toString()
+      req.session.searchResultsUrl = req.originalUrl
       return res.render('pages/externalUser/search', {
         groups,
         roles,

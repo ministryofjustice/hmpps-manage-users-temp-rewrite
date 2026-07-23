@@ -106,8 +106,7 @@ export default ({ externalUserService, auditService }: Services): Router => {
 
       return res.render('pages/externalUser/createSuccess', {
         email: body.email,
-        userId,
-        detailsLink: `${paths.externalUser.manage.details({ userId })}`,
+        detailsLink: paths.externalUser.manage.details({ userId }),
       })
     },
   )
