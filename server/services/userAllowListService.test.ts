@@ -1,4 +1,4 @@
-import { UserAllowlistAddRequest, UserAllowlistDetail } from 'manageUsersApiClient'
+import { UserAllowlistAddRequest, UserAllowlistDetail, UserAllowlistPatchRequest } from 'manageUsersApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import UserAllowListService from './userAllowListService'
 
@@ -11,16 +11,18 @@ describe('UserAllowListService', () => {
   beforeEach(() => {
     apiClient = {
       getAllowlistUser: jest.fn(),
+      getAllAllowlistUsers: jest.fn(),
       addAllowlistUser: jest.fn(),
+      updateAllowlistUserAccess: jest.fn(),
     } as unknown as jest.Mocked<ManageUsersApiClient>
 
     service = new UserAllowListService(apiClient)
   })
 
   const token = 'test-token'
-
+  const testId = 'a073bfc1-2f81-4b6d-9b9c-fd7c367fe4c7'
   const allowlistUser: UserAllowlistDetail = {
-    id: 'a073bfc1-2f81-4b6d-9b9c-fd7c367fe4c7',
+    id: testId,
     username: 'TUSER_GEN',
     email: 'test.user@justice.gov.uk',
     firstName: 'Test',
@@ -78,6 +80,30 @@ describe('UserAllowListService', () => {
       await service.addAllowListUser(token, request)
 
       expect(apiClient.addAllowlistUser).toHaveBeenCalledWith(token, request)
+    })
+  })
+
+  describe('getAllAllowListUsers', () => {
+    it('calls the API with the provided query', async () => {
+      apiClient.getAllAllowlistUsers.mockResolvedValue({} as never)
+
+      await service.getAllAllowListUsers(token, { status: 'ACTIVE', page: 1, size: 20 })
+
+      expect(apiClient.getAllAllowlistUsers).toHaveBeenCalledWith(token, { status: 'ACTIVE', page: 1, size: 20 })
+    })
+  })
+
+  describe('updateAllowListUserAccess', () => {
+    it('calls the API with the provided request', async () => {
+      const request: UserAllowlistPatchRequest = {
+        reason: 'Updated reason',
+        accessPeriod: 'SIX_MONTHS',
+      }
+      apiClient.updateAllowlistUserAccess.mockResolvedValue(undefined)
+
+      await service.updateAllowListUserAccess(token, testId, request)
+
+      expect(apiClient.updateAllowlistUserAccess).toHaveBeenCalledWith(token, testId, request)
     })
   })
 })

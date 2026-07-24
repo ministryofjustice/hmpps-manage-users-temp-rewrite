@@ -40,6 +40,8 @@ const changeRoleAdminType = path('/change-role-admin-type')
 const crsGroupSelection = path('/crs-group-selection')
 const userAllowList = path('/user-allow-list')
 const addUserToAllowList = userAllowList.path('/add')
+const userAllowListView = userAllowList.path('/:username/view')
+const userAllowListEdit = userAllowList.path('/:username/edit')
 const download = path('/download')
 const createExternalUser = path('/create-external-user')
 const searchExternalUser = path('/search-external-users')
@@ -105,6 +107,11 @@ const paths = {
   userAllowList: {
     search: userAllowList,
     addUser: addUserToAllowList,
+    download: userAllowList.path(download.pattern),
+    manage: {
+      view: userAllowListView,
+      edit: userAllowListEdit,
+    },
   },
   externalUser: {
     create: createExternalUser,

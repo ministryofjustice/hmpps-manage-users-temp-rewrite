@@ -1,12 +1,14 @@
 export const enum Status {
   ACTIVE = 'Active',
   INACTIVE = 'Inactive',
+  EXPIRED = 'EXPIRED',
   ALL = 'ALL',
 }
 
 const statusMap = new Map<StatusKey, Status>([
   ['ACTIVE', Status.ACTIVE],
   ['INACTIVE', Status.INACTIVE],
+  ['EXPIRED', Status.EXPIRED],
   ['ALL', Status.ALL],
 ])
 

@@ -3,6 +3,7 @@ export default () => {
   CsvDownload.setup('downloadLsaForm', 'lsa-report.csv')
   CsvDownload.setup('downloadCRSGroups', 'crs-group-members.csv')
   CsvDownload.setup('downloadExternalUsersForm', 'external-user-search.csv')
+  CsvDownload.setup('downloadAllowListForm', 'user-allowlist-search.csv')
 }
 
 class CsvDownload {

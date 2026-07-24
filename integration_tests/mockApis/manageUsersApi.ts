@@ -11,7 +11,8 @@ import {
   UpdateRoleAdminTypeRequest,
   UpdateRoleDescriptionRequest,
   UpdateRoleNameRequest,
-  UserAllowlistAddRequest,
+  UserAllowlistDetail,
+  UserAllowlistPatchRequest,
   UserCaseloadDetail,
   UserGroup,
   UserRole,
@@ -181,6 +182,21 @@ function replicateExternalUser(times: number): ExternalUser[] {
     lastLoggedIn: '2025-10-15T10:01:58.614221',
   }))
 }
+
+const replicateAllowlistUser = (times: number): UserAllowlistDetail[] =>
+  [...Array(times).keys()].map(i => ({
+    id: `a073bfc1-2f81-4b6d-9b9c-fd7c367fe4c${String(i).padStart(2, '0')}`,
+    username: `ALLOW_USER${i}`,
+    email: `allow_user${i}@justice.gov.uk`,
+    firstName: 'Allow',
+    lastName: `User${i}`,
+    reason: 'For testing purposes',
+    accessPeriod: 'ONE_MONTH',
+    createdOn: '2024-03-19T04:39:08',
+    allowlistEndDate: '2027-04-19',
+    lastUpdated: '2024-03-19T04:39:08',
+    lastUpdatedBy: 'ADMIN',
+  }))
 
 // Alternate having 1, 2, or 3 admin types
 const generateAdminTypes = (i: number) => {
@@ -1118,7 +1134,30 @@ export default {
       status: HttpStatusCode.CREATED,
     }),
 
-  stubGetAllowlistUser: (user: UserAllowlistAddRequest): SuperAgentRequest =>
+  stubSearchAllowlistUsers: ({
+    totalElements = 1,
+    page = 0,
+    size = 20,
+    content,
+  }: {
+    totalElements?: number
+    page?: number
+    size?: number
+    content?: UserAllowlistDetail[]
+  } = {}): SuperAgentRequest =>
+    stubJson({
+      urlPath: '/manage-users-api/users/allowlist',
+      body: {
+        content:
+          content ?? replicateAllowlistUser(Math.floor(totalElements / size) === page ? totalElements % size : size),
+        size,
+        totalElements,
+        number: page,
+        numberOfElements: totalElements < size ? totalElements : size,
+      },
+    }),
+
+  stubGetAllowlistUser: (user: Partial<UserAllowlistDetail>): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
@@ -1135,10 +1174,10 @@ export default {
           lastName: user.lastName,
           reason: user.reason,
           accessPeriod: user.accessPeriod,
-          createdOn: '2024-03-19T04:39:08',
-          allowlistEndDate: '2024-04-19',
-          lastUpdated: '2024-03-19T04:39:08',
-          lastUpdatedBy: 'ADMIN',
+          createdOn: user.createdOn,
+          allowlistEndDate: user.allowlistEndDate,
+          lastUpdated: user.lastUpdated,
+          lastUpdatedBy: user.lastUpdatedBy,
         },
       },
     }),
@@ -1151,6 +1190,18 @@ export default {
       },
       response: {
         status: HttpStatusCode.NOT_FOUND,
+      },
+    }),
+
+  stubUpdateAllowlistUserAccess: (id: string, request?: UserAllowlistPatchRequest): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'PATCH',
+        urlPath: `/manage-users-api/users/allowlist/${id}`,
+        bodyPatterns: request ? [{ equalToJson: request }] : undefined,
+      },
+      response: {
+        status: HttpStatusCode.OK,
       },
     }),
 }
