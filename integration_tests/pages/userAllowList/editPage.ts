@@ -4,8 +4,6 @@ import AbstractPage from '../abstractPage'
 export default class EditAllowListPage extends AbstractPage {
   readonly header: Locator
 
-  readonly detailsRows: Locator
-
   readonly accessPeriodOneMonthRadio: Locator
 
   readonly accessPeriodThreeMonthsRadio: Locator
@@ -39,7 +37,6 @@ export default class EditAllowListPage extends AbstractPage {
   private constructor(page: Page, name: string) {
     super(page)
     this.header = page.getByRole('heading', { name })
-    this.detailsRows = page.getByTestId('allowlist-user-details').getByRole('row')
     this.accessPeriodOneMonthRadio = this.radioButton('One month')
     this.accessPeriodThreeMonthsRadio = this.radioButton('Three months')
     this.accessPeriodSixMonthsRadio = this.radioButton('Six months')

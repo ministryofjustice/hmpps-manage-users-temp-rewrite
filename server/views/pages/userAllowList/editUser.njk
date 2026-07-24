@@ -8,7 +8,7 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 
-{% set title %}Editing user allow list access for {{ firstName }} {{ lastName }}{% endset %}
+{% set title %}Editing user allow list access for {{ user.firstName }} {{ user.lastName }}{% endset %}
 {% set searchLink = allowListSearchTitle %}
 {% set reasonHint %}Please provide a valid business reason for allowing access to {{ allowListEnvironment }}. This will be appended to the existing reason{% endset %}
 
@@ -51,7 +51,7 @@
               text: "Username"
             },
             {
-              text: username, attributes: {"data-qa": "username"}
+              text: user.username, attributes: {"data-qa": "username"}
             }
           ],
           [
@@ -59,7 +59,7 @@
               text: "Email address"
             },
             {
-              text: email, attributes: {"data-qa": "email"}
+              text: user.email, attributes: {"data-qa": "email"}
             }
           ],
           [
@@ -67,7 +67,7 @@
               text: "First name"
             },
             {
-              text: firstName, attributes: {"data-qa": "firstName"}
+              text: user.firstName, attributes: {"data-qa": "firstName"}
             }
           ],
           [
@@ -75,14 +75,14 @@
               text: "Last name"
             },
             {
-              text: lastName, attributes: {"data-qa": "lastName"}
+              text: user.lastName, attributes: {"data-qa": "lastName"}
             }
           ]
         ]
       }) }}
       <form method="POST">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        <input type="hidden" name="id" value="{{ id }}" />
+        <input type="hidden" name="id" value="{{ user.id }}" />
 
         {{ govukRadios({
           name: "accessPeriod",
@@ -152,6 +152,7 @@
         {{ govukTextarea({
           name: "reason",
           id: "reason",
+          value: reason,
           rows: "8",
           label: {
             text: "Reason",
@@ -165,7 +166,7 @@
         }) }}
 
         {% set reasonHtml %}
-          <div class="preformatted" data-qa="reason">{{ reason }}</div>
+          <div class="preformatted" data-qa="reason">{{ user.reason }}</div>
         {% endset %}
         {{ govukDetails({
           summaryText: "Existing reason",
@@ -182,7 +183,7 @@
         {{ govukButton({
           text: "Cancel",
           element: 'a',
-          href: username | allowListUserView,
+          href: user.username | allowListUserView,
           classes: "govuk-button--secondary",
           attributes: { "data-qa": "cancel-button" }
         }) }}

@@ -46,7 +46,7 @@ test.describe('Search allow list users', () => {
     await expect(page.getByTestId(`username-${expiredUser.username}`)).toContainText(`- ${expiredUser.username}`)
     await expect(page.getByTestId(`email-${expiredUser.username}`)).toContainText(expiredUser.email)
     await expect(page.getByTestId(`expiry-${expiredUser.username}`)).toContainText('19 April 2020')
-    await expect(page.getByTestId(`status-${expiredUser.username}`)).toContainText('EXPIRED')
+    await expect(page.getByTestId(`status-${expiredUser.username}`)).toContainText('Expired')
 
     await expect(searchPage.userDetailsLink(activeUser.username)).toContainText('Litany Storm')
     await expect(page.getByTestId(`username-${activeUser.username}`)).toContainText(`- ${activeUser.username}`)
@@ -129,7 +129,7 @@ test.describe('Search allow list users', () => {
     await searchPage.statusExpiredRadio.click()
     await searchPage.filterButton.click()
 
-    await expect(searchPage.filterCategoryLink('EXPIRED')).toBeVisible()
+    await expect(searchPage.filterCategoryLink('Expired')).toBeVisible()
   })
 
   test('Should show a user filter tag', async ({ page }) => {

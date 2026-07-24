@@ -59,7 +59,7 @@ test.describe('View allow list user', () => {
     await searchPage.viewDetailsLink(user.username).click()
     const viewPage = await ViewAllowListPage.verifyOnPage(page, 'Anastazia Armistead')
 
-    await expect(viewPage.statusTag).toHaveText('EXPIRED')
+    await expect(viewPage.statusTag).toHaveText('Expired')
     await expect(viewPage.expiry).toHaveText('19 April 2020')
     await expect(viewPage.createdDate).toHaveText('19 March 2024')
     await expect(viewPage.lastUpdatedDate).toHaveText('19 March 2024')

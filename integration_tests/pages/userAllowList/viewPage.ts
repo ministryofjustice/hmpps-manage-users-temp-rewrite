@@ -4,8 +4,6 @@ import AbstractPage from '../abstractPage'
 export default class ViewAllowListPage extends AbstractPage {
   readonly header: Locator
 
-  readonly detailsRows: Locator
-
   readonly editButton: Locator
 
   readonly statusTag: Locator
@@ -23,7 +21,6 @@ export default class ViewAllowListPage extends AbstractPage {
   private constructor(page: Page, name: string) {
     super(page)
     this.header = page.getByRole('heading', { name })
-    this.detailsRows = page.getByTestId('allowlist-user-details').getByRole('row')
     this.editButton = page.getByTestId('edit-link')
     this.statusTag = page.getByTestId('status-tag')
     this.expiry = page.getByTestId('expiry')

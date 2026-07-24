@@ -10,9 +10,7 @@ import { getAllowlistStatus } from '../../../presentation/userAllowList'
 import { UserParam } from '../paramTypes'
 import { EventType, SubjectType } from '../../../services/auditService'
 
-interface Form extends UserAllowlistPatchRequest {
-  id: string
-}
+type Form = UserAllowlistPatchRequest & { id: string }
 
 const validate = (body: UserAllowlistPatchRequest): FormError[] => {
   const errors: FormError[] = []
@@ -29,17 +27,17 @@ export default ({ userAllowListService, auditService }: Services): Router => {
 
   router.get('/', async (req: Request<UserParam>, res: Response) => {
     const { username } = req.params
-    const allowlistUser = await userAllowListService.getAllowListUser(res.locals.user.token, username)
+    const user = await userAllowListService.getAllowListUser(res.locals.user.token, username)
     const body = bodyFromFlash<UserAllowlistPatchRequest>(req)
     const accessPeriod = body?.accessPeriod ?? 'ONE_MONTH'
 
     return res.render('pages/userAllowList/editUser', {
-      ...allowlistUser,
+      user,
       ...body,
       accessPeriod,
       errors: formErrorsFromFlash(req),
       searchUrl: paths.userAllowList.search.pattern,
-      status: getAllowlistStatus(allowlistUser),
+      status: getAllowlistStatus(user),
     })
   })
 
@@ -52,7 +50,10 @@ export default ({ userAllowListService, auditService }: Services): Router => {
       const { username } = req.params
       const body = bodyFromFlash<Form>(req)
 
-      await userAllowListService.updateAllowListUserAccess(res.locals.user.token, body.id, body)
+      await userAllowListService.updateAllowListUserAccess(res.locals.user.token, body.id, {
+        reason: body.reason,
+        accessPeriod: body.accessPeriod,
+      } as UserAllowlistPatchRequest)
 
       await auditService.logAuditEvent({
         what: EventType.UPDATE_ALLOW_LIST_USER,

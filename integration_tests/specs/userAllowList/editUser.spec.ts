@@ -59,7 +59,7 @@ test.describe('Edit allow list user', () => {
     const user = buildAllowlistUser()
     const editPage = await editUser(page, { user })
 
-    await expect(editPage.statusTag).toHaveText('EXPIRED')
+    await expect(editPage.statusTag).toHaveText('Expired')
     await expect(editPage.username).toHaveText(user.username)
     await expect(editPage.email).toHaveText(user.email)
     await expect(editPage.firstName).toHaveText(user.firstName)

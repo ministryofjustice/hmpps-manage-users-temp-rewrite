@@ -1,7 +1,7 @@
 export const enum Status {
   ACTIVE = 'Active',
   INACTIVE = 'Inactive',
-  EXPIRED = 'EXPIRED',
+  EXPIRED = 'Expired',
   ALL = 'ALL',
 }
 
