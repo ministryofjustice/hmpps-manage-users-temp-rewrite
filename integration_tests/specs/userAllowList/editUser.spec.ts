@@ -56,7 +56,7 @@ test.describe('Edit allow list user', () => {
   })
 
   test('Should show details of an expired user', async ({ page }) => {
-    const user = buildAllowlistUser()
+    const user = buildAllowlistUser({ accessPeriod: 'EXPIRE' })
     const editPage = await editUser(page, { user })
 
     await expect(editPage.statusTag).toHaveText('Expired')

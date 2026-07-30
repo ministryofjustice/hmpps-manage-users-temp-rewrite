@@ -185,7 +185,7 @@ function replicateExternalUser(times: number): ExternalUser[] {
 
 const replicateAllowlistUser = (times: number): UserAllowlistDetail[] =>
   [...Array(times).keys()].map(i => ({
-    id: `a073bfc1-2f81-4b6d-9b9c-fd7c367fe4c${String(i).padStart(2, '0')}`,
+    id: `a073bfc1-2f81-4b6d-9b9c-fd7c367f${i.toString(16).padStart(4, '0')}`,
     username: `ALLOW_USER${i}`,
     email: `allow_user${i}@justice.gov.uk`,
     firstName: 'Allow',
