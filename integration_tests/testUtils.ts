@@ -1,8 +1,10 @@
 import { expect, Locator, Page } from '@playwright/test'
+import { UserCaseloadDetail } from 'manageUsersApiClient'
 import tokenVerification from './mockApis/tokenVerification'
 import hmppsAuth, { type UserToken } from './mockApis/hmppsAuth'
 import { resetStubs } from './mockApis/wiremock'
 import { HttpStatusCode } from '../server/utils/utils'
+import manageUsersApi from './mockApis/manageUsersApi'
 
 export { resetStubs }
 
@@ -17,15 +19,25 @@ export const attemptHmppsAuthLogin = async (page: Page) => {
 
 export const login = async (
   page: Page,
-  { name, roles = DEFAULT_ROLES, active = true, authSource = 'nomis' }: UserToken & { active?: boolean } = {},
+  {
+    name,
+    roles = DEFAULT_ROLES,
+    active = true,
+    authSource = 'nomis',
+    userCaseloadDetail,
+  }: UserToken & { active?: boolean; userCaseloadDetail?: UserCaseloadDetail } = {},
 ) => {
-  await Promise.all([
+  const requests = [
     hmppsAuth.favicon(),
     hmppsAuth.stubSignInPage(),
     hmppsAuth.stubSignOutPage(),
     hmppsAuth.token({ name, roles, authSource }),
     tokenVerification.stubVerifyToken(active),
-  ])
+  ]
+  if (authSource === 'nomis') {
+    requests.push(manageUsersApi.stubDpsUserCaseloads({ username: 'USER1', userCaseloadDetail }))
+  }
+  await Promise.all(requests)
   return attemptHmppsAuthLogin(page)
 }
 

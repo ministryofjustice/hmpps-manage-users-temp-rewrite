@@ -2,11 +2,12 @@ import { jwtDecode } from 'jwt-decode'
 import express from 'express'
 import { convertToTitleCase } from '../utils/utils'
 import logger from '../../logger'
+import { Services } from '../services'
 
-export default function setUpCurrentUser() {
+export default function setUpCurrentUser(services: Services) {
   const router = express.Router()
 
-  router.use((_req, res, next) => {
+  router.use(async (_req, res, next) => {
     try {
       const {
         name,
@@ -28,6 +29,16 @@ export default function setUpCurrentUser() {
 
       if (res.locals.user.authSource === 'nomis') {
         res.locals.user.staffId = userId !== undefined ? parseInt(userId, 10) : undefined
+        try {
+          const { activeCaseload, caseloads } = await services.dpsUserService.getUserCaseloads(
+            res.locals.user.token,
+            res.locals.user.username,
+          )
+          res.locals.user.activeCaseload = activeCaseload
+          res.locals.user.caseloads = caseloads
+        } catch (error) {
+          logger.warn(error, `Failed to fetch caseloads for: ${res.locals.user.username}`)
+        }
       }
 
       next()

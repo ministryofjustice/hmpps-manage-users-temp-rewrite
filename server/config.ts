@@ -45,6 +45,7 @@ export default {
   },
   app: {
     roleRemovalServiceNowLink: get('ROLE_REMOVAL_SERVICE_NOW_LINK', '#'),
+    dpsEndpointUrl: get('DPS_ENDPOINT_URL', 'http://localhost:3000'),
   },
   session: {
     secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),

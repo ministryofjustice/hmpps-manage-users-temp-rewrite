@@ -42,3 +42,17 @@
     </nav>
   </div>
 </header>
+
+{% if user.activeCaseload %}
+<div class="location-bar">
+  <div class="location-bar__location" >
+
+    <span class="location-bar__location__name"  data-qa="active-location">
+      {{ user.activeCaseload.name }}
+    </span>
+    {% if user.caseloads.length > 1 %}
+      <a class="location-bar__link" href="{{ dpsUrl }}/change-caseload" data-qa="change-location-link">Change location</a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
