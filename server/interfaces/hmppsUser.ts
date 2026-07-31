@@ -1,3 +1,4 @@
+import { PrisonCaseload } from 'manageUsersApiClient'
 import AuthRole from './authRole'
 
 export type AuthSource = 'nomis' | 'delius' | 'external' | 'azuread'
@@ -26,7 +27,8 @@ export interface BaseUser {
 export interface PrisonUser extends BaseUser {
   authSource: 'nomis'
   staffId: number | undefined
-  activeCaseLoadId?: string
+  activeCaseload?: PrisonCaseload
+  caseloads?: PrisonCaseload[]
 }
 
 /**

@@ -39,6 +39,63 @@ test.describe('SignIn', () => {
     await expect(homePage.phaseBanner).toHaveText('dev')
   })
 
+  test('Active location (caseload) visible in header', async ({ page }) => {
+    await login(page)
+
+    const homePage = await HomePage.verifyOnPage(page)
+
+    await expect(homePage.activeLocation).toHaveText('Moorland')
+  })
+
+  test('Active location (caseload) not visible in header if not nomis auth source', async ({ page }) => {
+    await login(page, { authSource: 'delius' })
+
+    const homePage = await HomePage.verifyOnPage(page)
+
+    await expect(homePage.activeLocation).not.toBeVisible()
+  })
+
+  test('Change location link visible in header', async ({ page }) => {
+    await login(page)
+
+    const homePage = await HomePage.verifyOnPage(page)
+
+    await expect(homePage.changeLocationLink).toBeVisible()
+  })
+
+  test('Change location link not visible in header if not nomis auth source', async ({ page }) => {
+    await login(page, { authSource: 'delius' })
+
+    const homePage = await HomePage.verifyOnPage(page)
+
+    await expect(homePage.changeLocationLink).not.toBeVisible()
+  })
+
+  test('Change location link not visible in header if only one caseload, active location still visible', async ({
+    page,
+  }) => {
+    await login(page, {
+      caseloads: {
+        username: 'USER1',
+        activeCaseload: {
+          id: 'MDI',
+          name: 'Moorland',
+        },
+        caseloads: [
+          {
+            id: 'MDI',
+            name: 'Moorland',
+          },
+        ],
+      },
+    })
+
+    const homePage = await HomePage.verifyOnPage(page)
+
+    await expect(homePage.changeLocationLink).not.toBeVisible()
+    await expect(homePage.activeLocation).toHaveText('Moorland')
+  })
+
   test('User can sign out', async ({ page }) => {
     await login(page)
 

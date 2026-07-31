@@ -519,7 +519,13 @@ export default {
       urlPattern: `/manage-users-api/prisonusers/.*/roles/.*`,
     }),
 
-  stubDpsUserCaseloads: (caseloads?: UserCaseloadDetail, username: string = 'ITAG_USER5'): SuperAgentRequest =>
+  stubDpsUserCaseloads: ({
+    caseloads,
+    username = 'ITAG_USER5',
+  }: {
+    caseloads?: UserCaseloadDetail
+    username?: string
+  }): SuperAgentRequest =>
     stubJson({
       urlPattern: `/manage-users-api/prisonusers/${username}/caseloads`,
       body: caseloads || {

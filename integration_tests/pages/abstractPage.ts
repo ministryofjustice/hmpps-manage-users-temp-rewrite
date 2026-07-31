@@ -3,11 +3,17 @@ import { type Locator, type Page } from '@playwright/test'
 export default class AbstractPage {
   readonly page: Page
 
-  /** user name that appear in header */
+  /** user name that appears in header */
   readonly usersName: Locator
 
-  /** phase banner that appear in header */
+  /** phase banner that appears in header */
   readonly phaseBanner: Locator
+
+  /** active caseload that appears in header */
+  readonly activeLocation: Locator
+
+  /** change caseload link that appears in header */
+  readonly changeLocationLink: Locator
 
   /** link to sign out */
   readonly signoutLink: Locator
@@ -18,6 +24,8 @@ export default class AbstractPage {
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
+    this.activeLocation = page.getByTestId('active-location')
+    this.changeLocationLink = page.getByTestId('change-location-link')
     this.usersName = page.getByTestId('header-user-name')
     this.signoutLink = page.getByText('Sign out')
     this.manageUserDetails = page.getByTestId('manageDetails')
