@@ -31,9 +31,14 @@ import {
   Filter as ExternalUserFilter,
   filterCategories as externalUserFilterCategories,
 } from '../presentation/searchExternalUser'
+import {
+  Filter as UserAllowListFilter,
+  filterCategories as userAllowListFilterCategories,
+} from '../presentation/userAllowList'
 import { isRestrictedRoleCode, RestrictedRoles } from '../presentation/restrictedRoles'
 import groupValues from '../presentation/groups'
 import manageUserAllowListHelper from './manageUserAllowListHelper'
+import { statusDisplay, StatusKey } from '../presentation/status'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -67,6 +72,7 @@ export default function nunjucksSetup(app: express.Express): void {
   )
   njkEnv.addGlobal('homeUrl', config.apis.hmppsAuth.externalUrl)
   njkEnv.addGlobal('allowListEnvironment', manageUserAllowListHelper.environmentLabel())
+  njkEnv.addGlobal('allowListSearchTitle', manageUserAllowListHelper.title())
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('findError', (array: FormError[], formFieldId: string) => {
@@ -99,6 +105,12 @@ export default function nunjucksSetup(app: express.Express): void {
   )
   njkEnv.addFilter('manageUserDetailsLink', (userId: string) => paths.dpsUser.manage.details({ userId }))
   njkEnv.addFilter('manageExternalUserDetailsLink', (userId: string) => paths.externalUser.manage.details({ userId }))
+  njkEnv.addFilter('allowListUserView', (username: string) => paths.userAllowList.manage.view({ username }))
+  njkEnv.addFilter('allowListUserEdit', (username: string) => paths.userAllowList.manage.edit({ username }))
+  njkEnv.addFilter('toAllowListExpiry', (expiry: string) =>
+    moment(expiry).diff(moment(), 'months') > 12 ? 'No restriction' : moment(expiry).format('D MMMM YYYY'),
+  )
+  njkEnv.addFilter('toStatus', (status: string) => statusDisplay(status as StatusKey))
   njkEnv.addFilter('deleteEmailDomainLink', (id: string) => paths.emailDomains.deleteWithId({ id }))
 
   njkEnv.addFilter(
@@ -190,4 +202,16 @@ export default function nunjucksSetup(app: express.Express): void {
       }
     },
   )
+  njkEnv.addFilter('toAllowListFilter', (currentFilter: UserAllowListFilter, filterOptionsHtml: string) => {
+    const categories = userAllowListFilterCategories(currentFilter)
+    return {
+      heading: { text: 'Filters' },
+      selectedFilters: {
+        heading: { html: '<div class="moj-action-bar__filter"></div>' },
+        clearLink: { text: 'Clear filters', href: `${paths.userAllowList.search.pattern}` },
+        categories: categories.filter(category => category.items),
+      },
+      optionsHtml: filterOptionsHtml,
+    }
+  })
 }

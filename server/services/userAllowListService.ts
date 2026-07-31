@@ -1,4 +1,10 @@
-import { UserAllowlistAddRequest, UserAllowlistDetail } from 'manageUsersApiClient'
+import {
+  PagedList,
+  UserAllowlistAddRequest,
+  UserAllowlistDetail,
+  UserAllowlistPatchRequest,
+  UserAllowlistQuery,
+} from 'manageUsersApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { HttpStatusCode } from '../utils/utils'
 
@@ -7,6 +13,9 @@ export default class UserAllowListService {
 
   getAllowListUser = async (token: string, username: string): Promise<UserAllowlistDetail> =>
     this.manageUsersApiClient.getAllowlistUser(token, username)
+
+  getAllAllowListUsers = async (token: string, query?: UserAllowlistQuery): Promise<PagedList<UserAllowlistDetail>> =>
+    this.manageUsersApiClient.getAllAllowlistUsers(token, query)
 
   usernameExists = async (token: string, username: string): Promise<boolean> => {
     try {
@@ -22,5 +31,13 @@ export default class UserAllowListService {
 
   addAllowListUser = async (token: string, user: UserAllowlistAddRequest): Promise<void> => {
     await this.manageUsersApiClient.addAllowlistUser(token, user)
+  }
+
+  updateAllowListUserAccess = async (
+    token: string,
+    id: string,
+    updateRequest: UserAllowlistPatchRequest,
+  ): Promise<void> => {
+    await this.manageUsersApiClient.updateAllowlistUserAccess(token, id, updateRequest)
   }
 }

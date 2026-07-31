@@ -23,3 +23,7 @@ $govuk-page-width: $moj-page-width;
 .wrapped-pre {
   white-space: pre-wrap;
 }
+
+.preformatted {
+  white-space: pre-line;
+}

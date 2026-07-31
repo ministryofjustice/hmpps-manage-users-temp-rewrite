@@ -6,6 +6,7 @@ import AuthRole from '../../../server/interfaces/authRole'
 import AddUserAllowListPage from '../../pages/userAllowList/addUserPage'
 import AuthErrorPage from '../../pages/authErrorPage'
 import HomePage from '../../pages/homePage'
+import SearchAllowListPage from '../../pages/userAllowList/searchPage'
 
 const gotoAddUserToAllowlist = async (page: Page) => {
   await login(page, { roles: [AuthRole.MANAGE_USER_ALLOW_LIST] })
@@ -27,6 +28,7 @@ test.describe('Add user to allow list', () => {
 
   test('submit is successful when all fields are filled in', async ({ page }) => {
     await manageUsersApi.stubAddAllowlistUser()
+    await manageUsersApi.stubSearchAllowlistUsers()
     await manageUsersApi.stubGetAllowlistUserNotFound('fasha6v')
 
     const addUserPage = await gotoAddUserToAllowlist(page)
@@ -37,7 +39,7 @@ test.describe('Add user to allow list', () => {
     await addUserPage.reason.fill('for test purposes')
     await addUserPage.submit.click()
 
-    await HomePage.verifyOnPage(page)
+    await SearchAllowListPage.verifyOnPage(page)
   })
 
   test('shows error when username is missing', async ({ page }) => {

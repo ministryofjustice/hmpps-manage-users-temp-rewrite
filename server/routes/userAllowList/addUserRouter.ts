@@ -78,8 +78,7 @@ export default ({ userAllowListService, auditService }: Services): Router => {
       details: form,
     })
 
-    // TODO redirect back to the search URL when implemented
-    return res.redirect('/')
+    return res.redirect(paths.userAllowList.search.pattern)
   })
 
   return router
