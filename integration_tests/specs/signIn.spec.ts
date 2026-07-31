@@ -75,7 +75,7 @@ test.describe('SignIn', () => {
     page,
   }) => {
     await login(page, {
-      caseloads: {
+      userCaseloadDetail: {
         username: 'USER1',
         activeCaseload: {
           id: 'MDI',

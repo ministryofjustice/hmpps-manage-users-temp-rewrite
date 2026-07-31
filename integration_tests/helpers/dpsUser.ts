@@ -63,7 +63,7 @@ export const editUser = async (
   await manageUsersApi.stubSyncDpsEmail()
   await manageUsersApi.stubGetDpsUser({ administratorOfUserGroups, email, active, enabled, accountStatus })
   await manageUsersApi.stubDpsUserRoles({ dpsRoles })
-  await manageUsersApi.stubDpsUserCaseloads({ caseloads: userCaseloads })
+  await manageUsersApi.stubDpsUserCaseloads({ userCaseloadDetail: userCaseloads })
   await manageUsersApi.stubEmail({ email: emailToVerify || email, verified: emailVerified })
   await searchPage.userDetailsLink('ITAG_USER5').click()
   return UserPage.verifyOnPage(page, 'Itag User')

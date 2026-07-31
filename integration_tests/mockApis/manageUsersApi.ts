@@ -520,15 +520,15 @@ export default {
     }),
 
   stubDpsUserCaseloads: ({
-    caseloads,
+    userCaseloadDetail,
     username = 'ITAG_USER5',
   }: {
-    caseloads?: UserCaseloadDetail
+    userCaseloadDetail?: UserCaseloadDetail
     username?: string
   }): SuperAgentRequest =>
     stubJson({
       urlPattern: `/manage-users-api/prisonusers/${username}/caseloads`,
-      body: caseloads || {
+      body: userCaseloadDetail || {
         username,
         activeCaseload: {
           id: 'MDI',

@@ -24,8 +24,8 @@ export const login = async (
     roles = DEFAULT_ROLES,
     active = true,
     authSource = 'nomis',
-    caseloads,
-  }: UserToken & { active?: boolean; caseloads?: UserCaseloadDetail } = {},
+    userCaseloadDetail,
+  }: UserToken & { active?: boolean; userCaseloadDetail?: UserCaseloadDetail } = {},
 ) => {
   const requests = [
     hmppsAuth.favicon(),
@@ -35,7 +35,7 @@ export const login = async (
     tokenVerification.stubVerifyToken(active),
   ]
   if (authSource === 'nomis') {
-    requests.push(manageUsersApi.stubDpsUserCaseloads({ username: 'USER1', caseloads }))
+    requests.push(manageUsersApi.stubDpsUserCaseloads({ username: 'USER1', userCaseloadDetail }))
   }
   await Promise.all(requests)
   return attemptHmppsAuthLogin(page)
