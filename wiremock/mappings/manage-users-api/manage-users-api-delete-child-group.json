@@ -1,0 +1,14 @@
+{
+  "name": "delete-child-group",
+  "request": {
+    "method": "DELETE",
+    "urlPattern": "/manage-users-api/groups/child/[^/]+"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

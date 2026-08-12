@@ -1,0 +1,20 @@
+{
+  "name": "search-external-users",
+  "request": {
+    "method": "GET",
+    "urlPath": "/manage-users-api/externalusers/search"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "content": [],
+      "size": 20,
+      "totalElements": 1,
+      "number": 0,
+      "numberOfElements": 1
+    }
+  }
+}

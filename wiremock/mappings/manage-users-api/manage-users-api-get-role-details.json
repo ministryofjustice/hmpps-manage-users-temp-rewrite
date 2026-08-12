@@ -1,0 +1,17 @@
+{
+  "name": "get-role-details",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/roles/[^/]+"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "roleCode": "USER_ADMIN",
+      "roleName": "User Admin"
+    }
+  }
+}

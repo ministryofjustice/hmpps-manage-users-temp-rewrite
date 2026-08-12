@@ -1,0 +1,14 @@
+{
+  "name": "add-external-user-group",
+  "request": {
+    "method": "PUT",
+    "urlPattern": "/manage-users-api/externalusers/.*/groups/.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

@@ -1,0 +1,27 @@
+{
+    "name": "hmpps-auth-oauth-token",
+    "request": {
+      "method": "POST",
+      "urlPath": "/auth/oauth/token",
+      "bodyPatterns": [
+        { "contains": "grant_type=authorization_code" },
+        { "contains": "code=mock-auth-code-123" }
+      ]
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Location": "http://manage-users:3000/sign-in/callback?code=codexxxx&state=stateyyyy"
+      },
+      "jsonBody": {
+        "access_token": "{{{ jwt alg='RS256' maxAge='1 hours' jti='12345-abcde' sub='test_user' name='Test User' auth_source='nomis' authorities=(claims 'ROLE_MAINTAIN_ACCESS_ROLES' 'ROLE_MAINTAIN_ACCESS_ROLES_ADMIN' 'ROLE_MAINTAIN_OAUTH_USERS' 'ROLE_OAUTH_ADMIN' 'ROLE_AUTH_GROUP_MANAGER' 'ROLE_ROLES_ADMIN' 'ROLE_VIEW_ADMINISTRABLE_USER_ROLES' 'ROLE_CREATE_USER' 'ROLE_MANAGE_NOMIS_USER_ACCOUNT' 'ROLE_MAINTAIN_EMAIL_DOMAINS' 'ROLE_MANAGE_USER_ALLOW_LIST' 'ROLE_CONTRACT_MANAGER_VIEW_GROUP' 'ROLE_MANAGE_USER_BULK_JOBS')}}}",
+        "token_type": "bearer",
+        "auth_source": "nomis",
+        "user_name": "test_user",
+        "expires_in": 599,
+        "scope": "read",
+        "internalUser": true
+      }
+    }
+}

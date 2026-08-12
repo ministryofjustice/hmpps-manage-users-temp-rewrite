@@ -1,0 +1,9 @@
+{
+    "name": "manage-users-api-health-ping",
+    "request": { "method": "GET", "urlPath": "/manage-users-api/health/ping" },
+    "response": {
+      "status": 200,
+      "headers": { "Content-Type": "application/json;charset=UTF-8" },
+      "jsonBody": { "status": "UP" }
+    }
+}

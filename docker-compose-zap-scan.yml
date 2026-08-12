@@ -1,0 +1,70 @@
+services:
+
+  manage-users:
+    image: ghcr.io/ministryofjustice/hmpps-manage-users-temp-rewrite:latest
+    #   context: .
+    #   args:
+    #     BUILD_NUMBER: "1.0.0"
+    #     GIT_REF: "a1b2c3"
+    #     GIT_BRANCH: dast-test
+    networks:
+      - hmpps
+    depends_on: [wiremock]
+    ports:
+      - "3000:3000"
+    environment:
+      - AUDIT_ENABLED=false
+      - NODE_ENV=dast-test
+      - NO_HTTPS=true
+      - HMPPS_AUTH_EXTERNAL_URL=http://wiremock:8080/auth
+      - HMPPS_AUTH_URL=http://wiremock:8080/auth
+      - AUTH_CODE_CLIENT_ID=hmpps-manage-users-dast-test
+      - AUTH_CODE_CLIENT_SECRET=clientsecret
+      - CLIENT_CREDS_CLIENT_ID=hmpps-manage-users-dast-test-system
+      - CLIENT_CREDS_CLIENT_SECRET=clientsecret
+      - SESSION_SECRET=somesecretvalue
+      - TOKEN_VERIFICATION_API_URL=http://wiremock:8080/verification
+      - TOKEN_VERIFICATION_ENABLED=true
+      - INGRESS_URL=http://manage-users:3000
+      - MANAGE_USERS_API_URL=http://wiremock:8080/manage-users-api
+      - DPS_ENDPOINT_URL=http://wiremock:8080/dps
+
+  wiremock:
+    image: wiremock/wiremock:latest
+    networks:
+      - hmpps
+    container_name: wiremock
+    restart: always
+    ports:
+      - "9091:8080"
+    volumes:
+      - ./wiremock/mappings/:/./home/wiremock/mappings/
+      - ./wiremock/extensions:/var/wiremock/extensions
+    command:
+      - -verbose
+      - -global-response-templating
+
+  zap:
+    image: ghcr.io/zaproxy/zaproxy:stable
+    networks:
+      - hmpps
+    depends_on: [manage-users]
+    volumes:
+      - ./zap-config:/zap/wrk:rw
+    ports:
+      - "8081:8080"
+      - "8091:8090"
+    command:
+    # - zap-webswing.sh
+    - sh
+    - -c
+    - |
+      until curl http://manage-users:3000; do
+        echo "Waiting for manage-users..."
+        sleep 5
+      done
+
+      zap.sh -cmd -autorun /zap/wrk/authenticated-all-roles/zap-authenticated-all-roles.yaml
+
+networks:
+  hmpps:

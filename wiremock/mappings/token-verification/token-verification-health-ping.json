@@ -1,0 +1,16 @@
+{
+    "name": "token-verification-health-ping",
+    "request": {
+      "method": "GET",
+      "urlPath": "/verification/health/ping"
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json;charset=UTF-8"
+      },
+      "jsonBody": {
+        "status": "UP"
+      }
+    }
+}

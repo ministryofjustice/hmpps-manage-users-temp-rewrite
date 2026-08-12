@@ -1,0 +1,14 @@
+{
+  "name": "disable-dps-user",
+  "request": {
+    "method": "PUT",
+    "urlPattern": "/manage-users-api/prisonusers/.*/disable-user"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

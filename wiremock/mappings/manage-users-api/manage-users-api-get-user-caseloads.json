@@ -1,0 +1,17 @@
+{
+    "name": "get-dps-user-caseloads",
+    "request": { "method": "GET", "urlPattern": "/manage-users-api/prisonusers/[^/]+/caseloads" },
+    "response": {
+      "status": 200,
+      "headers": { "Content-Type": "application/json;charset=UTF-8" },
+      "jsonBody": {
+        "username": "test_user",
+        "activeCaseload": { "id": "MDI", "name": "Moorland" },
+        "caseloads": [
+          { "id": "MDI", "name": "Moorland" },
+          { "id": "LEI", "name": "Leeds (HMP)" },
+          { "id": "PVI", "name": "Pentonville (HMP)" }
+        ]
+      }
+    }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "get-external-user-groups",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/externalusers/.*/groups\\?.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": [
+      {
+        "groupCode": "SITE_1_GROUP_1",
+        "groupName": "Site 1 - Group 1"
+      },
+      {
+        "groupCode": "SITE_1_GROUP_2",
+        "groupName": "Site 1 - Group 2"
+      }
+    ]
+  }
+}

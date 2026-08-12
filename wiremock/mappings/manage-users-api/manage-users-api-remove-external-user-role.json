@@ -1,0 +1,14 @@
+{
+  "name": "remove-external-user-role",
+  "request": {
+    "method": "DELETE",
+    "urlPattern": "/manage-users-api/externalusers/.*/roles/.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

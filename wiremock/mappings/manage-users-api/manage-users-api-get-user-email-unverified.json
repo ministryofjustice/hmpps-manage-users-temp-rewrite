@@ -1,0 +1,18 @@
+{
+  "name": "get-user-email-unverified",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/users/[^/]*/email\\?unverified=true"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "username": "test_user",
+      "email": "test_user@gov.uk",
+      "verified": true
+    }
+  }
+}

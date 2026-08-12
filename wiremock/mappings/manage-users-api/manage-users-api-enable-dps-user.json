@@ -1,0 +1,14 @@
+{
+  "name": "enable-dps-user",
+  "request": {
+    "method": "PUT",
+    "urlPattern": "/manage-users-api/prisonusers/.*/enable-user"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

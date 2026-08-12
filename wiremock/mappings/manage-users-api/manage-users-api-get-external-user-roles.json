@@ -1,0 +1,25 @@
+{
+  "name": "get-external-user-roles",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/externalusers/.*/roles"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": [
+      {
+        "roleCode": "GLOBAL_SEARCH",
+        "roleName": "Global Search",
+        "roleDescription": "Is allowed to search"
+      },
+      {
+        "roleCode": "LICENCE_RO",
+        "roleName": "Licence Responsible Officer",
+        "roleDescription": "Responsible license"
+      }
+    ]
+  }
+}

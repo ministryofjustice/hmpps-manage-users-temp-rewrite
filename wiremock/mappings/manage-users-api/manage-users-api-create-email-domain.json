@@ -1,0 +1,18 @@
+{
+  "name": "create-email-domain",
+  "request": {
+    "method": "POST",
+    "urlPath": "/manage-users-api/email-domains"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "id": "cb5d9f0c-b7c8-40d5-8626-2e97f66d5127",
+      "domain": "test.justice.gov.uk",
+      "description": "Test justice domain"
+    }
+  }
+}

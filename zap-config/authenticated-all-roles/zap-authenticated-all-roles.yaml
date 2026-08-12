@@ -1,0 +1,141 @@
+---
+# Scenario: AUTHENTICATED - ALL ROLES
+#
+# Purpose: this represents the worst-case internal threat model - a compromised or
+# malicious fully-privileged account - so it gets the deepest crawl and the
+# strongest active scan of the three. Everything the app can render or do should
+# be reachable, so this is where you get the fullest picture of the real attack
+# surface (stored XSS in admin-only forms, CSRF on state-changing actions, IDOR
+# across other users' records, etc).
+env:
+  contexts:
+    - name: "authenticated-all-roles"
+      urls:
+        - "http://manage-users:3000"
+      includePaths:
+        - "http://manage-users:3000/.*"
+      excludePaths:
+        - "http://manage-users:3000/health.*"
+        - "http://manage-users:3000/info.*"
+        - "http://manage-users:3000/assets/.*"
+        - "http://manage-users:3000/ping.*"
+        # Exclude sign-out to avoid the spider invalidating its own session mid-crawl
+        - "http://manage-users:3000/sign-out.*"
+      authentication:
+        method: "script"
+        parameters:
+          script: "/zap/wrk/scripts/stub-login.js"
+          scriptEngine: "Graal.js"
+          login_url: "http://manage-users:3000"
+        verification:
+          method: "response"
+          loggedInRegex: "(?s).*(Sign out|/sign-out|Manage users|Your account).*"
+      sessionManagement:
+        method: "cookie"
+      users:
+        - name: test_user
+      technology:
+        exclude:
+          - C
+          - SQLite
+          - CouchDB
+          - XML
+          - Microsoft SQL Server
+          - MongoDB
+          - SAP MaxDB
+          - SVN
+          - WS
+          - Framework
+          - Sybase
+          - Python
+          - ASP
+          - OS
+          - IBM DB2
+          - PHP
+          - MariaDB
+          - Oracle
+          - JSP/Servlet
+          - Firebird
+          - HypersonicSQL
+          - MySQL
+          - Ruby
+          - Microsoft Access
+          - Java
+  parameters:
+    failOnError: true
+    failOnWarning: false
+    progressToStdout: true
+
+jobs:
+  # Ajax spider added first to handle the sing-in redirects and establish a session cookie.
+  - type: "spiderAjax"
+    parameters:
+      context: "authenticated-all-roles"
+      url: "http://manage-users:3000"
+      maxDuration: 10
+      user: test_user
+      logoutAvoidance: true
+  - type: "spider"
+    parameters:
+      context: "authenticated-all-roles"
+      url: "http://manage-users:3000"
+      maxDuration: 20
+      maxDepth: 10
+      user: test_user
+      logoutAvoidance: true
+  - type: "passiveScan-wait"
+    parameters:
+      maxDuration: 10
+  - type: "activeScan"
+    parameters:
+      context: "authenticated-all-roles"
+      policy: "Default Policy"
+      user: test_user
+      # Full input vector coverage - query params, POST bodies, headers, cookies -
+      # since this user can legitimately reach every write action in the app.
+    policyDefinition:
+      defaultStrength: "high"
+      defaultThreshold: "low"
+      rules:
+        # SQLi still excluded even for this highest-privilege scenario - the
+        # backend boundary that would matter for SQLi is hmpps-manage-users-api,
+        # not this frontend, and the WireMock stub can't produce the behavioural
+        # signal these rules rely on regardless of scan strength. Covered in
+        # hmpps-manage-users-api's own pipeline instead.
+        - id: 40018   # SQL Injection
+          threshold: "off"
+        - id: 40019   # SQL Injection - MySQL
+          threshold: "off"
+        - id: 40020   # SQL Injection - Hypersonic SQL
+          threshold: "off"
+        - id: 40021   # SQL Injection - Oracle
+          threshold: "off"
+        - id: 40022   # SQL Injection - PostgreSQL
+          threshold: "off"
+  - type: report
+    alwaysRun: true
+    parameters:
+      template: traditional-html
+      theme: null
+      reportDir: "/zap/wrk/reports"
+      reportFile: "zap-report-all-roles"
+      reportTitle: "hmpps-manage-users - DAST - Authenticated, All Roles"
+    risks:
+      - low
+      - medium
+      - high
+    confidences:
+      - low
+      - medium
+      - high
+      - confirmed
+    sections:
+      - insights
+      - instancecount
+      - sequencedetails
+      - alertdetails
+      - alertcount
+  - type: exitStatus
+    parameters:
+      errorLevel: Medium
+      warnLevel: Low

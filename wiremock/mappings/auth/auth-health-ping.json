@@ -1,0 +1,10 @@
+{
+    "name": "hmpps-auth-health-ping",
+    "request": {
+        "method": "GET",
+        "urlPattern": "/auth/health/ping"
+    },
+    "response": {
+        "status": 200
+    }
+}

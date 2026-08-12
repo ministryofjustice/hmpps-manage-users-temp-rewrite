@@ -1,0 +1,13 @@
+{
+    "name": "get-caseloads",
+    "request": { "method": "GET", "urlPattern": "/manage-users-api/prisonusers/reference-data/caseloads" },
+    "response": {
+      "status": 200,
+      "headers": { "Content-Type": "application/json;charset=UTF-8" },
+      "jsonBody": [
+        { "id": "MDI", "name": "Moorland (HMP & YOI)" },
+        { "id": "LEI", "name": "Leeds (HMP)" },
+        { "id": "PVI", "name": "Pentonville (HMP)" }
+      ]
+    }
+}

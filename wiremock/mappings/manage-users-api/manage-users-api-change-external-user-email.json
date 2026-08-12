@@ -1,0 +1,14 @@
+{
+  "name": "change-external-user-email",
+  "request": {
+    "method": "POST",
+    "urlPattern": "/manage-users-api/externalusers/.*/email"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

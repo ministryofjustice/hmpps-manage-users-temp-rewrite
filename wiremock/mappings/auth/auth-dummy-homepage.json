@@ -1,0 +1,14 @@
+{
+    "name": "hmpps-auth-account-details-page",
+    "request": {
+      "method": "GET",
+      "urlPattern": "/auth"
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "text/html"
+      },
+      "body": "<html lang=\"en\"><body><h1>Select service</h1></body></html>"
+    }
+  }

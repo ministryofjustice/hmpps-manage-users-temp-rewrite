@@ -1,0 +1,23 @@
+{
+  "name": "create-linked-dps-user-general",
+  "request": {
+    "method": "POST",
+    "urlPattern": "/manage-users-api/linkedprisonusers/general"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "staffId": 100,
+      "firstName": "Test",
+      "lastName": "User",
+      "status": "ACTIVE",
+      "primaryEmail": "test_user@djustice.gov.uk",
+      "generalAccount": {
+        "username": "test_user"
+      }
+    }
+  }
+}

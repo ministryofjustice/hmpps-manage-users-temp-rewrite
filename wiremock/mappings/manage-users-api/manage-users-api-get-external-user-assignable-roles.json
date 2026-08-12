@@ -1,0 +1,25 @@
+{
+  "name": "get-external-user-assignable-roles",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/externalusers/.*/assignable-roles"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": [
+      {
+        "roleCode": "LICENCE_VARY",
+        "roleName": "Licence Vary",
+        "roleDescription": "Vary a license"
+      },
+      {
+        "roleCode": "GLOBAL_SEARCH",
+        "roleName": "Global Search",
+        "roleDescription": "Is allowed to search"
+      }
+    ]
+  }
+}

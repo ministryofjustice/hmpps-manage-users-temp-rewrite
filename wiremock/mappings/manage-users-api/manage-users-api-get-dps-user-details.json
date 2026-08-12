@@ -1,0 +1,26 @@
+{
+  "name": "get-dps-user-details",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/prisonusers/[^/]+/details"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "staffId": "12345",
+      "username": "test_user",
+      "firstName": "Test",
+      "lastName": "User",
+      "primaryEmail": "test_user@gov.uk",
+      "email": "test_user@gov.uk",
+      "lastLogonDate": "2023-12-25T12:57:50",
+      "active": true,
+      "enabled": true,
+      "accountStatus": "OPEN",
+      "administratorOfUserGroups": []
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "patch-allowlist-user",
+  "request": {
+    "method": "PATCH",
+    "urlPattern": "/manage-users-api/users/allowlist/.*"
+  },
+  "response": {
+    "status": 200
+  }
+}

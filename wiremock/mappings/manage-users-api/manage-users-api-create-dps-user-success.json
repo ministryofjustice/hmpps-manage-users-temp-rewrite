@@ -1,0 +1,29 @@
+{
+  "name": "create-dps-user-success",
+  "request": {
+    "method": "POST",
+    "urlPattern": "/manage-users-api/prisonusers"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "username": "test_user",
+      "staffId": 100,
+      "firstName": "Test",
+      "lastName": "User",
+      "activeCaseloadId": "MDI",
+      "accountStatus": "EXPIRED",
+      "accountType": "ADMIN",
+      "primaryEmail": "test_user@gov.uk",
+      "dpsRoleCodes": [],
+      "accountNonLocked": true,
+      "credentialsNonExpired": false,
+      "enabled": true,
+      "admin": true,
+      "active": false
+    }
+  }
+}

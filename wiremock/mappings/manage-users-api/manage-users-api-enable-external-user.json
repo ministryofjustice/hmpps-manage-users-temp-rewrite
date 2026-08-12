@@ -1,0 +1,14 @@
+{
+  "name": "enable-external-user",
+  "request": {
+    "method": "PUT",
+    "urlPattern": "/manage-users-api/externalusers/.*/enable"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "get-users-in-crs-group",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/externalusers/crsgroup/.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": [
+      {
+        "userId": "2e285ccd-dcfd-4497-9e28-d6e8e10a2d3f",
+        "username": "test_user",
+        "email": "test_user@digital.justice.gov.uk",
+        "enabled": true,
+        "locked": false,
+        "verified": false,
+        "firstName": "Test",
+        "lastName": "User",
+        "lastLoggedIn": "2025-10-15T10:01:58.614221",
+        "inactiveReason": "Retired"
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "add-dps-user-caseload",
+  "request": {
+    "method": "POST",
+    "urlPattern": "/manage-users-api/prisonusers/.*/caseloads"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

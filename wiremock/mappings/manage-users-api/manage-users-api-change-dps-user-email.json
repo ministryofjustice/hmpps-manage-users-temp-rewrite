@@ -1,0 +1,14 @@
+{
+  "name": "change-dps-user-email",
+  "request": {
+    "method": "POST",
+    "urlPattern": "/manage-users-api/prisonusers/[^/]*/email"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

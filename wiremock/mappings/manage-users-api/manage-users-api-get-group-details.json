@@ -1,0 +1,17 @@
+{
+  "name": "get-group-details",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/groups/[^/]+"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "groupCode": "SOC_NORTH_WEST",
+      "groupName": "SOCU North West"
+    }
+  }
+}

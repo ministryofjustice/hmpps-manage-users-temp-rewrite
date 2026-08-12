@@ -1,0 +1,14 @@
+{
+  "name": "sync-dps-email",
+  "request": {
+    "method": "POST",
+    "urlPattern": "/manage-users-api/prisonusers/[^/]*/email/sync"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

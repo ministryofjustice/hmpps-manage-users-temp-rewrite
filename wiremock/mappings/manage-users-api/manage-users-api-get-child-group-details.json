@@ -1,0 +1,17 @@
+{
+  "name": "get-child-group-details",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/groups/child/[^/]+"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "groupCode": "SITE_1_GROUP_1",
+      "groupName": "Site 1 - Group 1"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "get-searchable-roles-for-me",
+  "request": {
+    "method": "GET",
+    "urlPath": "/manage-users-api/externalusers/me/searchable-roles"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": [
+      {
+        "roleCode": "GLOBAL_SEARCH",
+        "roleName": "Global Search",
+        "roleDescription": "Is allowed to search"
+      },
+      {
+        "roleCode": "LICENCE_VARY",
+        "roleName": "Licence Vary",
+        "roleDescription": "Vary a license"
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "get-dps-user-roles",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/prisonusers/.*/roles"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "activeCaseload": {
+        "id": "MDI",
+        "name": "Moorland"
+      },
+      "dpsRoles": [
+        {
+          "code": "MAINTAIN_ACCESS_ROLES",
+          "name": "Maintain Roles",
+          "adminRoleOnly": false
+        },
+        {
+          "code": "ANOTHER_GENERAL_ROLE",
+          "name": "Another general role",
+          "adminRoleOnly": false
+        }
+      ]
+    }
+  }
+}

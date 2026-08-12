@@ -1,0 +1,41 @@
+{
+  "name": "download-dps-lsa",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/prisonusers/download/admins\\?.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": [
+      {
+        "username": "test_user",
+        "staffId": 1,
+        "firstName": "Test",
+        "lastName": "User",
+        "active": true,
+        "status": "OPEN",
+        "locked": false,
+        "expired": false,
+        "activeCaseload": {
+          "id": "MDI",
+          "name": "Moorland Closed (HMP & YOI)"
+        },
+        "dpsRoleCount": 0,
+        "email": "test_user@digital.justice.gov.uk",
+        "administratorOfUserGroups": [
+          {
+            "id": "BXI",
+            "name": "Brixton (HMP)"
+          },
+          {
+            "id": "MDI",
+            "name": "Moorland (HMP & YOI)"
+          }
+        ]
+      }
+    ]
+  }
+}

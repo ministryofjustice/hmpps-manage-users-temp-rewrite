@@ -1,0 +1,23 @@
+{
+  "name": "get-assignable-groups",
+  "request": {
+    "method": "GET",
+    "urlPath": "/manage-users-api/externalusers/me/assignable-groups"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": [
+      {
+        "groupCode": "SOC_NORTH_WEST",
+        "groupName": "SOCU North West"
+      },
+      {
+        "groupCode": "PECS_TVP",
+        "groupName": "PECS Police Force Thames Valley"
+      }
+    ]
+  }
+}

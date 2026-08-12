@@ -1,0 +1,11 @@
+{
+    "name": "hmpps-auth-sign-in-page",
+    "request": {
+      "method": "GET",
+      "urlPattern": "/dps/change-caseload"
+    },
+    "response": {
+      "status": 200,
+      "body": "<html><body><h1>Change your location</h1><form action=\"http://localhost:3000\"><button type=\"submit\" class=\"button\">Submit</button>/form></body></html>"
+    }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "change-role-admin-type",
+  "request": {
+    "method": "PUT",
+    "urlPattern": "/manage-users-api/roles/[^/]+/admintype"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

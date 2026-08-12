@@ -1,0 +1,21 @@
+{
+    "name": "oauth-authorise-redirect-with-code-and-state",
+    "priority": 10,
+    "request": {
+      "method": "GET",
+      "urlPath": "/auth/oauth/authorize",
+      "queryParameters": {
+        "response_type": { "equalTo": "code" },
+        "client_id": { "matches": ".+" },
+        "redirect_uri": { "matches": ".+" },
+        "state": { "matches": ".+" }
+      }
+    },
+    "response": {
+      "status": 302,
+      "headers": {
+        "Location": "http://manage-users:3000/sign-in/callback?code=mock-auth-code-123&state={{request.query.state}}"
+      },
+      "transformers": ["response-template"]
+    }
+}

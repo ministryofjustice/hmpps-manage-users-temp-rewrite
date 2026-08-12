@@ -1,0 +1,14 @@
+{
+  "name": "change-role-name",
+  "request": {
+    "method": "PUT",
+    "urlPattern": "/manage-users-api/roles/[^/]+$"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {}
+  }
+}

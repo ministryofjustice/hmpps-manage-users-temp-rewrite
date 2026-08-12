@@ -1,0 +1,14 @@
+{
+  "name": "create-external-user",
+  "request": {
+    "method": "POST",
+    "urlPath": "/manage-users-api/externalusers/create"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/plain"
+    },
+    "body": "2e285ccd-dcfd-4497-9e28-d6e8e10a2d3f"
+  }
+}

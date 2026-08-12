@@ -1,0 +1,45 @@
+{
+  "name": "get-dps-roles-dps-lsa",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/roles\\?adminTypes=DPS_LSA"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": [
+      {
+        "roleCode": "MAINTAIN_ACCESS_ROLES",
+        "roleName": "Maintain Roles",
+        "roleDescription": "Maintaining roles for everyone",
+        "adminType": [
+          {
+            "adminTypeCode": "test_user",
+            "adminTypeName": "DPS Central Administrator"
+          },
+          {
+            "adminTypeCode": "DPS_LSA",
+            "adminTypeName": "DPS Local System Administrator"
+          }
+        ]
+      },
+      {
+        "roleCode": "USER_ADMIN",
+        "roleName": "User Admin",
+        "roleDescription": "Administering users",
+        "adminType": [
+          {
+            "adminTypeCode": "test_user",
+            "adminTypeName": "DPS Central Administrator"
+          },
+          {
+            "adminTypeCode": "DPS_LSA",
+            "adminTypeName": "DPS Local System Administrator"
+          }
+        ]
+      }
+    ]
+  }
+}

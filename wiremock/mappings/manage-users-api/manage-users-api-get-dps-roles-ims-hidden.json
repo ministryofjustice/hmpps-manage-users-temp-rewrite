@@ -1,0 +1,26 @@
+{
+  "name": "get-dps-roles-ims-hidden",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/roles\\?adminTypes=IMS_HIDDEN"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": [
+      {
+        "roleCode": "test_user",
+        "roleName": "IMS user",
+        "roleDescription": "IMS user",
+        "adminType": [
+          {
+            "adminTypeCode": "IMS_HIDDEN",
+            "adminTypeName": "IMS Administrator"
+          }
+        ]
+      }
+    ]
+  }
+}

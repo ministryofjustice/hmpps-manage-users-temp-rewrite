@@ -1,0 +1,19 @@
+{
+  "name": "get-crs-groups",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/manage-users-api/groups/subset/crs"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": [
+      {
+        "groupCode": "INT_CR_PRJ_6166",
+        "groupName": "CRS Accommodation for South Wales"
+      }
+    ]
+  }
+}

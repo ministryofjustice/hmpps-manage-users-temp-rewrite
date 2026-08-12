@@ -1,0 +1,9 @@
+ {
+    "name": "notification-banner-message",
+    "request": { "method": "GET", "urlPattern": "/manage-users-api/notification/banner/.*" },
+    "response": {
+      "status": 200,
+      "headers": { "Content-Type": "application/json;charset=UTF-8" },
+      "jsonBody": { "message": "example notification message" }
+    }
+}
