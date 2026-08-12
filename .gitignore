@@ -126,4 +126,4 @@ integration_tests/screenshots/
 **/Chart.lock
 **/.DS_Store
 
-/zap-config/results/
+/zap-config/results
