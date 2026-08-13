@@ -29,9 +29,10 @@ env:
           login_url: "http://manage-users:3000"
         verification:
           method: "response"
-          loggedInRegex: "(?s).*(Sign out|/sign-out|Manage users|Your account).*"
+          loggedInRegex: "(?s).*(Sign out).*"
       sessionManagement:
         method: "cookie"
+        name: "hmpps-manage-users-temp-rewrite.session"
       users:
         - name: test_user
       technology:
@@ -67,20 +68,20 @@ env:
     progressToStdout: true
 
 jobs:
-  # Ajax spider added first to handle the sing-in redirects and establish a session cookie.
-  - type: "spiderAjax"
-    parameters:
-      context: "authenticated-all-roles"
-      url: "http://manage-users:3000"
-      maxDuration: 10
-      user: test_user
-      logoutAvoidance: true
   - type: "spider"
     parameters:
       context: "authenticated-all-roles"
       url: "http://manage-users:3000"
       maxDuration: 20
       maxDepth: 10
+      user: test_user
+      logoutAvoidance: true
+  # Ajax spider added first to handle the sing-in redirects and establish a session cookie.
+  - type: "spiderAjax"
+    parameters:
+      context: "authenticated-all-roles"
+      url: "http://manage-users:3000"
+      maxDuration: 10
       user: test_user
       logoutAvoidance: true
   - type: "passiveScan-wait"
@@ -91,27 +92,9 @@ jobs:
       context: "authenticated-all-roles"
       policy: "Default Policy"
       user: test_user
-      # Full input vector coverage - query params, POST bodies, headers, cookies -
-      # since this user can legitimately reach every write action in the app.
     policyDefinition:
       defaultStrength: "high"
       defaultThreshold: "low"
-      rules:
-        # SQLi still excluded even for this highest-privilege scenario - the
-        # backend boundary that would matter for SQLi is hmpps-manage-users-api,
-        # not this frontend, and the WireMock stub can't produce the behavioural
-        # signal these rules rely on regardless of scan strength. Covered in
-        # hmpps-manage-users-api's own pipeline instead.
-        - id: 40018   # SQL Injection
-          threshold: "off"
-        - id: 40019   # SQL Injection - MySQL
-          threshold: "off"
-        - id: 40020   # SQL Injection - Hypersonic SQL
-          threshold: "off"
-        - id: 40021   # SQL Injection - Oracle
-          threshold: "off"
-        - id: 40022   # SQL Injection - PostgreSQL
-          threshold: "off"
   - type: report
     alwaysRun: true
     parameters:
