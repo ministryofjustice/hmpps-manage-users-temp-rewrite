@@ -27,38 +27,37 @@
     <nav aria-label="Account navigation">
       <ul class="hmpps-header__navigation">
         {% if user %}
-          <li class="hmpps-header__navigation__item">
-            <div class="hmpps-header__navigation__item__links">
-              <a data-qa="switchAccount" class="hmpps-header__link hmpps-header__link--switch-account" href="/switch-account">
-                <span data-qa="header-user-name">{{ user.displayName | initialiseName }}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="22" height="22">
-                  <g fill="none" stroke="white" stroke-width="38" stroke-linecap="round" stroke-linejoin="round">
-                    <!-- Central User Profile Head -->
-                    <circle cx="256" cy="210" r="58"/>
-
-                    <!-- Central User Profile Shoulders (Shallower, flatter curve that locks onto the head circle) -->
-                    <path d="M161 360 Q 256 176 351 360"/>
-
-                    <!-- Top-Right Clockwise Arc & Arrowhead -->
-                    <path d="M145 92 A 180 180 0 0 1 431 256"/>
-                    <path d="M393 218 L 431 256 L 469 218"/>
-
-                    <!-- Bottom-Left Clockwise Arc & Arrowhead -->
-                    <path d="M367 420 A 180 180 0 0 1 81 256"/>
-                    <path d="M119 294 L 81 256 L 43 294"/>
-                  </g>
+          <li class="cdps-header__item cdps-header__item--user">
+            <a
+              class="cdps-header__link"
+              href="#"
+              role="button"
+              data-qa="accountMenuButton"
+              aria-controls="cdps-header__menu--user"
+              aria-expanded="false"
+            >
+              <span class="cdps-header__link-wrapper">
+                <svg class="cdps-header__icon--user" width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="currentColor" d="M5.529 19.615A13.6 13.6 0 0 1 9 17.748 11.6 11.6 0 0 1 13 17.062q2.12 0 3.999.686 1.879.684 3.472 1.867a9.9 9.9 0 0 0 1.847-2.966Q23 14.964 23 13q0-4.155-2.922-7.078T13 3Q8.845 3 5.922 5.922T3 13q0 1.965.681 3.649a9.9 9.9 0 0 0 1.848 2.966M13 13.937q-1.71 0-2.887-1.175-1.176-1.174-1.175-2.887 0-1.71 1.175-2.887Q11.287 5.812 13 5.812q1.71 0 2.887 1.176 1.176 1.174 1.175 2.887 0 1.71-1.175 2.887-1.174 1.176-2.887 1.175m0 10.938q-2.475 0-4.64-.93a11.9 11.9 0 0 1-3.771-2.534 11.9 11.9 0 0 1-2.534-3.77q-.93-2.168-.93-4.641 0-2.475.93-4.64A11.9 11.9 0 0 1 4.59 4.588a11.9 11.9 0 0 1 3.77-2.534q2.167-.93 4.641-.93t4.64.93a11.9 11.9 0 0 1 3.771 2.534 11.9 11.9 0 0 1 2.534 3.77q.93 2.167.93 4.641t-.93 4.64a11.9 11.9 0 0 1-2.534 3.771 11.9 11.9 0 0 1-3.77 2.534q-2.168.93-4.641.93M13 23a9.9 9.9 0 0 0 3.263-.544 9.3 9.3 0 0 0 2.79-1.523 9.5 9.5 0 0 0-2.754-1.47A10.1 10.1 0 0 0 13 18.938q-1.764 0-3.305.52a9 9 0 0 0-2.748 1.476 9.3 9.3 0 0 0 2.79 1.522A9.9 9.9 0 0 0 13 23m0-10.937q.933 0 1.56-.628.627-.627.627-1.56t-.627-1.56T13 7.687t-1.56.628-.628 1.56.628 1.56 1.56.628"/>
                 </svg>
-              </a>
-              <a data-qa="manageDetails" class="hmpps-header__link" href="/account-details" data-test="manage-account-link" rel="noopener noreferrer">
-                <span class="hmpps-header__link__sub-text">Manage your details</span>
-              </a>
+                <span data-qa="header-user-name">{{ user.displayName | initialiseName }}</span>
+                <span class="govuk-visually-hidden">Account menu</span>
+              </span>
+            </a>
+
+            <div class="cdps-header__menu cdps-header__menu--user" id="cdps-header__menu--user" aria-hidden="true" hidden="hidden">
+              <ul class="govuk-list" aria-label="Account menu">
+                <li><a data-qa="manageDetails" class="govuk-link govuk-link--no-visited-state" href="/account-details" data-test="manage-account-link" rel="noopener noreferrer">Your account</a></li>
+                <li><a data-qa="switchAccount" class="govuk-link govuk-link--no-visited-state" href="/switch-account">Switch account</a></li>
+                <li><a data-qa="signOut" class="govuk-link govuk-link--no-visited-state" href="/sign-out">Sign out</a></li>
+              </ul>
             </div>
           </li>
+        {% else %}
+          <li class="hmpps-header__navigation__item">
+            <a data-qa="signOut" class="hmpps-header__link" href="/sign-out">Sign out</a>
+          </li>
         {% endif %}
-
-        <li class="hmpps-header__navigation__item">
-          <a data-qa="signOut" class="hmpps-header__link" href="/sign-out">Sign out</a>
-        </li>
       </ul>
     </nav>
   </div>

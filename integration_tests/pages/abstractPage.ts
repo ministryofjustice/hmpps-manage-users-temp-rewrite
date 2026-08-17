@@ -21,6 +21,9 @@ export default class AbstractPage {
   /** link to manage user details */
   readonly manageUserDetails: Locator
 
+  /** button that opens the header's account menu (Your account / Switch account / Sign out) */
+  readonly accountMenuButton: Locator
+
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
@@ -29,13 +32,23 @@ export default class AbstractPage {
     this.usersName = page.getByTestId('header-user-name')
     this.signoutLink = page.getByText('Sign out')
     this.manageUserDetails = page.getByTestId('manageDetails')
+    this.accountMenuButton = page.getByTestId('accountMenuButton')
+  }
+
+  /** opens the header's account menu, if present, so its links become visible/clickable */
+  async openAccountMenu() {
+    if (await this.accountMenuButton.count()) {
+      await this.accountMenuButton.click()
+    }
   }
 
   async signOut() {
+    await this.openAccountMenu()
     await this.signoutLink.first().click()
   }
 
   async clickManageUserDetails() {
+    await this.openAccountMenu()
     await this.manageUserDetails.first().click()
   }
 
