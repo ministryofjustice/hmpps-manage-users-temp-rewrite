@@ -28,6 +28,7 @@ test.describe('Search allow list users', () => {
       reason: 'For testing',
       accessPeriod: 'EXPIRE',
       allowlistEndDate: '2020-04-19',
+      userType: 'DIGITAL',
     })
     const activeUser = buildAllowlistUser({
       username: 'ZAFIRAHT9YH',
@@ -37,6 +38,7 @@ test.describe('Search allow list users', () => {
       reason: 'For testing',
       accessPeriod: 'ONE_MONTH',
       allowlistEndDate: '2099-04-19',
+      userType: 'GENERAL',
     })
 
     const searchPage = await gotoSearchPage(page, { content: [expiredUser, activeUser], totalElements: 2 })
@@ -44,12 +46,14 @@ test.describe('Search allow list users', () => {
     await expect(searchPage.userTableCells).toHaveCount(2)
     await expect(searchPage.userDetailsLink(expiredUser.username)).toContainText('Anastazia Armistead')
     await expect(page.getByTestId(`username-${expiredUser.username}`)).toContainText(`- ${expiredUser.username}`)
+    await expect(page.getByTestId(`user-type-${expiredUser.username}`)).toContainText(`- Digital user`)
     await expect(page.getByTestId(`email-${expiredUser.username}`)).toContainText(expiredUser.email)
     await expect(page.getByTestId(`expiry-${expiredUser.username}`)).toContainText('19 April 2020')
     await expect(page.getByTestId(`status-${expiredUser.username}`)).toContainText('Expired')
 
     await expect(searchPage.userDetailsLink(activeUser.username)).toContainText('Litany Storm')
     await expect(page.getByTestId(`username-${activeUser.username}`)).toContainText(`- ${activeUser.username}`)
+    await expect(page.getByTestId(`user-type-${activeUser.username}`)).toContainText(`- General user`)
     await expect(page.getByTestId(`email-${activeUser.username}`)).toContainText(activeUser.email)
     await expect(page.getByTestId(`expiry-${activeUser.username}`)).toContainText('No restriction')
     await expect(page.getByTestId(`status-${activeUser.username}`)).toContainText('Active')
@@ -116,6 +120,12 @@ test.describe('Search allow list users', () => {
     await expect(searchPage.statusAllRadio).toBeChecked()
   })
 
+  test('Should keep the userType filter on All by default', async ({ page }) => {
+    const searchPage = await gotoSearchPage(page)
+
+    await expect(searchPage.userTypeAllRadio).toBeChecked()
+  })
+
   test('Should show an Active filter tag', async ({ page }) => {
     const searchPage = await gotoSearchPage(page)
     await searchPage.statusActiveRadio.click()
@@ -132,6 +142,22 @@ test.describe('Search allow list users', () => {
     await expect(searchPage.filterCategoryLink('Expired')).toBeVisible()
   })
 
+  test('Should show a General user filter tag', async ({ page }) => {
+    const searchPage = await gotoSearchPage(page)
+    await searchPage.userTypeGeneralRadio.click()
+    await searchPage.filterButton.click()
+
+    await expect(searchPage.filterCategoryLink('General')).toBeVisible()
+  })
+
+  test('Should show a Digital user filter tag', async ({ page }) => {
+    const searchPage = await gotoSearchPage(page)
+    await searchPage.userTypeDigitalRadio.click()
+    await searchPage.filterButton.click()
+
+    await expect(searchPage.filterCategoryLink('Digital')).toBeVisible()
+  })
+
   test('Should show a user filter tag', async ({ page }) => {
     const searchPage = await gotoSearchPage(page)
     await searchPage.userFilterInput.fill('Bob')
@@ -140,14 +166,16 @@ test.describe('Search allow list users', () => {
     await expect(searchPage.filterCategoryLink('Bob')).toBeVisible()
   })
 
-  test('Should show user and status filter tags together', async ({ page }) => {
+  test('Should show all filter tags together', async ({ page }) => {
     const searchPage = await gotoSearchPage(page)
     await searchPage.userFilterInput.fill('Bob')
     await searchPage.statusActiveRadio.click()
+    await searchPage.userTypeGeneralRadio.click()
     await searchPage.filterButton.click()
 
     await expect(searchPage.filterCategoryLink('Bob')).toBeVisible()
     await expect(searchPage.filterCategoryLink('Active')).toBeVisible()
+    await expect(searchPage.filterCategoryLink('General')).toBeVisible()
   })
 
   test('Should download the CSV results', async ({ page }) => {
@@ -159,6 +187,7 @@ test.describe('Search allow list users', () => {
       reason: 'For testing',
       accessPeriod: 'EXPIRE',
       allowlistEndDate: '2020-04-19',
+      userType: 'DIGITAL',
     })
     const activeUser = buildAllowlistUser({
       username: 'ZAFIRAHT9YH',
@@ -168,6 +197,7 @@ test.describe('Search allow list users', () => {
       reason: 'For testing',
       accessPeriod: 'ONE_MONTH',
       allowlistEndDate: '2099-04-19',
+      userType: 'GENERAL',
     })
 
     const downloadPromise = page.waitForEvent('download')
@@ -179,13 +209,13 @@ test.describe('Search allow list users', () => {
 
     expect(csvLines).toHaveLength(3)
     expect(csvLines[0]).toEqual(
-      '"username","firstName","lastName","email","reason","allowlistEndDate","createdOn","lastUpdated","lastUpdatedBy","status"',
+      '"username","firstName","lastName","email","reason","allowlistEndDate","createdOn","lastUpdated","lastUpdatedBy","status","userType"',
     )
     expect(csvLines[1]).toEqual(
-      '"AICIAD","Anastazia","Armistead","anastazia.armistead@justice.gov.uk","For testing","2020-04-19","2024-03-19T04:39:08","2024-03-19T04:39:08","ADMIN","EXPIRED"',
+      '"AICIAD","Anastazia","Armistead","anastazia.armistead@justice.gov.uk","For testing","2020-04-19","2024-03-19T04:39:08","2024-03-19T04:39:08","ADMIN","EXPIRED","DIGITAL"',
     )
     expect(csvLines[2]).toEqual(
-      '"ZAFIRAHT9YH","Litany","Storm","litany.storm@justice.gov.uk","For testing","2099-04-19","2024-03-19T04:39:08","2024-03-19T04:39:08","ADMIN","ACTIVE"',
+      '"ZAFIRAHT9YH","Litany","Storm","litany.storm@justice.gov.uk","For testing","2099-04-19","2024-03-19T04:39:08","2024-03-19T04:39:08","ADMIN","ACTIVE","GENERAL"',
     )
   })
 

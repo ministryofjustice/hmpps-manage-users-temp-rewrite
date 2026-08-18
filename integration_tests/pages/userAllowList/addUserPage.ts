@@ -14,6 +14,8 @@ export default class AddUserAllowListPage extends AbstractPage {
 
   readonly reason: Locator
 
+  readonly continue: Locator
+
   readonly submit: Locator
 
   readonly cancel: Locator
@@ -28,6 +30,7 @@ export default class AddUserAllowListPage extends AbstractPage {
     this.firstName = this.textBox('First name')
     this.lastName = this.textBox('Last name')
     this.reason = this.textBox('Reason')
+    this.continue = this.button('Continue')
     this.submit = this.button('Add')
     this.cancel = this.button('Cancel')
     this.errorSummary = page.getByTestId('error-summary')
@@ -41,5 +44,11 @@ export default class AddUserAllowListPage extends AbstractPage {
 
   accessPeriodRadio(label: string): Locator {
     return this.radioButton(label)
+  }
+
+  async selectUserType(userType: string): Promise<AddUserAllowListPage> {
+    await this.radioButton(userType).click()
+    await this.continue.click()
+    return this
   }
 }

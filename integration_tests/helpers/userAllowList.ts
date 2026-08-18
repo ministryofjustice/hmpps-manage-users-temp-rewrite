@@ -20,6 +20,7 @@ const defaultUser = (): UserAllowlistDetail => ({
   allowlistEndDate: '2027-04-19',
   lastUpdated: '2024-03-19T04:39:08',
   lastUpdatedBy: 'ADMIN',
+  userType: 'DIGITAL',
 })
 
 export const gotoSearchPage = async (

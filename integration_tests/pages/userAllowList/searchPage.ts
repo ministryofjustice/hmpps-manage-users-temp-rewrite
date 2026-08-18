@@ -18,6 +18,12 @@ export default class SearchAllowListPage extends AbstractPage {
 
   readonly statusInactiveRadio: Locator
 
+  readonly userTypeAllRadio: Locator
+
+  readonly userTypeDigitalRadio: Locator
+
+  readonly userTypeGeneralRadio: Locator
+
   readonly userTableCells: Locator
 
   readonly paginationResults: Locator
@@ -34,10 +40,13 @@ export default class SearchAllowListPage extends AbstractPage {
     this.filter = page.locator('.moj-filter')
     this.filterButton = this.button('Apply filters')
     this.userFilterInput = this.textBox('Name, username or email address')
-    this.statusAllRadio = this.radioButton('All', true)
+    this.statusAllRadio = this.radioButton('All', true).nth(0)
     this.statusActiveRadio = this.radioButton('Active', true)
     this.statusExpiredRadio = this.radioButton('Expired')
     this.statusInactiveRadio = this.statusExpiredRadio
+    this.userTypeAllRadio = this.radioButton('All', true).nth(1)
+    this.userTypeDigitalRadio = this.radioButton('Digital', true)
+    this.userTypeGeneralRadio = this.radioButton('General')
     this.userTableCells = page.getByRole('cell')
     this.paginationResults = page.locator('.moj-pagination__results').first()
     this.noResults = page.getByTestId('no-results')

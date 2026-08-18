@@ -69,6 +69,7 @@ declare module 'manageUsersApiClient' {
   interface UserAllowlistQuery {
     name?: string
     status: string
+    userType?: string
     size: number
     page: number
   }

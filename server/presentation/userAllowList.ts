@@ -10,6 +10,7 @@ import { statusDisplay, StatusKey } from './status'
 export interface Filter {
   user?: string
   status?: string
+  userType?: string
 }
 
 export const asUrlSearchParams = (filter: Filter): URLSearchParams => {
@@ -31,6 +32,19 @@ const getStatusCategory = (searchParams: URLSearchParams, filter: Filter) => ({
   items: [{ href: hrefToRemoveFilter(searchParams, 'status'), text: statusDisplay(filter.status as StatusKey) }],
 })
 
+export const userTypeDisplay = (userType: UserAllowlistUserType): string =>
+  userType === 'DIGITAL' ? 'Digital user' : 'General user'
+
+const getUserTypeCategory = (searchParams: URLSearchParams, filter: Filter) => ({
+  heading: { text: 'User type' },
+  items: [
+    {
+      href: hrefToRemoveFilter(searchParams, 'userType'),
+      text: userTypeDisplay(filter.userType as UserAllowlistUserType),
+    },
+  ],
+})
+
 export const filterCategories = (filter: Filter): Category[] => {
   const categories: Category[] = []
   const searchParams = asUrlSearchParams(filter)
@@ -40,6 +54,9 @@ export const filterCategories = (filter: Filter): Category[] => {
   }
   if (filter.status && filter.status !== 'ALL') {
     categories.push(getStatusCategory(searchParams, filter))
+  }
+  if (filter.userType && filter.userType !== 'ALL') {
+    categories.push(getUserTypeCategory(searchParams, filter))
   }
   return categories
 }
@@ -61,3 +78,5 @@ export const displayUsers = (data: UserAllowlistDetail[]) => {
     status: getAllowlistStatus(allowlistUser),
   }))
 }
+
+export type UserAllowlistUserType = 'DIGITAL' | 'GENERAL'
