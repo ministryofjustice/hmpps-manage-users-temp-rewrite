@@ -27,6 +27,7 @@ export default ({ userAllowListService, paginationService, auditService }: Servi
     const currentFilter: Query = {
       user: (req.query.user as string)?.trim(),
       status: (req.query.status as string) || 'ALL',
+      userType: req.query.userType === 'DIGITAL' || req.query.userType === 'GENERAL' ? req.query.userType : undefined,
       page: Number(req.query.page ?? '0'),
     }
 
@@ -46,6 +47,7 @@ export default ({ userAllowListService, paginationService, auditService }: Servi
       const { content, totalElements, number } = await userAllowListService.getAllAllowListUsers(user.token, {
         name: currentFilter.user,
         status: currentFilter.status,
+        userType: currentFilter.userType,
         page: currentFilter.page,
         size: pageSize,
       })
@@ -80,6 +82,7 @@ export const downloadHandler = ({ userAllowListService, auditService }: Services
       const result = await userAllowListService.getAllAllowListUsers(token, {
         name: query.user,
         status: query.status,
+        userType: query.userType,
         page: 0,
         size: downloadLimit,
       })
@@ -97,6 +100,7 @@ export const downloadHandler = ({ userAllowListService, auditService }: Services
         'lastUpdated',
         'lastUpdatedBy',
         'status',
+        'userType',
       ]
       return new Parser({ fields }).parse(displayUsers(data))
     },

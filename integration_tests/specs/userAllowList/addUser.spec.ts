@@ -8,12 +8,12 @@ import AuthErrorPage from '../../pages/authErrorPage'
 import HomePage from '../../pages/homePage'
 import SearchAllowListPage from '../../pages/userAllowList/searchPage'
 
-const gotoAddUserToAllowlist = async (page: Page) => {
+const gotoAddUserToAllowlist = async (page: Page, userType: string = 'General user') => {
   await login(page, { roles: [AuthRole.MANAGE_USER_ALLOW_LIST] })
 
   const homePage = await HomePage.verifyOnPage(page)
   await homePage.selectTile('add_user_to_allow_list')
-  return AddUserAllowListPage.verifyOnPage(page)
+  return AddUserAllowListPage.verifyOnPage(page).then(addPage => addPage.selectUserType(userType))
 }
 
 test.describe('Add user to allow list', () => {
@@ -37,6 +37,51 @@ test.describe('Add user to allow list', () => {
     await addUserPage.firstName.fill('Derryck')
     await addUserPage.lastName.fill('Siegle')
     await addUserPage.reason.fill('for test purposes')
+    await addUserPage.submit.click()
+
+    await SearchAllowListPage.verifyOnPage(page)
+  })
+
+  test('selecting a general user type shows the reason and access period radios', async ({ page }) => {
+    await manageUsersApi.stubAddAllowlistUser()
+    await manageUsersApi.stubSearchAllowlistUsers()
+    await manageUsersApi.stubGetAllowlistUserNotFound('fasha6v')
+
+    const addUserPage = await gotoAddUserToAllowlist(page, 'General user')
+    await expect(addUserPage.accessPeriodRadio('One month')).toBeVisible()
+    await expect(addUserPage.accessPeriodRadio('Three months')).toBeVisible()
+    await expect(addUserPage.reason).toBeVisible()
+    await expect(addUserPage.username).toBeVisible()
+    await expect(addUserPage.email).toBeVisible()
+    await expect(addUserPage.firstName).toBeVisible()
+    await expect(addUserPage.lastName).toBeVisible()
+  })
+
+  test('selecting a digital user type hides the reason and access period radios', async ({ page }) => {
+    await manageUsersApi.stubAddAllowlistUser()
+    await manageUsersApi.stubSearchAllowlistUsers()
+    await manageUsersApi.stubGetAllowlistUserNotFound('fasha6v')
+
+    const addUserPage = await gotoAddUserToAllowlist(page, 'Digital user')
+    await expect(addUserPage.accessPeriodRadio('One month')).not.toBeVisible()
+    await expect(addUserPage.accessPeriodRadio('Three months')).not.toBeVisible()
+    await expect(addUserPage.reason).not.toBeVisible()
+    await expect(addUserPage.username).toBeVisible()
+    await expect(addUserPage.email).toBeVisible()
+    await expect(addUserPage.firstName).toBeVisible()
+    await expect(addUserPage.lastName).toBeVisible()
+  })
+
+  test('submit is successful for digital user when all fields are filled in', async ({ page }) => {
+    await manageUsersApi.stubAddAllowlistUser()
+    await manageUsersApi.stubSearchAllowlistUsers()
+    await manageUsersApi.stubGetAllowlistUserNotFound('fasha6v')
+
+    const addUserPage = await gotoAddUserToAllowlist(page, 'Digital user')
+    await addUserPage.username.fill('fasha6v')
+    await addUserPage.email.fill('jameisha_mullings2s@employee.zg')
+    await addUserPage.firstName.fill('Derryck')
+    await addUserPage.lastName.fill('Siegle')
     await addUserPage.submit.click()
 
     await SearchAllowListPage.verifyOnPage(page)
@@ -186,11 +231,11 @@ test.describe('Add user to allow list', () => {
 
   test('retains access period selection on error', async ({ page }) => {
     const addUserPage = await gotoAddUserToAllowlist(page)
-    await addUserPage.accessPeriodRadio('Six months').click()
+    await addUserPage.accessPeriodRadio('Three months').click()
     await addUserPage.submit.click()
 
     await AddUserAllowListPage.verifyOnPage(page)
-    await expect(addUserPage.accessPeriodRadio('Six months')).toBeChecked()
+    await expect(addUserPage.accessPeriodRadio('Three months')).toBeChecked()
   })
 
   test('cancel returns to the home page', async ({ page }) => {

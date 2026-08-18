@@ -4,16 +4,6 @@ import AbstractPage from '../abstractPage'
 export default class EditAllowListPage extends AbstractPage {
   readonly header: Locator
 
-  readonly accessPeriodOneMonthRadio: Locator
-
-  readonly accessPeriodThreeMonthsRadio: Locator
-
-  readonly accessPeriodSixMonthsRadio: Locator
-
-  readonly accessPeriodTwelveMonthsRadio: Locator
-
-  readonly accessPeriodNoRestrictionRadio: Locator
-
   readonly reason: Locator
 
   readonly submit: Locator
@@ -37,11 +27,6 @@ export default class EditAllowListPage extends AbstractPage {
   private constructor(page: Page, name: string) {
     super(page)
     this.header = page.getByRole('heading', { name })
-    this.accessPeriodOneMonthRadio = this.radioButton('One month')
-    this.accessPeriodThreeMonthsRadio = this.radioButton('Three months')
-    this.accessPeriodSixMonthsRadio = this.radioButton('Six months')
-    this.accessPeriodTwelveMonthsRadio = this.radioButton('Twelve months')
-    this.accessPeriodNoRestrictionRadio = this.radioButton('No restriction')
     this.reason = this.textBox('Reason')
     this.submit = this.button('Update')
     this.cancel = this.button('Cancel')
@@ -58,5 +43,9 @@ export default class EditAllowListPage extends AbstractPage {
     const editPage = new EditAllowListPage(page, name)
     await expect(editPage.header).toBeVisible()
     return editPage
+  }
+
+  accessPeriodRadio(label: string): Locator {
+    return this.radioButton(label)
   }
 }

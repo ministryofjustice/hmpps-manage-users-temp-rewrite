@@ -34,6 +34,8 @@ import {
 import {
   Filter as UserAllowListFilter,
   filterCategories as userAllowListFilterCategories,
+  UserAllowlistUserType,
+  userTypeDisplay as userAllowlistUserTypeDisplay,
 } from '../presentation/userAllowList'
 import { isRestrictedRoleCode, RestrictedRoles } from '../presentation/restrictedRoles'
 import groupValues from '../presentation/groups'
@@ -110,6 +112,9 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('allowListUserEdit', (username: string) => paths.userAllowList.manage.edit({ username }))
   njkEnv.addFilter('toAllowListExpiry', (expiry: string) =>
     moment(expiry).diff(moment(), 'months') > 12 ? 'No restriction' : moment(expiry).format('D MMMM YYYY'),
+  )
+  njkEnv.addFilter('toAllowlistUserType', (userType: string) =>
+    userAllowlistUserTypeDisplay(userType as UserAllowlistUserType),
   )
   njkEnv.addFilter('toStatus', (status: string) => statusDisplay(status as StatusKey))
   njkEnv.addFilter('deleteEmailDomainLink', (id: string) => paths.emailDomains.deleteWithId({ id }))

@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express'
+import { UserAllowlistAddRequest } from 'manageUsersApiClient'
 import paths from '../paths'
 import type { FormError } from '../../interfaces/formError'
 import { bodyFromFlash, flashBody, flashErrors, formErrorsFromFlash } from '../../middleware/route/formMiddleware'
@@ -7,6 +8,7 @@ import { EventType, SubjectType } from '../../services/auditService'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../interfaces/authRole'
 import { validateEmail } from '../../presentation/validation/userValidation'
+import { UserAllowlistUserType } from '../../presentation/userAllowList'
 
 interface Form {
   username: string
@@ -15,6 +17,7 @@ interface Form {
   lastName: string
   accessPeriod: string
   reason: string
+  userType?: UserAllowlistUserType
 }
 
 const DEFAULT_ACCESS_PERIOD = 'ONE_MONTH'
@@ -49,6 +52,7 @@ export default ({ userAllowListService, auditService }: Services): Router => {
     const errors = formErrorsFromFlash(req)
     return res.render('pages/userAllowList/addUser', {
       ...body,
+      userType: req.query.userType === 'DIGITAL' || req.query.userType === 'GENERAL' ? req.query.userType : undefined,
       accessPeriod: body.accessPeriod ?? DEFAULT_ACCESS_PERIOD,
       errors,
     })
@@ -56,26 +60,32 @@ export default ({ userAllowListService, auditService }: Services): Router => {
 
   router.post('/', async (req: Request, res: Response) => {
     const { _csrf, ...form } = req.body
+    const allowListUserRequest: UserAllowlistAddRequest = {
+      ...form,
+      accessPeriod: form.userType === 'DIGITAL' ? 'NO_RESTRICTION' : form.accessPeriod,
+      reason: form.userType === 'DIGITAL' ? 'Digital user' : form.reason,
+    }
 
     const usernameExists = form.username
       ? await userAllowListService.usernameExists(res.locals.user.token, form.username)
       : false
-    const errors = validate(form, usernameExists)
+    const errors = validate(allowListUserRequest, usernameExists)
 
     if (errors.length > 0) {
-      flashBody(req, form)
+      flashBody(req, allowListUserRequest)
       flashErrors(req, errors)
-      return res.redirect(paths.userAllowList.addUser.pattern)
+      const query = form.userType ? `?userType=${encodeURIComponent(form.userType)}` : ''
+      return res.redirect(`${paths.userAllowList.addUser.pattern}${query}`)
     }
 
-    await userAllowListService.addAllowListUser(res.locals.user.token, { ...form })
+    await userAllowListService.addAllowListUser(res.locals.user.token, allowListUserRequest)
 
     await auditService.logAuditEvent({
       what: EventType.ADD_ALLOW_LIST_USER,
       who: res.locals.user.username,
       subjectId: form.username,
       subjectType: SubjectType.USER_ID,
-      details: form,
+      details: allowListUserRequest,
     })
 
     return res.redirect(paths.userAllowList.search.pattern)

@@ -1195,6 +1195,7 @@ describe('ManageUsersApiClient', () => {
             allowlistEndDate: '04/08/2026',
             lastUpdated: '04/08/2025T15:53:38.506',
             lastUpdatedBy: 'TUSER_ADM',
+            userType: 'DIGITAL',
           },
         ])
         const query = {
@@ -1237,6 +1238,7 @@ describe('ManageUsersApiClient', () => {
           allowlistEndDate: '04/08/2026',
           lastUpdated: '04/08/2025T15:53:38.506',
           lastUpdatedBy: 'TUSER_ADM',
+          userType: 'DIGITAL',
         }
         mockApi('get', `/users/allowlist/${username}`, successResponse, allowlistUser)
 

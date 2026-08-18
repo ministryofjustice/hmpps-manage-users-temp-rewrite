@@ -21,6 +21,7 @@ const buildAllowlistUser = (overrides: Partial<UserAllowlistDetail> = {}): UserA
   allowlistEndDate: '2020-04-19',
   lastUpdated: '2024-03-19T04:39:08',
   lastUpdatedBy: 'ADMIN',
+  userType: 'GENERAL',
   ...overrides,
 })
 
@@ -32,7 +33,7 @@ test.describe('Edit allow list user', () => {
   test('Access period is set to one month by default', async ({ page }) => {
     const editPage = await editUser(page, { user: buildAllowlistUser() })
 
-    await expect(editPage.accessPeriodOneMonthRadio).toBeChecked()
+    await expect(editPage.accessPeriodRadio('One month')).toBeChecked()
   })
 
   test('Should show details of an active user', async ({ page }) => {
@@ -86,11 +87,11 @@ test.describe('Edit allow list user', () => {
 
   test('Should retain the chosen access period on validation errors', async ({ page }) => {
     const editPage = await editUser(page, { user: buildAllowlistUser() })
-    await editPage.accessPeriodTwelveMonthsRadio.click()
+    await editPage.accessPeriodRadio('Three months').click()
     await editPage.submit.click()
 
     await EditAllowListPage.verifyOnPage(page, 'Editing user allow list access for Anastazia Armistead')
-    await expect(editPage.accessPeriodTwelveMonthsRadio).toBeChecked()
+    await expect(editPage.accessPeriodRadio('Three months')).toBeChecked()
   })
 
   test('Should cancel and return to the user view page', async ({ page }) => {
