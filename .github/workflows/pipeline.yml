@@ -99,6 +99,20 @@ jobs:
       environment: 'dev'
       app_version: '${{ needs.build.outputs.app_version }}'
       slack_notification: 'false' # if 'true', it needs a valid NONPROD_RELEASES_SLACK_CHANNEL variable to be set
+  deploy_stage:
+    name: Deploy to the stage environment
+    if: needs.check_publish.outputs.enabled == 'true'
+    needs:
+      - build
+      - helm_lint
+      - check_publish
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
+    secrets: inherit
+    with:
+      environment: 'stage'
+      app_version: '${{ needs.build.outputs.app_version }}'
+      helm_timeout: '5m'
+      slack_notification: 'false'
   # deploy_preprod:
   #   name: Deploy to pre-production environment
   #   needs:
