@@ -8,7 +8,7 @@ import AuthErrorPage from '../../pages/authErrorPage'
 import HomePage from '../../pages/homePage'
 import SearchAllowListPage from '../../pages/userAllowList/searchPage'
 
-const gotoAddUserToAllowlist = async (page: Page, userType: string = 'General User') => {
+const gotoAddUserToAllowlist = async (page: Page, userType: string = 'General user') => {
   await login(page, { roles: [AuthRole.MANAGE_USER_ALLOW_LIST] })
 
   const homePage = await HomePage.verifyOnPage(page)

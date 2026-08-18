@@ -52,7 +52,7 @@ export default ({ userAllowListService, auditService }: Services): Router => {
     const errors = formErrorsFromFlash(req)
     return res.render('pages/userAllowList/addUser', {
       ...body,
-      userType: req.query.userType as UserAllowlistUserType,
+      userType: req.query.userType === 'DIGITAL' || req.query.userType === 'GENERAL' ? req.query.userType : undefined,
       accessPeriod: body.accessPeriod ?? DEFAULT_ACCESS_PERIOD,
       errors,
     })
