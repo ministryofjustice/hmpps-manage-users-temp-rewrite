@@ -5,7 +5,7 @@ generic-service:
   replicaCount: 2
 
   ingress:
-    host: manage-users-temp-rewrite-dev.hmpps.service.justice.gov.uk
+    host: manage-users-temp-rewrite-stage.hmpps.service.justice.gov.uk
 
   env:
     INGRESS_URL: "https://manage-users-temp-rewrite-stage.hmpps.service.justice.gov.uk"
