@@ -14,8 +14,8 @@ generic-service:
     MANAGE_USERS_API_URL: 'https://manage-users-api-stage.hmpps.service.justice.gov.uk'
     ENVIRONMENT_NAME: STAGE
     AUDIT_ENABLED: "false"
-    DPS_ENDPOINT_URL: https://digital-stage.prison.service.justice.gov.uk
-    MANAGE_USER_ALLOW_LIST_ENABLED: false
+    DPS_ENDPOINT_URL: https://digital-dev.prison.service.justice.gov.uk
+    MANAGE_USER_ALLOW_LIST_ENABLED: true
 
 generic-prometheus-alerts:
   alertSeverity: hmpps_tech_non_prod
