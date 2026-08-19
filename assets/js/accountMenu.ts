@@ -11,6 +11,11 @@ export default function setupAccountMenu() {
 
   $item.classList.add('cdps-header__item--with-menu')
 
+  $button.setAttribute('role', 'button')
+  $button.setAttribute('aria-controls', 'cdps-header__menu--user')
+  $button.setAttribute('aria-expanded', 'false')
+  $button.setAttribute('href', '#')
+
   const isOpen = () => $button.getAttribute('aria-expanded') === 'true'
 
   const open = () => {
