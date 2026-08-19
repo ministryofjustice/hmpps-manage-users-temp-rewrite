@@ -8,7 +8,7 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 
-{% set title %}Editing user allow list access for {{ user.firstName }} {{ user.lastName }}{% endset %}
+{% set title %}{{ user.firstName }} {{ user.lastName }}{% endset %}
 {% set searchLink = allowListSearchTitle %}
 {% set reasonHint %}Please provide a valid business reason for allowing access to {{ allowListEnvironment }}. This will be appended to the existing reason{% endset %}
 
@@ -33,7 +33,8 @@
   {% endif %}
 
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-half">
+    <div class="govuk-grid-column-three-quarters">
+      <span class="govuk-caption-l">Editing user allow list access</span>
       <h1 class="govuk-heading-l">{{ title }}</h1>
       <div class="govuk-!-padding-bottom-5">
         <span class="govuk-visually-hidden">Status</span>
