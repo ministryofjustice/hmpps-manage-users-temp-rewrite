@@ -62,10 +62,7 @@ export const editUser = async (
   await searchPage.userDetailsLink(allowlistUser.username).click()
   const viewPage = await ViewAllowListPage.verifyOnPage(page, `${allowlistUser.firstName} ${allowlistUser.lastName}`)
   await viewPage.editButton.click()
-  return EditAllowListPage.verifyOnPage(
-    page,
-    `Editing user allow list access for ${allowlistUser.firstName} ${allowlistUser.lastName}`,
-  )
+  return EditAllowListPage.verifyOnPage(page, `${allowlistUser.firstName} ${allowlistUser.lastName}`)
 }
 
 export const defaultAllowlistUser = defaultUser

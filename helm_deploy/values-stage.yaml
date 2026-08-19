@@ -16,6 +16,7 @@ generic-service:
     AUDIT_ENABLED: "false"
     DPS_ENDPOINT_URL: https://digital-dev.prison.service.justice.gov.uk
     MANAGE_USER_ALLOW_LIST_ENABLED: true
+    MANAGE_USER_ALLOW_LIST_ENVIRONMENT_LABEL: stage
 
 generic-prometheus-alerts:
   alertSeverity: hmpps_tech_non_prod

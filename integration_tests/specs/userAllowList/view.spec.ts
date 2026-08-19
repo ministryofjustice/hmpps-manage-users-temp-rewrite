@@ -83,7 +83,7 @@ test.describe('View allow list user', () => {
     const viewPage = await ViewAllowListPage.verifyOnPage(page, 'Anastazia Armistead')
     await viewPage.editButton.click()
 
-    await EditAllowListPage.verifyOnPage(page, 'Editing user allow list access for Anastazia Armistead')
+    await EditAllowListPage.verifyOnPage(page, 'Anastazia Armistead')
   })
 
   test('Should click the search link and go back to search', async ({ page }) => {

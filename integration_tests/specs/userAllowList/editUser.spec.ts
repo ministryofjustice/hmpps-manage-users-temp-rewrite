@@ -81,7 +81,7 @@ test.describe('Edit allow list user', () => {
     const editPage = await editUser(page, { user: buildAllowlistUser() })
     await editPage.submit.click()
 
-    await EditAllowListPage.verifyOnPage(page, 'Editing user allow list access for Anastazia Armistead')
+    await EditAllowListPage.verifyOnPage(page, 'Anastazia Armistead')
     await expect(editPage.errorSummary).toContainText('Enter a valid business reason')
   })
 
@@ -90,7 +90,7 @@ test.describe('Edit allow list user', () => {
     await editPage.accessPeriodRadio('Three months').click()
     await editPage.submit.click()
 
-    await EditAllowListPage.verifyOnPage(page, 'Editing user allow list access for Anastazia Armistead')
+    await EditAllowListPage.verifyOnPage(page, 'Anastazia Armistead')
     await expect(editPage.accessPeriodRadio('Three months')).toBeChecked()
   })
 
