@@ -44,7 +44,7 @@ test.describe('SignIn', () => {
 
     const homePage = await HomePage.verifyOnPage(page)
 
-    await expect(homePage.activeLocation).toHaveText('Moorland')
+    await expect(homePage.activeLocation).toHaveText('Moorland (HMP & YOI)')
   })
 
   test('Active location (caseload) not visible in header if not nomis auth source', async ({ page }) => {
