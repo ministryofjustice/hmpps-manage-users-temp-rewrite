@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 
 export default class AbstractPage {
   readonly page: Page
@@ -35,11 +35,11 @@ export default class AbstractPage {
     this.accountMenuButton = page.getByTestId('accountMenuButton')
   }
 
-  /** opens the header's account menu, if present, so its links become visible/clickable */
+  /** opens the header's account menu so its links become visible/clickable */
   async openAccountMenu() {
-    if (await this.accountMenuButton.count()) {
-      await this.accountMenuButton.click()
-    }
+    await expect(this.accountMenuButton).toBeVisible()
+    await this.accountMenuButton.click()
+    await expect(this.accountMenuButton).toHaveAttribute('aria-expanded', 'true')
   }
 
   async signOut() {
