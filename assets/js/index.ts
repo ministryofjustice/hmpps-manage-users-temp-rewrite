@@ -5,6 +5,7 @@ import makeCardsClickable from './card'
 import setupFilterToggleButton from './filterToggleButton'
 import setupMultiSelect from './multiSelectFilter'
 import setupCsvDownload from './csvDownload'
+import setupAccountMenu from './dps-header'
 
 govukFrontend.initAll()
 mojFrontend.initAll()
@@ -13,3 +14,4 @@ makeCardsClickable()
 setupFilterToggleButton()
 setupMultiSelect()
 setupCsvDownload()
+setupAccountMenu()

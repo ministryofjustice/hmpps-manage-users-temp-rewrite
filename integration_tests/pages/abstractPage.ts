@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 
 export default class AbstractPage {
   readonly page: Page
@@ -21,6 +21,9 @@ export default class AbstractPage {
   /** link to manage user details */
   readonly manageUserDetails: Locator
 
+  /** button that opens the header's account menu (Your account / Switch account / Sign out) */
+  readonly accountMenuButton: Locator
+
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
@@ -29,13 +32,23 @@ export default class AbstractPage {
     this.usersName = page.getByTestId('header-user-name')
     this.signoutLink = page.getByText('Sign out')
     this.manageUserDetails = page.getByTestId('manageDetails')
+    this.accountMenuButton = page.getByTestId('accountMenuButton')
+  }
+
+  /** opens the header's account menu so its links become visible/clickable */
+  async openAccountMenu() {
+    await expect(this.accountMenuButton).toBeVisible()
+    await this.accountMenuButton.click()
+    await expect(this.accountMenuButton).toHaveAttribute('aria-expanded', 'true')
   }
 
   async signOut() {
+    await this.openAccountMenu()
     await this.signoutLink.first().click()
   }
 
   async clickManageUserDetails() {
+    await this.openAccountMenu()
     await this.manageUserDetails.first().click()
   }
 

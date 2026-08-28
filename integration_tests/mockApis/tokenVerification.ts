@@ -11,4 +11,10 @@ export default {
       urlPattern: '/verification/token/verify',
       body: { active },
     }),
+
+  stubRevokeToken: (): SuperAgentRequest =>
+    stubJson({
+      method: 'DELETE',
+      urlPattern: '/verification/token/self',
+    }),
 }

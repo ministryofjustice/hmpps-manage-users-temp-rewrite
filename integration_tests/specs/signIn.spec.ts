@@ -116,6 +116,29 @@ test.describe('SignIn', () => {
     await expect(page.getByRole('heading')).toHaveText('Your account details')
   })
 
+  test('Account menu opens and closes', async ({ page }) => {
+    await login(page)
+
+    const homePage = await HomePage.verifyOnPage(page)
+    const menu = page.locator('#cdps-header__menu--user')
+
+    await expect(homePage.accountMenuButton).toHaveAttribute('aria-expanded', 'false')
+    await expect(menu).toBeHidden()
+
+    await homePage.accountMenuButton.click()
+
+    await expect(homePage.accountMenuButton).toHaveAttribute('aria-expanded', 'true')
+    await expect(menu).toBeVisible()
+    await expect(menu.getByTestId('manageDetails')).toBeVisible()
+    await expect(menu.getByTestId('switchAccount')).toBeVisible()
+    await expect(menu.getByTestId('signOut')).toBeVisible()
+
+    await page.keyboard.press('Escape')
+
+    await expect(homePage.accountMenuButton).toHaveAttribute('aria-expanded', 'false')
+    await expect(menu).toBeHidden()
+  })
+
   test('Token verification failure takes user to sign in page', async ({ page }) => {
     await login(page, { active: false })
 
