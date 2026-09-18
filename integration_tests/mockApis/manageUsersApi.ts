@@ -196,6 +196,7 @@ const replicateAllowlistUser = (times: number): UserAllowlistDetail[] =>
     allowlistEndDate: '2027-04-19',
     lastUpdated: '2024-03-19T04:39:08',
     lastUpdatedBy: 'ADMIN',
+    approver: 'Sharlotte Muirhead',
   }))
 
 // Alternate having 1, 2, or 3 admin types
@@ -1184,6 +1185,7 @@ export default {
           allowlistEndDate: user.allowlistEndDate,
           lastUpdated: user.lastUpdated,
           lastUpdatedBy: user.lastUpdatedBy,
+          approver: user.approver,
         },
       },
     }),

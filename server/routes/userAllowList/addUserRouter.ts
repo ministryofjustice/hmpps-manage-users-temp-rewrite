@@ -18,6 +18,7 @@ interface Form {
   accessPeriod: string
   reason: string
   userType?: UserAllowlistUserType
+  approver: string
 }
 
 const DEFAULT_ACCESS_PERIOD = 'ONE_MONTH'
@@ -38,6 +39,9 @@ const validate = (body: Form, usernameExists: boolean): FormError[] => {
   }
   if (!body.reason) {
     errors.push({ href: '#reason', text: 'Enter a valid business reason' })
+  }
+  if (!body.approver) {
+    errors.push({ href: '#approver', text: "Enter the approving manager's name" })
   }
   return errors
 }

@@ -209,13 +209,13 @@ test.describe('Search allow list users', () => {
 
     expect(csvLines).toHaveLength(3)
     expect(csvLines[0]).toEqual(
-      '"username","firstName","lastName","email","reason","allowlistEndDate","createdOn","lastUpdated","lastUpdatedBy","status","userType"',
+      '"username","firstName","lastName","email","reason","allowlistEndDate","createdOn","lastUpdated","lastUpdatedBy","status","userType","approver"',
     )
     expect(csvLines[1]).toEqual(
-      '"AICIAD","Anastazia","Armistead","anastazia.armistead@justice.gov.uk","For testing","2020-04-19","2024-03-19T04:39:08","2024-03-19T04:39:08","ADMIN","EXPIRED","DIGITAL"',
+      '"AICIAD","Anastazia","Armistead","anastazia.armistead@justice.gov.uk","For testing","2020-04-19","2024-03-19T04:39:08","2024-03-19T04:39:08","ADMIN","EXPIRED","DIGITAL","Sharlotte Muirhead"',
     )
     expect(csvLines[2]).toEqual(
-      '"ZAFIRAHT9YH","Litany","Storm","litany.storm@justice.gov.uk","For testing","2099-04-19","2024-03-19T04:39:08","2024-03-19T04:39:08","ADMIN","ACTIVE","GENERAL"',
+      '"ZAFIRAHT9YH","Litany","Storm","litany.storm@justice.gov.uk","For testing","2099-04-19","2024-03-19T04:39:08","2024-03-19T04:39:08","ADMIN","ACTIVE","GENERAL","Sharlotte Muirhead"',
     )
   })
 

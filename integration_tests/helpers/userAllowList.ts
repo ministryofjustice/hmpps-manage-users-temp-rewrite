@@ -21,6 +21,7 @@ const defaultUser = (): UserAllowlistDetail => ({
   lastUpdated: '2024-03-19T04:39:08',
   lastUpdatedBy: 'ADMIN',
   userType: 'DIGITAL',
+  approver: 'Sharlotte Muirhead',
 })
 
 export const gotoSearchPage = async (

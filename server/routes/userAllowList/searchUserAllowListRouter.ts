@@ -101,6 +101,7 @@ export const downloadHandler = ({ userAllowListService, auditService }: Services
         'lastUpdatedBy',
         'status',
         'userType',
+        'approver',
       ]
       return new Parser({ fields }).parse(displayUsers(data))
     },

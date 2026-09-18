@@ -24,6 +24,8 @@ export default class EditAllowListPage extends AbstractPage {
 
   readonly existingReason: Locator
 
+  readonly approver: Locator
+
   private constructor(page: Page, name: string) {
     super(page)
     this.header = page.getByRole('heading', { name })
@@ -37,6 +39,7 @@ export default class EditAllowListPage extends AbstractPage {
     this.firstName = page.getByTestId('firstName')
     this.lastName = page.getByTestId('lastName')
     this.existingReason = page.getByTestId('reason')
+    this.approver = page.getByTestId('approver')
   }
 
   static async verifyOnPage(page: Page, name: string): Promise<EditAllowListPage> {
