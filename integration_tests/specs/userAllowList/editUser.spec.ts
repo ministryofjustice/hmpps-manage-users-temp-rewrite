@@ -22,6 +22,7 @@ const buildAllowlistUser = (overrides: Partial<UserAllowlistDetail> = {}): UserA
   lastUpdated: '2024-03-19T04:39:08',
   lastUpdatedBy: 'ADMIN',
   userType: 'GENERAL',
+  approver: 'Favio Friedel',
   ...overrides,
 })
 
@@ -54,6 +55,7 @@ test.describe('Edit allow list user', () => {
     await expect(editPage.firstName).toHaveText(user.firstName)
     await expect(editPage.lastName).toHaveText(user.lastName)
     await expect(editPage.existingReason).toHaveText(user.reason)
+    await expect(editPage.approver).toHaveText(user.approver)
   })
 
   test('Should show details of an expired user', async ({ page }) => {
@@ -66,6 +68,7 @@ test.describe('Edit allow list user', () => {
     await expect(editPage.firstName).toHaveText(user.firstName)
     await expect(editPage.lastName).toHaveText(user.lastName)
     await expect(editPage.existingReason).toHaveText(user.reason)
+    await expect(editPage.approver).toHaveText(user.approver)
   })
 
   test('Should submit changes and go to the view page', async ({ page }) => {

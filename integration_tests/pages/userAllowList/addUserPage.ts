@@ -14,6 +14,8 @@ export default class AddUserAllowListPage extends AbstractPage {
 
   readonly reason: Locator
 
+  readonly approver: Locator
+
   readonly continue: Locator
 
   readonly submit: Locator
@@ -30,6 +32,7 @@ export default class AddUserAllowListPage extends AbstractPage {
     this.firstName = this.textBox('First name')
     this.lastName = this.textBox('Last name')
     this.reason = this.textBox('Reason')
+    this.approver = this.textBox('Who is the approving manager?')
     this.continue = this.button('Continue')
     this.submit = this.button('Add')
     this.cancel = this.button('Cancel')
