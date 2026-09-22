@@ -304,7 +304,7 @@ export default class ManageUsersApiClient extends RestClient {
   }
 
   async syncDpsEmail(token: string, username: string): Promise<Response> {
-    return this.post({ path: `/prisonusers/${username}/email/sync`, data: null }, asUser(token))
+    return this.post({ path: `/prisonusers/${username}/email/sync`, data: undefined }, asUser(token))
   }
 
   async addDpsUserRoles(token: string, username: string, roles: string[]): Promise<UserRoleDetail> {
@@ -397,7 +397,11 @@ export default class ManageUsersApiClient extends RestClient {
       {
         path: `/users/${username}/email`,
         query: { unverified: true },
-        errorHandler: <Response, ERROR>(_path: string, _verb: string, error: SanitisedError<ERROR>): Response => {
+        errorHandler: <Response, ERROR>(
+          _path: string,
+          _verb: string,
+          error: SanitisedError<ERROR>,
+        ): Response | null => {
           if (error.responseStatus === 404) {
             return null
           }

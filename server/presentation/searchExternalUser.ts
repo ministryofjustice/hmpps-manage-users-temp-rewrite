@@ -28,7 +28,7 @@ const hrefToRemoveFilter = (searchParams: URLSearchParams, fieldName: string): s
 
 const getUserCategory = (searchParams: URLSearchParams, filter: Filter) => ({
   heading: { text: 'User' },
-  items: [{ href: hrefToRemoveFilter(searchParams, 'user'), text: filter.user }],
+  items: [{ href: hrefToRemoveFilter(searchParams, 'user'), text: filter.user as string }],
 })
 
 const getStatusCategory = (searchParams: URLSearchParams, filter: Filter) => ({
@@ -51,7 +51,7 @@ const getRoleCategory = (searchParams: URLSearchParams, filter: Filter, roles: U
   items: [
     {
       href: hrefToRemoveFilter(searchParams, 'roleCode'),
-      text: roles.find(r => r.roleCode === filter.roleCode)?.roleName,
+      text: roles.find(r => r.roleCode === filter.roleCode)?.roleName as string,
     },
   ],
 })

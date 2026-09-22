@@ -2,24 +2,24 @@ import { Request, Router } from 'express'
 import { EmailDomain } from 'manageUsersApiClient'
 import { Services } from '../../services'
 import paths from '../paths'
-import { EventType, SubjectType } from '../../services/auditService'
 import logger from '../../../logger'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../interfaces/authRole'
 import { bodyFromFlash, formErrorsFromFlash, validateFormOrRedirect } from '../../middleware/route/formMiddleware'
 import { FormError } from '../../interfaces/formError'
+import { EventType } from '../audit'
 
 interface Form {
   confirmedDomain: string
 }
 
 type EmailDomainRequest = Request & {
-  emailDomain: EmailDomain
+  emailDomain?: EmailDomain
 }
 
 const validate = (body: Form, req: EmailDomainRequest): FormError[] => {
   const errors: FormError[] = []
-  const expectedDomain = req.emailDomain.domain
+  const expectedDomain = req.emailDomain?.domain
 
   if (body.confirmedDomain !== expectedDomain) {
     errors.push({ href: '#confirmedDomain', text: `Enter "${expectedDomain}" to confirm deletion of domain` })
@@ -75,7 +75,7 @@ export default (services: Services): Router => {
         what: EventType.DELETE_EMAIL_DOMAIN,
         who: username,
         subjectId: emailDomain.id,
-        subjectType: SubjectType.EMAIL_DOMAIN_ID,
+        subjectType: 'EMAIL_DOMAIN_ID',
         details: emailDomain,
       })
       return res.redirect(paths.emailDomains.list.pattern)

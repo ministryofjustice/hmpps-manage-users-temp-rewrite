@@ -2,12 +2,12 @@ import { Router } from 'express'
 import { ExternalUser, PrisonCaseload, UserGroup, UserRole } from 'manageUsersApiClient'
 import { Services } from '../../../services'
 import paths from '../../paths'
-import { Page } from '../../../services/auditService'
 import AuthRole from '../../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import { userDetailsGetHandler, UserGroupWithShowRemove } from '../../userCommon/userDetailsHandlers'
 import { hasRole, HmppsUser } from '../../../interfaces/hmppsUser'
 import { externalUserRootUrlProvider } from './common'
+import { Page } from '../../audit'
 
 const getPageData = async (
   hmppsUser: HmppsUser,

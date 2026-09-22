@@ -12,9 +12,9 @@ import {
 import paths from '../paths'
 import { FormError } from '../../interfaces/formError'
 import { validateRoleName } from '../../presentation/validation/roleValidation'
-import { EventType, SubjectType } from '../../services/auditService'
-import { HttpStatusCode } from '../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../utils/utils'
 import { RoleRequest } from './types'
+import { EventType } from '../audit'
 
 interface Form {
   roleName: string
@@ -63,7 +63,7 @@ export default (services: Services): Router => {
       try {
         await rolesService.changeRoleName(token, roleDetails.roleCode, { roleName: body.roleName })
       } catch (err) {
-        if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
+        if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
           const { userMessage } = err.data
           const errorDetails = { text: userMessage }
           errors.push(errorDetails)
@@ -80,7 +80,7 @@ export default (services: Services): Router => {
         what: EventType.UPDATE_ROLE,
         who: username,
         subjectId: roleDetails.roleCode,
-        subjectType: SubjectType.ROLE_CODE,
+        subjectType: 'ROLE_CODE',
         details: { newRoleName: body.roleName },
       })
       return res.redirect(paths.roles.details({ role: roleDetails.roleCode }))

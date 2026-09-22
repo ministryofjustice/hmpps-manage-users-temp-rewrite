@@ -11,11 +11,11 @@ import {
   validateFormOrRedirect,
 } from '../../../middleware/route/formMiddleware'
 import { Services } from '../../../services'
-import { EventType, SubjectType } from '../../../services/auditService'
 import { CreateLinkedDpsUserRequest } from '../../../interfaces/createLinkedDpsUserRequest'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../../interfaces/authRole'
-import { HttpStatusCode } from '../../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../../utils/utils'
+import { EventType } from '../../audit'
 
 const validate = (body: CreateLinkedDpsUserRequest): FormError[] => {
   const errors: FormError[] = []
@@ -53,6 +53,9 @@ export default ({ dpsUserService, auditService }: Services): Router => {
           flashBody(req, updatedBody)
           return res.redirect(paths.dpsUser.createLinkedDpsUser.pattern)
         } catch (err) {
+          if (!isErrorResponse(err)) {
+            throw err
+          }
           if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
             const { userMessage } = err.data
             const errorDetails = { text: userMessage }
@@ -80,10 +83,13 @@ export default ({ dpsUserService, auditService }: Services): Router => {
       const errors: FormError[] = []
       const body = bodyFromFlash<CreateLinkedDpsUserRequest>(req)
       const { username } = res.locals.user
-      let newUsername: string
+      let newUsername: string = ''
       try {
         newUsername = await dpsUserService.createLinkedDpsUser(res.locals.user.token, body)
       } catch (err) {
+        if (!isErrorResponse(err)) {
+          throw err
+        }
         if (err.responseStatus === 400 && err.data) {
           const { userMessage } = err.data
           const errorDetails = { text: userMessage }
@@ -109,8 +115,8 @@ export default ({ dpsUserService, auditService }: Services): Router => {
         what: EventType.CREATE_LINKED_DPS_USER,
         who: username,
         subjectId: newUsername,
-        subjectType: SubjectType.USER_ID,
-        details: body,
+        subjectType: 'USER_ID',
+        details: Object.freeze(body),
       })
       return res.render('pages/dpsUser/createLinkedSuccess', {
         username: newUsername,

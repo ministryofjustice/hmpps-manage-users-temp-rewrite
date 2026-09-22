@@ -13,8 +13,8 @@ import AuthRole from '../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 import { FormError } from '../../interfaces/formError'
 import { AuditDetailsProvider, ChildGroupRequest, GroupRequest, StringFromRequestProvider } from './types'
-import { EventType, SubjectType } from '../../services/auditService'
 import GroupsService from '../../services/groupsService'
+import { EventType } from '../audit'
 
 interface Form {
   confirmedGroup: string
@@ -51,13 +51,14 @@ const showDeleteConfirmation = <GroupRequestType extends Request, GroupDetailsTy
   groupUrlProvider: StringFromRequestProvider<GroupRequestType>,
   breadcrumbsGroupNameProvider: StringFromRequestProvider<GroupRequestType>,
 ): RequestHandler => {
-  return async (req: GroupRequestType, res) => {
-    const groupDetails = groupDetailsProvider(req)
+  return async (req, res) => {
+    const groupRequest = req as GroupRequestType
+    const groupDetails = groupDetailsProvider(groupRequest)
     const body = bodyFromFlash<Form>(req)
     const errors = formErrorsFromFlash(req)
     const maintainUrl = paths.groups.list.pattern
-    const groupUrl = groupUrlProvider(req)
-    const breadcrumbsGroupName = breadcrumbsGroupNameProvider(req)
+    const groupUrl = groupUrlProvider(groupRequest)
+    const breadcrumbsGroupName = breadcrumbsGroupNameProvider(groupRequest)
 
     return res.render('pages/groups/delete', {
       ...body,
@@ -78,21 +79,22 @@ const postDeleteConfirmation = <GroupRequestType extends Request>(
   successRedirectProvider: StringFromRequestProvider<GroupRequestType>,
   auditDetailsProvider: AuditDetailsProvider<GroupRequestType> = _req => ({}),
 ): RequestHandler => {
-  return async (req: GroupRequestType, res) => {
+  return async (req, res) => {
+    const groupRequest = req as GroupRequestType
     const { auditService, groupsService } = services
     const { username, token } = res.locals.user
     const body = bodyFromFlash<Form>(req)
-    const groupCode = groupCodeProvider(req)
+    const groupCode = groupCodeProvider(groupRequest)
 
-    await groupDeleter(groupsService, token, req)
+    await groupDeleter(groupsService, token, groupRequest)
     await auditService.logAuditEvent({
       what: EventType.DELETE_GROUP,
       who: username,
       subjectId: groupCode,
-      subjectType: SubjectType.GROUP_CODE,
-      details: auditDetailsProvider(req, body),
+      subjectType: 'GROUP_CODE',
+      details: { ...auditDetailsProvider(groupRequest, body) },
     })
-    return res.redirect(successRedirectProvider(req))
+    return res.redirect(successRedirectProvider(groupRequest))
   }
 }
 

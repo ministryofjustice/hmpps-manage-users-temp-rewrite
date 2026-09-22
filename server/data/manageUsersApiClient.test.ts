@@ -1290,9 +1290,9 @@ describe('ManageUsersApiClient', () => {
       it('should throw error if error response is not 404', async () => {
         const username = 'TUSER_GEN'
         // Need to mock three requests due to the RestClient retrying
-        mockApi('get', `/users/${username}/email`, 500, null, { unverified: true })
-        mockApi('get', `/users/${username}/email`, 500, null, { unverified: true })
-        mockApi('get', `/users/${username}/email`, 500, null, { unverified: true })
+        mockApi('get', `/users/${username}/email`, 500, undefined, { unverified: true })
+        mockApi('get', `/users/${username}/email`, 500, undefined, { unverified: true })
+        mockApi('get', `/users/${username}/email`, 500, undefined, { unverified: true })
 
         await expect(manageUsersApiClient.getUserEmail(token, username)).rejects.toThrow('Internal Server Error')
       })

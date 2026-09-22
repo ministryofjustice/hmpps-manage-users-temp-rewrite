@@ -10,7 +10,7 @@ jest.mock('../../services/dpsUserService')
 jest.mock('../../services/rolesService')
 jest.mock('../../services')
 describe('Restricted roles middleware', () => {
-  const rolesService: jest.Mocked<RolesService> = new RolesService(null) as jest.Mocked<RolesService>
+  const rolesService: jest.Mocked<RolesService> = new RolesService({} as never) as jest.Mocked<RolesService>
   rolesService.getRoles = jest
     .fn()
     .mockImplementation(async (_token: string, adminType: 'DPS_LSA' | 'DPS_ADM' | 'EXT_ADM' | 'IMS_HIDDEN') => {
@@ -102,7 +102,7 @@ describe('Restricted roles middleware', () => {
       }
       return []
     })
-  const dpsUserService: jest.Mocked<DpsUserService> = new DpsUserService(null) as jest.Mocked<DpsUserService>
+  const dpsUserService: jest.Mocked<DpsUserService> = new DpsUserService({} as never) as jest.Mocked<DpsUserService>
   dpsUserService.getDpsUser = jest.fn().mockImplementation(async (_token: string, username: string) => {
     if (username === 'TADMIN_ADM') {
       return {

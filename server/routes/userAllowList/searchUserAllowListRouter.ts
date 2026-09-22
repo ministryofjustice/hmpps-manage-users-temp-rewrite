@@ -1,20 +1,20 @@
-import { Router } from 'express'
+import { RequestHandler, Router } from 'express'
 import { Parser } from '@json2csv/plainjs'
 import { UserAllowlistDetail } from 'manageUsersApiClient'
 import { Services } from '../../services'
 import AuthRole from '../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
-import { EventType } from '../../services/auditService'
 import { downloadCsv } from '../../middleware/route/downloadMiddleware'
 import paths from '../paths'
 import { asUrlSearchParams, canDownload, displayUsers, Filter } from '../../presentation/userAllowList'
 import manageUserAllowListHelper from '../../utils/manageUserAllowListHelper'
+import { EventType } from '../audit'
 
 const pageSize = manageUserAllowListHelper.pageSize()
 const downloadLimit = manageUserAllowListHelper.downloadLimit()
 
 export interface Query extends Filter {
-  page?: number
+  page: number
 }
 
 export default ({ userAllowListService, paginationService, auditService }: Services): Router => {
@@ -74,11 +74,14 @@ export default ({ userAllowListService, paginationService, auditService }: Servi
   return router
 }
 
-export const downloadHandler = ({ userAllowListService, auditService }: Services) =>
-  downloadCsv(
+export const downloadHandler = ({
+  userAllowListService,
+  auditService,
+}: Services): RequestHandler<unknown, unknown, unknown, Filter> =>
+  downloadCsv<Filter, UserAllowlistDetail[]>(
     'user-allowlist-search.csv',
     auditService,
-    async (query: Query, token: string): Promise<UserAllowlistDetail[]> => {
+    async (query: Filter, token: string): Promise<UserAllowlistDetail[]> => {
       const result = await userAllowListService.getAllAllowListUsers(token, {
         name: query.user,
         status: query.status,

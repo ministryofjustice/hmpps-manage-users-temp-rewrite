@@ -13,10 +13,10 @@ import {
 import paths from '../paths'
 import { FormError } from '../../interfaces/formError'
 import { validateRoleAdminType } from '../../presentation/validation/roleValidation'
-import { EventType, SubjectType } from '../../services/auditService'
-import { HttpStatusCode, toArray } from '../../utils/utils'
+import { HttpStatusCode, isErrorResponse, toArray } from '../../utils/utils'
 import { RoleRequest } from './types'
 import { adminTypeItemsDisablingImmutable } from '../../presentation/roles'
+import { EventType } from '../audit'
 
 interface Form {
   adminType: string[]
@@ -70,7 +70,7 @@ export default (services: Services): Router => {
       try {
         await rolesService.changeRoleAdminType(token, roleDetails.roleCode, { adminType })
       } catch (err) {
-        if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
+        if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
           const { userMessage } = err.data
           const errorDetails = { text: userMessage }
           errors.push(errorDetails)
@@ -87,7 +87,7 @@ export default (services: Services): Router => {
         what: EventType.UPDATE_ROLE,
         who: username,
         subjectId: roleDetails.roleCode,
-        subjectType: SubjectType.ROLE_CODE,
+        subjectType: 'ROLE_CODE',
         details: { newAdminType: adminType },
       })
       return res.redirect(paths.roles.details({ role: roleDetails.roleCode }))

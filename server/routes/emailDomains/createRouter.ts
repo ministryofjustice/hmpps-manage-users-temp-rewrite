@@ -11,10 +11,10 @@ import {
 import paths from '../paths'
 import { FormError } from '../../interfaces/formError'
 import { validateDomainDescription, validateDomainName } from '../../presentation/validation/emailDomainValidation'
-import { EventType, SubjectType } from '../../services/auditService'
 import AuthRole from '../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
-import { HttpStatusCode } from '../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../utils/utils'
+import { EventType } from '../audit'
 
 const validate = (body: CreateEmailDomainRequest): FormError[] => {
   const errors: FormError[] = []
@@ -57,7 +57,7 @@ export default (services: Services): Router => {
       try {
         emailDomain = await emailDomainsService.createEmailDomain(res.locals.user.token, body)
       } catch (err) {
-        if (err.responseStatus === HttpStatusCode.CONFLICT && err.data) {
+        if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.CONFLICT && err.data) {
           errors.push({ href: '#name', text: err.data.userMessage })
         } else {
           throw err
@@ -72,7 +72,7 @@ export default (services: Services): Router => {
         what: EventType.CREATE_EMAIL_DOMAIN,
         who: username,
         subjectId: emailDomain.id,
-        subjectType: SubjectType.EMAIL_DOMAIN_ID,
+        subjectType: 'EMAIL_DOMAIN_ID',
         details: body,
       })
       return res.redirect(paths.emailDomains.list.pattern)

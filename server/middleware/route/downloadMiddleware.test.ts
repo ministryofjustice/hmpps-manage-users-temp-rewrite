@@ -1,13 +1,14 @@
 import type { Request, Response } from 'express'
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import { downloadCsv, DataProvider, CsvParser } from './downloadMiddleware'
-import AuditService, { EventType } from '../../services/auditService'
 
 import logger from '../../../logger'
 import { DownloadAuthorisationCheck } from '../../presentation/searchDpsUser'
+import { EventType } from '../../routes/audit'
 
 const uuid = 'e400adfb-08d8-4d9c-8039-c4eacede867f'
 jest.spyOn(global.crypto, 'randomUUID').mockReturnValue(uuid)
-jest.mock('../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 
 jest.mock('../../../logger', () => ({
   __esModule: true,
@@ -52,7 +53,7 @@ describe('downloadCsv', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    auditService = new AuditService(null) as jest.Mocked<AuditService>
+    auditService = new AuditService({} as never) as jest.Mocked<AuditService>
     req = {
       query: { a: 'x', b: '42' },
     } as Request<unknown, unknown, unknown, Query>

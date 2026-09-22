@@ -4,10 +4,10 @@ import { bodyFromFlash, formErrorsFromFlash, validateFormOrRedirect } from '../.
 import paths from '../paths'
 import AuthRole from '../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
-import { Page } from '../../services/auditService'
 import logger from '../../../logger'
 import { FormError } from '../../interfaces/formError'
 import groupValues from '../../presentation/groups'
+import { Page } from '../audit'
 
 interface Form {
   groupCode: string

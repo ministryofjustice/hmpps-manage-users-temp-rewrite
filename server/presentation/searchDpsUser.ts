@@ -36,7 +36,7 @@ const getUserCategory = (searchParams: URLSearchParams, filter: Filter) => {
     items: [
       {
         href: hrefToRemoveFilter(searchParams, 'user'),
-        text: filter.user,
+        text: filter.user as string,
       },
     ],
   }
@@ -86,10 +86,11 @@ const getRolesCategory = (searchParams: URLSearchParams, filter: Filter, roles: 
     heading: {
       text: 'Roles',
     },
-    items: filter.roleCode.map(roleCode => ({
-      href: hrefToRemoveFilter(searchParams, 'roleCode', roleCode),
-      text: roles.find(role => role.roleCode === roleCode)?.roleName,
-    })),
+    items:
+      filter.roleCode?.map(roleCode => ({
+        href: hrefToRemoveFilter(searchParams, 'roleCode', roleCode),
+        text: roles.find(role => role.roleCode === roleCode)?.roleName,
+      })) || [],
   }
 }
 
