@@ -13,13 +13,13 @@ export default (services: Services): Router => {
 
   router.use(authRoleGuardMiddleware([AuthRole.ROLES_ADMIN, AuthRole.VIEW_ADMINISTRABLE_USER_ROLES]))
 
-  router.get('/', async (req: RoleRequest, res) => {
+  router.get('/', async (req, res) => {
     const { auditService } = services
     const { user } = res.locals
     const hasRolesAdmin = hasRole(user, AuthRole.ROLES_ADMIN)
     const errors = formErrorsFromFlash(req)
     const maintainUrl = paths.roles.list.pattern
-    const { roleDetails } = req
+    const { roleDetails } = req as RoleRequest
 
     await auditService.logPageView(Page.VIEW_ROLE_DETAILS, {
       who: user.username,

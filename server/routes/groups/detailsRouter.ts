@@ -13,13 +13,14 @@ export default (services: Services): Router => {
 
   router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_OAUTH_USERS, AuthRole.AUTH_GROUP_MANAGER]))
 
-  router.get('/', async (req: GroupRequest, res) => {
+  router.get('/', async (req, res) => {
+    const groupRequest = req as GroupRequest
     const { auditService } = services
     const { user } = res.locals
     const hasMaintainAuthUsers = hasRole(user, AuthRole.MAINTAIN_OAUTH_USERS)
     const errors = formErrorsFromFlash(req)
     const maintainUrl = paths.groups.list.pattern
-    const { groupDetails } = req
+    const { groupDetails } = groupRequest
 
     await auditService.logPageView(Page.VIEW_GROUP_DETAILS, {
       who: user.username,

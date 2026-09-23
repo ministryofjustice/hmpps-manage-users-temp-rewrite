@@ -52,21 +52,16 @@ export default (services: Services): Router => {
       const { auditService, emailDomainsService } = services
       const body = bodyFromFlash<CreateEmailDomainRequest>(req)
       const { username } = res.locals.user
-      const errors: FormError[] = []
       let emailDomain: EmailDomain
       try {
         emailDomain = await emailDomainsService.createEmailDomain(res.locals.user.token, body)
       } catch (err) {
         if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.CONFLICT && err.data) {
-          errors.push({ href: '#name', text: err.data.userMessage })
-        } else {
-          throw err
+          flashBody(req, body)
+          flashErrors(req, [{ href: '#name', text: err.data.userMessage ?? 'This email domain already exists' }])
+          return res.redirect(paths.emailDomains.create.pattern)
         }
-      }
-      if (errors.length) {
-        flashBody(req, body)
-        flashErrors(req, errors)
-        return res.redirect(paths.emailDomains.create.pattern)
+        throw err
       }
       await auditService.logAuditEvent({
         what: EventType.CREATE_EMAIL_DOMAIN,

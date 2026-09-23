@@ -397,13 +397,9 @@ export default class ManageUsersApiClient extends RestClient {
       {
         path: `/users/${username}/email`,
         query: { unverified: true },
-        errorHandler: <Response, ERROR>(
-          _path: string,
-          _verb: string,
-          error: SanitisedError<ERROR>,
-        ): Response | null => {
+        errorHandler: <Response, ERROR>(_path: string, _verb: string, error: SanitisedError<ERROR>): Response => {
           if (error.responseStatus === 404) {
-            return null
+            return {} as Response
           }
           throw error
         },

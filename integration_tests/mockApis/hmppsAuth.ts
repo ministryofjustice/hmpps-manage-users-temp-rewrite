@@ -44,7 +44,7 @@ export default {
       },
     }),
 
-  stubPing: (httpStatus = 200): SuperAgentRequest => stubPing('/auth', httpStatus),
+  stubPing: (httpStatus = HttpStatusCode.OK): SuperAgentRequest => stubPing('/auth', httpStatus),
 
   stubSignInPage: (): SuperAgentRequest =>
     stubFor({

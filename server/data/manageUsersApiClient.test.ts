@@ -1280,12 +1280,12 @@ describe('ManageUsersApiClient', () => {
         const response = await manageUsersApiClient.getUserEmail(token, username)
         expect(response).toEqual(emailAddress)
       })
-      it('should return null if response is 404', async () => {
+      it('should return empty object if response is 404', async () => {
         const username = 'TUSER_GEN'
         mockApi('get', `/users/${username}/email`, 404, { message: 'some not found message' }, { unverified: true })
 
         const response = await manageUsersApiClient.getUserEmail(token, username)
-        expect(response).toBeNull()
+        expect(response).toEqual({})
       })
       it('should throw error if error response is not 404', async () => {
         const username = 'TUSER_GEN'

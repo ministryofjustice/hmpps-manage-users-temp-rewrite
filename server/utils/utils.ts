@@ -1,6 +1,7 @@
 import { ErrorResponse } from 'manageUsersApiClient'
+import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
-export const isErrorResponse = (error: unknown): error is ErrorResponse =>
+export const isErrorResponse = (error: unknown): error is SanitisedError<ErrorResponse> =>
   typeof error === 'object' && error !== null && 'responseStatus' in error
 
 const properCase = (word: string): string =>

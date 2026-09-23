@@ -105,12 +105,13 @@ export const deleteRouter = (services: Services): Router => {
 
   router.get(
     '/',
-    async (req: GroupRequest, res, next) => {
-      if (req.groupDetails.children?.length > 0) {
-        flashErrors(req, [
+    async (req, res, next) => {
+      const groupRequest = req as GroupRequest
+      if (groupRequest.groupDetails.children?.length > 0) {
+        flashErrors(groupRequest, [
           { href: '#groupCode', text: 'Group has child groups please delete before trying to delete parent group' },
         ])
-        return res.redirect(paths.groups.details({ group: req.groupDetails.groupCode }))
+        return res.redirect(paths.groups.details({ group: groupRequest.groupDetails.groupCode }))
       }
       return next()
     },
@@ -125,8 +126,8 @@ export const deleteRouter = (services: Services): Router => {
   router.post(
     '/',
     validateFormOrRedirect(
-      (form: Form, req: GroupRequest) => validate(form, req, r => r.groupDetails.groupCode),
-      (req: GroupRequest) => paths.groups.delete({ group: req.groupDetails.groupCode }),
+      (form: Form, req) => validate(form, req, r => (r as GroupRequest).groupDetails.groupCode),
+      req => paths.groups.delete({ group: (req as GroupRequest).groupDetails.groupCode }),
     ),
     postDeleteConfirmation<GroupRequest>(
       services,
@@ -157,12 +158,14 @@ export const deleteChildGroupRouter = (services: Services): Router => {
   router.post(
     '/',
     validateFormOrRedirect(
-      (form: Form, req: ChildGroupRequest) => validate(form, req, r => r.childGroupDetails.groupCode),
-      (req: ChildGroupRequest) =>
-        paths.groups.deleteChildGroup({
-          group: req.groupDetails.groupCode,
-          childGroup: req.childGroupDetails.groupCode,
-        }),
+      (form: Form, req) => validate(form, req, r => (r as ChildGroupRequest).childGroupDetails.groupCode),
+      req => {
+        const childGroupRequest = req as ChildGroupRequest
+        return paths.groups.deleteChildGroup({
+          group: childGroupRequest.groupDetails.groupCode,
+          childGroup: childGroupRequest.childGroupDetails.groupCode,
+        })
+      },
     ),
     postDeleteConfirmation<ChildGroupRequest>(
       services,

@@ -69,7 +69,6 @@ export default ({ dpsUserService, auditService }: Services): Router => {
     async (req, res) => {
       const body = bodyFromFlash<CreateUserRequest>(req)
       const { username } = res.locals.user
-      const errors: FormError[] = []
       let newUser: PrisonStaffNewUser
       try {
         newUser = await dpsUserService.createDpsUser(res.locals.user.token, body)
@@ -87,11 +86,8 @@ export default ({ dpsUserService, auditService }: Services): Router => {
         if (!errorDetails) {
           throw err
         }
-        errors.push(errorDetails)
-      }
-      if (errors.length) {
         flashBody(req, body)
-        flashErrors(req, errors)
+        flashErrors(req, [errorDetails])
         return res.redirect(paths.dpsUser.createDpsUser.pattern)
       }
       await auditService.logAuditEvent({

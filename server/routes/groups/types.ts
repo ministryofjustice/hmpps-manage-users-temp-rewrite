@@ -2,11 +2,11 @@ import { Request } from 'express'
 import { ChildGroup, Group } from 'manageUsersApiClient'
 
 export type GroupRequest = Request & {
-  groupDetails?: Group
+  groupDetails: Group
 }
 
 export type ChildGroupRequest = GroupRequest & {
-  childGroupDetails?: ChildGroup
+  childGroupDetails: ChildGroup
 }
 
 export type StringFromRequestProvider<GroupRequestType extends Request, Body = unknown> = (

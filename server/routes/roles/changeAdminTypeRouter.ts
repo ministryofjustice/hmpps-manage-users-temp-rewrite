@@ -35,10 +35,10 @@ export default (services: Services): Router => {
 
   router.use(authRoleGuardMiddleware([AuthRole.ROLES_ADMIN]))
 
-  router.get('/', async (req: RoleRequest, res) => {
+  router.get('/', async (req, res) => {
     const body = bodyFromFlash<Form>(req)
     const errors = formErrorsFromFlash(req)
-    const { roleDetails } = req
+    const { roleDetails } = req as RoleRequest
     const roleUrl = paths.roles.details({ role: roleDetails.roleCode })
     const adminType =
       body.adminType !== undefined
@@ -57,14 +57,14 @@ export default (services: Services): Router => {
 
   router.post(
     '/',
-    validateFormOrRedirect(validate, (req: RoleRequest) =>
-      paths.roles.changeRoleAdminType({ role: req.roleDetails.roleCode }),
+    validateFormOrRedirect(validate, req =>
+      paths.roles.changeRoleAdminType({ role: (req as RoleRequest).roleDetails.roleCode }),
     ),
-    async (req: RoleRequest, res) => {
+    async (req, res) => {
       const { auditService, rolesService } = services
       const body = bodyFromFlash<Form>(req)
       const { username, token } = res.locals.user
-      const { roleDetails } = req
+      const { roleDetails } = req as RoleRequest
       const adminType = toArray(body.adminType)
       const errors: FormError[] = []
       try {

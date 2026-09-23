@@ -7,7 +7,7 @@ export function validateLogLevel(level: string): asserts level is bunyan.LogLeve
   const validLogLevels: Array<bunyan.LogLevelString> = ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
   assert(
     validLogLevels.includes(level as bunyan.LogLevelString),
-    `Invalid log level: '${logLevel}', valid options: '${validLogLevels}'`,
+    `Invalid log level: '${level}', valid options: '${validLogLevels}'`,
   )
 }
 

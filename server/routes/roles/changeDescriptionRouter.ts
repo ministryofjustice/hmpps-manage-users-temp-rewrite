@@ -33,10 +33,10 @@ export default (services: Services): Router => {
 
   router.use(authRoleGuardMiddleware([AuthRole.ROLES_ADMIN]))
 
-  router.get('/', async (req: RoleRequest, res) => {
+  router.get('/', async (req, res) => {
     const body = bodyFromFlash<Form>(req)
     const errors = formErrorsFromFlash(req)
-    const { roleDetails } = req
+    const { roleDetails } = req as RoleRequest
     const roleUrl = paths.roles.details({ role: roleDetails.roleCode })
     const roleDescription = body.roleDescription !== undefined ? body.roleDescription : roleDetails.roleDescription
 
@@ -51,14 +51,14 @@ export default (services: Services): Router => {
 
   router.post(
     '/',
-    validateFormOrRedirect(validate, (req: RoleRequest) =>
-      paths.roles.changeRoleDescription({ role: req.roleDetails.roleCode }),
+    validateFormOrRedirect(validate, req =>
+      paths.roles.changeRoleDescription({ role: (req as RoleRequest).roleDetails.roleCode }),
     ),
-    async (req: RoleRequest, res) => {
+    async (req, res) => {
       const { auditService, rolesService } = services
       const body = bodyFromFlash<Form>(req)
       const { username, token } = res.locals.user
-      const { roleDetails } = req
+      const { roleDetails } = req as RoleRequest
       const errors: FormError[] = []
       try {
         await rolesService.changeRoleDescription(token, roleDetails.roleCode, { roleDescription: body.roleDescription })
