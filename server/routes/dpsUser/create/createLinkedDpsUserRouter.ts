@@ -58,7 +58,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
           }
           if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
             const { userMessage } = err.data
-const errorDetails = { text: userMessage ?? 'Unable to find the existing user' }
+            const errorDetails = { text: userMessage ?? 'Unable to find the existing user' }
             errors.push(errorDetails)
           } else if (err.responseStatus === HttpStatusCode.NOT_FOUND) {
             const notFoundError = { href: '#existingUsername', text: 'Existing username not found' }
@@ -92,9 +92,9 @@ const errorDetails = { text: userMessage ?? 'Unable to find the existing user' }
         }
         if (err.responseStatus === 400 && err.data) {
           const { userMessage } = err.data
-          const errorDetails = { text: userMessage }
+          const errorDetails = { text: userMessage ?? 'Unable to create linked DPS user' }
           errors.push(errorDetails)
-        } else if (err.responseStatus === 409) {
+        } else if (err.responseStatus === 409 && err.data) {
           const usernameError = err.data.userMessage?.includes('already exists for this staff member')
             ? { href: '#existingUsername', text: 'Username already linked to another account' }
             : { href: '#username', text: 'Username already exists' }

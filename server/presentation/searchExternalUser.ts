@@ -26,32 +26,32 @@ const hrefToRemoveFilter = (searchParams: URLSearchParams, fieldName: string): s
   return searchParamsHelper.hrefToRemoveFilter(searchParams, fieldName)
 }
 
-const getUserCategory = (searchParams: URLSearchParams, filter: Filter) => ({
+const getUserCategory = (searchParams: URLSearchParams, user: string) => ({
   heading: { text: 'User' },
-  items: [{ href: hrefToRemoveFilter(searchParams, 'user'), text: filter.user as string }],
+  items: [{ href: hrefToRemoveFilter(searchParams, 'user'), text: user }],
 })
 
-const getStatusCategory = (searchParams: URLSearchParams, filter: Filter) => ({
+const getStatusCategory = (searchParams: URLSearchParams, status: StatusKey) => ({
   heading: { text: 'Status' },
-  items: [{ href: hrefToRemoveFilter(searchParams, 'status'), text: statusDisplay(filter.status as StatusKey) }],
+  items: [{ href: hrefToRemoveFilter(searchParams, 'status'), text: statusDisplay(status) }],
 })
 
-const getGroupCategory = (searchParams: URLSearchParams, filter: Filter, groups: UserGroup[]) => ({
+const getGroupCategory = (searchParams: URLSearchParams, groups: UserGroup[], groupCode: string) => ({
   heading: { text: 'Group' },
   items: [
     {
       href: hrefToRemoveFilter(searchParams, 'groupCode'),
-      text: groups.find(g => g.groupCode === filter.groupCode)?.groupName,
+      text: groups.find(g => g.groupCode === groupCode)?.groupName ?? groupCode,
     },
   ],
 })
 
-const getRoleCategory = (searchParams: URLSearchParams, filter: Filter, roles: UserRole[]) => ({
+const getRoleCategory = (searchParams: URLSearchParams, roles: UserRole[], roleCode: string) => ({
   heading: { text: 'Role' },
   items: [
     {
       href: hrefToRemoveFilter(searchParams, 'roleCode'),
-      text: roles.find(r => r.roleCode === filter.roleCode)?.roleName as string,
+      text: roles.find(r => r.roleCode === roleCode)?.roleName ?? roleCode,
     },
   ],
 })
@@ -60,16 +60,16 @@ export const filterCategories = (filter: Filter, roles: UserRole[], groups: User
   const categories: Category[] = []
   const searchParams = asUrlSearchParams(filter)
   if (filter.user) {
-    categories.push(getUserCategory(searchParams, filter))
+    categories.push(getUserCategory(searchParams, filter.user))
   }
   if (filter.status && filter.status !== 'ALL') {
-    categories.push(getStatusCategory(searchParams, filter))
+    categories.push(getStatusCategory(searchParams, filter.status as StatusKey))
   }
   if (filter.groupCode) {
-    categories.push(getGroupCategory(searchParams, filter, groups))
+    categories.push(getGroupCategory(searchParams, groups, filter.groupCode))
   }
   if (filter.roleCode) {
-    categories.push(getRoleCategory(searchParams, filter, roles))
+    categories.push(getRoleCategory(searchParams, roles, filter.roleCode))
   }
   return categories
 }

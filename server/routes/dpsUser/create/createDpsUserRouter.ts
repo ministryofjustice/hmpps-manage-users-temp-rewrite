@@ -76,7 +76,7 @@ export default ({ dpsUserService, auditService }: Services): Router => {
         let errorDetails: FormError | undefined
         if (isErrorResponse(err)) {
           if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
-errorDetails = { text: err.data.userMessage ?? 'Unable to create DPS user' }
+            errorDetails = { text: err.data.userMessage ?? 'Unable to create DPS user' }
           } else if (err.responseStatus === HttpStatusCode.CONFLICT && err.data && err.data.errorCode === 601) {
             errorDetails = { href: '#username', text: 'Username already exists' }
           } else if (err.responseStatus === HttpStatusCode.CONFLICT && err.data && err.data.errorCode === 602) {

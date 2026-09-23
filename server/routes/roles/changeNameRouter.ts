@@ -65,7 +65,7 @@ export default (services: Services): Router => {
       } catch (err) {
         if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
           const { userMessage } = err.data
-const errorDetails = { text: userMessage ?? 'Unable to change the role name' }
+          const errorDetails = { text: userMessage ?? 'Unable to change the role name' }
           errors.push(errorDetails)
         } else {
           throw err
