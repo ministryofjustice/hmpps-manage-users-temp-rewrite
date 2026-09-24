@@ -20,4 +20,4 @@ generic-service:
     MANAGE_USER_ALLOW_LIST_ENABLED: false
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps_alerts_nonprod
+  alertSeverity: hmpps_tech_non_prod

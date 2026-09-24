@@ -16,4 +16,4 @@ generic-service:
 
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps_alerts_nonprod
+  alertSeverity: hmpps_tech_non_prod
