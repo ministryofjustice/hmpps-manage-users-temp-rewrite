@@ -1280,19 +1280,31 @@ describe('ManageUsersApiClient', () => {
         const response = await manageUsersApiClient.getUserEmail(token, username)
         expect(response).toEqual(emailAddress)
       })
-      it('should return null if response is 404', async () => {
+      it('should return an empty email when the API response contains null', async () => {
+        const username = 'TUSER_GEN'
+        const emailAddress: EmailAddress = {
+          username,
+          email: null,
+          verified: false,
+        }
+        mockApi('get', `/users/${username}/email`, successResponse, emailAddress, { unverified: true })
+
+        const response = await manageUsersApiClient.getUserEmail(token, username)
+        expect(response).toEqual({ ...emailAddress, email: '' })
+      })
+      it('should return an empty email address if response is 404', async () => {
         const username = 'TUSER_GEN'
         mockApi('get', `/users/${username}/email`, 404, { message: 'some not found message' }, { unverified: true })
 
         const response = await manageUsersApiClient.getUserEmail(token, username)
-        expect(response).toBeNull()
+        expect(response).toEqual({ username, email: '', verified: false })
       })
       it('should throw error if error response is not 404', async () => {
         const username = 'TUSER_GEN'
         // Need to mock three requests due to the RestClient retrying
-        mockApi('get', `/users/${username}/email`, 500, null, { unverified: true })
-        mockApi('get', `/users/${username}/email`, 500, null, { unverified: true })
-        mockApi('get', `/users/${username}/email`, 500, null, { unverified: true })
+        mockApi('get', `/users/${username}/email`, 500, undefined, { unverified: true })
+        mockApi('get', `/users/${username}/email`, 500, undefined, { unverified: true })
+        mockApi('get', `/users/${username}/email`, 500, undefined, { unverified: true })
 
         await expect(manageUsersApiClient.getUserEmail(token, username)).rejects.toThrow('Internal Server Error')
       })

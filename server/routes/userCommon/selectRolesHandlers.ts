@@ -3,11 +3,11 @@ import { UserRole } from 'manageUsersApiClient'
 import { Services } from '../../services'
 import { UserUrlProvider, UserParam, CommonUser } from './paramTypes'
 import { roleDropdownValuesWithHint } from '../../presentation/roles'
-import { EventType, SubjectType } from '../../services/auditService'
 import { formErrorsFromFlash } from '../../middleware/route/formMiddleware'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import { FormError } from '../../interfaces/formError'
 import { toArray } from '../../utils/utils'
+import { EventType } from '../audit'
 
 export interface Form {
   roles: string[]
@@ -53,7 +53,7 @@ export const selectRolesGetHandler = <UserType extends CommonUser>(
       what: EventType.VIEW_USER_ROLES,
       who: user.username,
       subjectId: userId,
-      subjectType: SubjectType.USER_ID,
+      subjectType: 'USER_ID',
     })
 
     return res.render('pages/addRole', {
@@ -87,8 +87,8 @@ export const selectRolesPostHandler = (
       what: EventType.ADD_USER_ROLES,
       who: username,
       subjectId: userId,
-      subjectType: SubjectType.USER_ID,
-      details: body,
+      subjectType: 'USER_ID',
+      details: { ...body },
     })
 
     return res.redirect(detailsRedirectUrlProvider(userId))

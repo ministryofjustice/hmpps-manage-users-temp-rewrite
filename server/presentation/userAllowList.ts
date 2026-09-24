@@ -24,7 +24,7 @@ const searchParamsHelper = new SearchParamsHelper(paths.userAllowList.search.pat
 
 const getUserCategory = (searchParams: URLSearchParams, filter: Filter) => ({
   heading: { text: 'User' },
-  items: [{ href: hrefToRemoveFilter(searchParams, 'user'), text: filter.user }],
+  items: [{ href: hrefToRemoveFilter(searchParams, 'user'), text: filter.user as string }],
 })
 
 const getStatusCategory = (searchParams: URLSearchParams, filter: Filter) => ({

@@ -10,14 +10,14 @@ import {
   validateFormOrRedirect,
 } from '../../middleware/route/formMiddleware'
 import type { Services } from '../../services'
-import { EventType, SubjectType } from '../../services/auditService'
-import { HttpStatusCode, toStringArray } from '../../utils/utils'
+import { HttpStatusCode, isErrorResponse, toStringArray } from '../../utils/utils'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../interfaces/authRole'
 import groupValues from '../../presentation/groups'
 import { hasRole } from '../../interfaces/hmppsUser'
 import { validateEmail, validateName } from '../../presentation/validation/userValidation'
 import emailVerificationError from '../../presentation/errors'
+import { EventType } from '../audit'
 
 interface Form {
   email: string
@@ -26,7 +26,7 @@ interface Form {
   groupCode: string
 }
 
-const validate = (body: Form, _req: Request, res: Response): FormError[] => {
+const validate = (body: Form, _req: Request<unknown>, res: Response): FormError[] => {
   const errors: FormError[] = []
 
   errors.push(...validateEmail(body.email))
@@ -74,20 +74,23 @@ export default ({ externalUserService, auditService }: Services): Router => {
       const body = bodyFromFlash<Form>(req)
       const { username, token } = res.locals.user
       const errors: FormError[] = []
-      let userId: string
+      let userId: string = ''
 
       try {
         userId = await externalUserService.createExternalUser(token, convertBody(body))
       } catch (err) {
-        if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
-          const errorDetails = { href: '#email', text: emailVerificationError(err) }
-          errors.push(errorDetails)
-        } else if (err.responseStatus === HttpStatusCode.CONFLICT) {
-          const emailError = { href: '#email', text: 'Email already exists' }
-          errors.push(emailError)
-        } else {
+        let errorDetails: FormError | undefined
+        if (isErrorResponse(err)) {
+          if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
+            errorDetails = { href: '#email', text: emailVerificationError(err) }
+          } else if (err.responseStatus === HttpStatusCode.CONFLICT) {
+            errorDetails = { href: '#email', text: 'Email already exists' }
+          }
+        }
+        if (!errorDetails) {
           throw err
         }
+        errors.push(errorDetails)
       }
 
       if (errors.length) {
@@ -100,8 +103,8 @@ export default ({ externalUserService, auditService }: Services): Router => {
         what: EventType.CREATE_EXTERNAL_USER,
         who: username,
         subjectId: userId,
-        subjectType: SubjectType.USER_ID,
-        details: body,
+        subjectType: 'USER_ID',
+        details: { ...body },
       })
 
       return res.render('pages/externalUser/createSuccess', {

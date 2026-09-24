@@ -75,7 +75,7 @@ describe('UserAllowListService', () => {
         reason: 'For testing purposes',
         accessPeriod: 'ONE_MONTH',
       }
-      apiClient.addAllowlistUser.mockResolvedValue(undefined)
+      apiClient.addAllowlistUser.mockResolvedValue({} as never)
 
       await service.addAllowListUser(token, request)
 
@@ -99,7 +99,7 @@ describe('UserAllowListService', () => {
         reason: 'Updated reason',
         accessPeriod: 'SIX_MONTHS',
       }
-      apiClient.updateAllowlistUserAccess.mockResolvedValue(undefined)
+      apiClient.updateAllowlistUserAccess.mockResolvedValue({} as never)
 
       await service.updateAllowListUserAccess(token, testId, request)
 

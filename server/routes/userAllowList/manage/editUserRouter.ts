@@ -8,7 +8,7 @@ import { bodyFromFlash, formErrorsFromFlash, validateFormOrRedirect } from '../.
 import { FormError } from '../../../interfaces/formError'
 import { getAllowlistStatus } from '../../../presentation/userAllowList'
 import { UserParam } from '../paramTypes'
-import { EventType, SubjectType } from '../../../services/auditService'
+import { EventType } from '../../audit'
 
 type Form = UserAllowlistPatchRequest & { id: string }
 
@@ -59,7 +59,7 @@ export default ({ userAllowListService, auditService }: Services): Router => {
         what: EventType.UPDATE_ALLOW_LIST_USER,
         who: res.locals.user.username,
         subjectId: body.id,
-        subjectType: SubjectType.USER_ID,
+        subjectType: 'USER_ID',
         details: body,
       })
       return res.redirect(paths.userAllowList.manage.view({ username }))

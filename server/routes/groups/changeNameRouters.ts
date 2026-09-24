@@ -13,11 +13,11 @@ import AuthRole from '../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 import { FormError } from '../../interfaces/formError'
 import { validateGroupName } from '../../presentation/validation/groupValidation'
-import { EventType, SubjectType } from '../../services/auditService'
-import { HttpStatusCode } from '../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../utils/utils'
 import GroupsService from '../../services/groupsService'
 import { AuditDetailsProvider, ChildGroupRequest, GroupRequest, StringFromRequestProvider } from './types'
 import paths from '../paths'
+import { EventType } from '../audit'
 
 type GroupNameUpdater = (
   groupsService: GroupsService,
@@ -48,11 +48,12 @@ const templateChangeGroupNameRouter = <GroupRequestType extends Request>(
 
   router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_OAUTH_USERS]))
 
-  router.get('/', async (req: GroupRequestType, res) => {
+  router.get('/', async (req, res) => {
     const body = bodyFromFlash<UpdateGroupNameRequest>(req)
     const errors = formErrorsFromFlash(req)
-    const groupUrl = groupUrlProvider(req)
-    const groupName = body.groupName !== undefined ? body.groupName : currentGroupNameProvider(req)
+    const groupRequest = req as GroupRequestType
+    const groupUrl = groupUrlProvider(groupRequest)
+    const groupName = body.groupName !== undefined ? body.groupName : currentGroupNameProvider(groupRequest)
 
     return res.render('pages/groups/changeName', {
       title,
@@ -64,19 +65,20 @@ const templateChangeGroupNameRouter = <GroupRequestType extends Request>(
 
   router.post(
     '/',
-    validateFormOrRedirect(validate, (req: GroupRequestType) => failureRedirectProvider(req)),
-    async (req: GroupRequestType, res) => {
+    validateFormOrRedirect(validate, req => failureRedirectProvider(req as GroupRequestType)),
+    async (req, res) => {
       const { auditService, groupsService } = services
       const body = bodyFromFlash<UpdateGroupNameRequest>(req)
-      const groupCode = groupCodeProvider(req)
+      const groupRequest = req as GroupRequestType
+      const groupCode = groupCodeProvider(groupRequest)
       const { username, token } = res.locals.user
       const errors: FormError[] = []
       try {
         await groupNameUpdater(groupsService, token, groupCode, body)
       } catch (err) {
-        if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
+        if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
           const { userMessage } = err.data
-          const errorDetails = { text: userMessage }
+          const errorDetails = { text: userMessage ?? 'Unable to change the group name' }
           errors.push(errorDetails)
         } else {
           throw err
@@ -85,16 +87,16 @@ const templateChangeGroupNameRouter = <GroupRequestType extends Request>(
       if (errors.length) {
         flashBody(req, body)
         flashErrors(req, errors)
-        return res.redirect(failureRedirectProvider(req))
+        return res.redirect(failureRedirectProvider(groupRequest))
       }
       await auditService.logAuditEvent({
         what: EventType.CHANGE_GROUP_NAME,
         who: username,
         subjectId: groupCode,
-        subjectType: SubjectType.GROUP_CODE,
-        details: auditDetailsProvider(req, body),
+        subjectType: 'GROUP_CODE',
+        details: { ...auditDetailsProvider(groupRequest, body) },
       })
-      return res.redirect(groupUrlProvider(req))
+      return res.redirect(groupUrlProvider(groupRequest))
     },
   )
 

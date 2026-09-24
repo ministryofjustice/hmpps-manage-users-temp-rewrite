@@ -4,12 +4,12 @@ import { Services } from '../../../services'
 import { UserParam } from '../../userCommon/paramTypes'
 import setupRestrictedRoles from '../../../middleware/route/restrictedRolesMiddleware'
 import paths from '../../paths'
-import { Page } from '../../../services/auditService'
 import { HmppsUser } from '../../../interfaces/hmppsUser'
 import AuthRole from '../../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import { dpsUserRootUrlProvider } from './common'
 import { userDetailsGetHandler, UserGroupWithShowRemove } from '../../userCommon/userDetailsHandlers'
+import { Page } from '../../audit'
 
 const getPageData = async (
   hmppsUser: HmppsUser,

@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import { Services } from '../../../services'
 import paths from '../../paths'
-import { EventType, SubjectType } from '../../../services/auditService'
 import { flashErrors } from '../../../middleware/route/formMiddleware'
-import { HttpStatusCode } from '../../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../../utils/utils'
 import { GroupParam } from '../../userCommon/paramTypes'
 import { FormError } from '../../../interfaces/formError'
+import { EventType } from '../../audit'
 
 export default (services: Services) => async (req: Request<GroupParam>, res: Response) => {
   const { userId, group } = req.params
@@ -19,11 +19,11 @@ export default (services: Services) => async (req: Request<GroupParam>, res: Res
       what: EventType.REMOVE_USER_GROUP,
       who: username,
       subjectId: userId,
-      subjectType: SubjectType.USER_ID,
+      subjectType: 'USER_ID',
       details: { group },
     })
   } catch (err) {
-    if (err.responseStatus === HttpStatusCode.FORBIDDEN) {
+    if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.FORBIDDEN) {
       errors.push({
         href: '#groups',
         text: 'You are not allowed to remove the last group from this user, please deactivate their account instead',

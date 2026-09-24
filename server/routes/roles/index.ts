@@ -13,10 +13,11 @@ import { RoleRequest } from './types'
 export default function index(services: Services): Router {
   const router = Router()
 
-  router.param('role', async (req: RoleRequest, res, next, role: string) => {
+  router.param('role', async (req, res, next, role: string) => {
     const { rolesService } = services
+    const roleRequest = req as RoleRequest
     try {
-      req.roleDetails = await rolesService.getRoleDetails(res.locals.user.token, role)
+      roleRequest.roleDetails = await rolesService.getRoleDetails(res.locals.user.token, role)
     } catch (err) {
       logger.info(`An error occurred while fetching role details for ${role}`, err)
       return res.redirect(paths.roles.list.pattern)

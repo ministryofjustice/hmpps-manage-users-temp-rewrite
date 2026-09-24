@@ -28,7 +28,7 @@ export const asUrlSearchParams = (filter: Filter): URLSearchParams => {
   return searchParams
 }
 
-const getUserCategory = (searchParams: URLSearchParams, filter: Filter) => {
+const getUserCategory = (searchParams: URLSearchParams, user: string) => {
   return {
     heading: {
       text: 'User',
@@ -36,13 +36,13 @@ const getUserCategory = (searchParams: URLSearchParams, filter: Filter) => {
     items: [
       {
         href: hrefToRemoveFilter(searchParams, 'user'),
-        text: filter.user,
+        text: user,
       },
     ],
   }
 }
 
-const getStatusCategory = (searchParams: URLSearchParams, filter: Filter) => {
+const getStatusCategory = (searchParams: URLSearchParams, status: StatusKey) => {
   return {
     heading: {
       text: 'Status',
@@ -50,21 +50,26 @@ const getStatusCategory = (searchParams: URLSearchParams, filter: Filter) => {
     items: [
       {
         href: hrefToRemoveFilter(searchParams, 'status'),
-        text: statusDisplay(filter.status as StatusKey),
+        text: statusDisplay(status),
       },
     ],
   }
 }
 
-const getPrisonCategory = (searchParams: URLSearchParams, filter: Filter, prisons: PrisonCaseload[]) => {
+const getPrisonCategory = (
+  searchParams: URLSearchParams,
+  prisons: PrisonCaseload[],
+  groupCode: string,
+  restrictToActiveGroup: boolean,
+) => {
   const items: CategoryItem[] = []
-  if (filter.groupCode) {
+  if (groupCode) {
     items.push({
       // need to also remove the restrictToActiveGroup if set, if we're removing the groupCode
       href: hrefToRemoveFilter(removeField(searchParams, 'groupCode'), 'restrictToActiveGroup'),
-      text: prisons.find(prison => prison.id === filter.groupCode)?.name,
+      text: prisons.find(prison => prison.id === groupCode)?.name ?? groupCode,
     })
-    if (filter.restrictToActiveGroup) {
+    if (restrictToActiveGroup) {
       const searchParamsCopy = new URLSearchParams(searchParams)
       searchParamsCopy.set('restrictToActiveGroup', 'false')
       items.push({
@@ -81,14 +86,14 @@ const getPrisonCategory = (searchParams: URLSearchParams, filter: Filter, prison
   }
 }
 
-const getRolesCategory = (searchParams: URLSearchParams, filter: Filter, roles: Role[]) => {
+const getRolesCategory = (searchParams: URLSearchParams, roles: Role[], roleCodes: string[]) => {
   return {
     heading: {
       text: 'Roles',
     },
-    items: filter.roleCode.map(roleCode => ({
+    items: roleCodes.map(roleCode => ({
       href: hrefToRemoveFilter(searchParams, 'roleCode', roleCode),
-      text: roles.find(role => role.roleCode === roleCode)?.roleName,
+      text: roles.find(role => role.roleCode === roleCode)?.roleName ?? roleCode,
     })),
   }
 }
@@ -130,16 +135,16 @@ export const filterCategories = (
   const categories: Category[] = []
   const searchParams = asUrlSearchParams(filter)
   if (filter.user) {
-    categories.push(getUserCategory(searchParams, filter))
+    categories.push(getUserCategory(searchParams, filter.user))
   }
   if (filter.status && filter.status !== 'ALL') {
-    categories.push(getStatusCategory(searchParams, filter))
+    categories.push(getStatusCategory(searchParams, filter.status as StatusKey))
   }
   if (showPrisonDropdown && filter.groupCode) {
-    categories.push(getPrisonCategory(searchParams, filter, prisons))
+    categories.push(getPrisonCategory(searchParams, prisons, filter.groupCode, filter.restrictToActiveGroup === true))
   }
   if (filter.roleCode && filter.roleCode.length > 0) {
-    categories.push(getRolesCategory(searchParams, filter, roles))
+    categories.push(getRolesCategory(searchParams, roles, filter.roleCode))
   }
   if (filter.inclusiveRoles) {
     categories.push(getRoleInclusivityCategory(searchParams))

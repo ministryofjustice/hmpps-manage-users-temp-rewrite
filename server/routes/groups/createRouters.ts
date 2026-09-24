@@ -14,10 +14,10 @@ import { FormError } from '../../interfaces/formError'
 import AuthRole from '../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 import { validateGroupCode, validateGroupName } from '../../presentation/validation/groupValidation'
-import { EventType, SubjectType } from '../../services/auditService'
-import { HttpStatusCode } from '../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../utils/utils'
 import { AuditDetailsProvider, GroupRequest, StringFromRequestProvider } from './types'
 import GroupsService from '../../services/groupsService'
+import { EventType } from '../audit'
 
 export const createGroupRouter = (services: Services): Router => {
   return templateCreateGroupRouter(
@@ -83,11 +83,11 @@ const templateCreateGroupRouter = <GroupRequestType extends Request>(
 
   router.use(authRoleGuardMiddleware([AuthRole.MAINTAIN_OAUTH_USERS]))
 
-  router.get('/', async (req: GroupRequestType, res) => {
+  router.get('/', async (req, res) => {
     const body = bodyFromFlash<CreateGroupRequest>(req)
     const errors = formErrorsFromFlash(req)
 
-    const groupUrl = groupUrlProvider(req)
+    const groupUrl = groupUrlProvider(req as GroupRequestType)
 
     return res.render('pages/groups/create', {
       title,
@@ -101,16 +101,17 @@ const templateCreateGroupRouter = <GroupRequestType extends Request>(
 
   router.post(
     '/',
-    validateFormOrRedirect(validate, (req: GroupRequestType) => failureRedirectProvider(req)),
-    async (req: GroupRequestType, res) => {
+    validateFormOrRedirect(validate, req => failureRedirectProvider(req as GroupRequestType)),
+    async (req, res) => {
       const { auditService, groupsService } = services
       const body = bodyFromFlash<CreateGroupRequest>(req)
+      const groupRequest = req as GroupRequestType
       const { username, token } = res.locals.user
       const errors: FormError[] = []
       try {
-        await groupCreator(groupsService, token, req, body)
+        await groupCreator(groupsService, token, groupRequest, body)
       } catch (err) {
-        if (err.responseStatus === HttpStatusCode.CONFLICT && err.data) {
+        if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.CONFLICT && err.data) {
           errors.push({ href: '#groupCode', text: 'Group code already exists' })
         } else {
           throw err
@@ -119,16 +120,16 @@ const templateCreateGroupRouter = <GroupRequestType extends Request>(
       if (errors.length) {
         flashBody(req, body)
         flashErrors(req, errors)
-        return res.redirect(failureRedirectProvider(req))
+        return res.redirect(failureRedirectProvider(groupRequest))
       }
       await auditService.logAuditEvent({
         what: EventType.CREATE_GROUP,
         who: username,
         subjectId: body.groupCode,
-        subjectType: SubjectType.GROUP_CODE,
-        details: auditDetailsProvider(req, body),
+        subjectType: 'GROUP_CODE',
+        details: { ...auditDetailsProvider(groupRequest, body) },
       })
-      return res.redirect(successRedirectProvider(req, body))
+      return res.redirect(successRedirectProvider(groupRequest, body))
     },
   )
 
