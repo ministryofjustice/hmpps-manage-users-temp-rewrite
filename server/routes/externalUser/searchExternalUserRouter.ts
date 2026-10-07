@@ -4,10 +4,10 @@ import { ExternalUser } from 'manageUsersApiClient'
 import { Services } from '../../services'
 import { downloadCsv } from '../../middleware/route/downloadMiddleware'
 import AuthRole from '../../interfaces/authRole'
-import { EventType } from '../../services/auditService'
 import paths from '../paths'
 import { asUrlSearchParams, canDownload, Filter } from '../../presentation/searchExternalUser'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
+import { EventType } from '../audit'
 
 interface Query extends Filter {
   page?: number

@@ -3,13 +3,13 @@ import { ExternalUser, UserGroup } from 'manageUsersApiClient'
 import { Services } from '../../../services'
 import { UserParam } from '../../userCommon/paramTypes'
 import paths from '../../paths'
-import { EventType, SubjectType } from '../../../services/auditService'
 import { flashErrors, formErrorsFromFlash, validateFormOrRedirect } from '../../../middleware/route/formMiddleware'
 import { FormError } from '../../../interfaces/formError'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../../interfaces/authRole'
-import { HttpStatusCode } from '../../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../../utils/utils'
 import groupValues from '../../../presentation/groups'
+import { EventType } from '../../audit'
 
 interface Form {
   group: string
@@ -74,11 +74,14 @@ export default (services: Services): Router => {
           what: EventType.ADD_USER_GROUP,
           who: username,
           subjectId: userId,
-          subjectType: SubjectType.USER_ID,
+          subjectType: 'USER_ID',
           details: { group },
         })
         return res.redirect(paths.externalUser.manage.details({ userId }))
       } catch (err) {
+        if (!isErrorResponse(err)) {
+          throw err
+        }
         let errorText: string
         if (err.responseStatus === HttpStatusCode.FORBIDDEN) {
           errorText = 'You are not able to maintain this user anymore, user does not belong to any groups you manage'

@@ -37,6 +37,7 @@ test.describe('Add user to allow list', () => {
     await addUserPage.firstName.fill('Derryck')
     await addUserPage.lastName.fill('Siegle')
     await addUserPage.reason.fill('for test purposes')
+    await addUserPage.approver.fill('Sharlotte Muirhead')
     await addUserPage.submit.click()
 
     await SearchAllowListPage.verifyOnPage(page)
@@ -51,6 +52,7 @@ test.describe('Add user to allow list', () => {
     await expect(addUserPage.accessPeriodRadio('One month')).toBeVisible()
     await expect(addUserPage.accessPeriodRadio('Three months')).toBeVisible()
     await expect(addUserPage.reason).toBeVisible()
+    await expect(addUserPage.approver).toBeVisible()
     await expect(addUserPage.username).toBeVisible()
     await expect(addUserPage.email).toBeVisible()
     await expect(addUserPage.firstName).toBeVisible()
@@ -66,6 +68,7 @@ test.describe('Add user to allow list', () => {
     await expect(addUserPage.accessPeriodRadio('One month')).not.toBeVisible()
     await expect(addUserPage.accessPeriodRadio('Three months')).not.toBeVisible()
     await expect(addUserPage.reason).not.toBeVisible()
+    await expect(addUserPage.approver).toBeVisible()
     await expect(addUserPage.username).toBeVisible()
     await expect(addUserPage.email).toBeVisible()
     await expect(addUserPage.firstName).toBeVisible()
@@ -82,6 +85,7 @@ test.describe('Add user to allow list', () => {
     await addUserPage.email.fill('jameisha_mullings2s@employee.zg')
     await addUserPage.firstName.fill('Derryck')
     await addUserPage.lastName.fill('Siegle')
+    await addUserPage.approver.fill('Sharlotte Muirhead')
     await addUserPage.submit.click()
 
     await SearchAllowListPage.verifyOnPage(page)
@@ -93,6 +97,7 @@ test.describe('Add user to allow list', () => {
     await addUserPage.firstName.fill('Derryck')
     await addUserPage.lastName.fill('Siegle')
     await addUserPage.reason.fill('for test purposes')
+    await addUserPage.approver.fill('Sharlotte Muirhead')
     await addUserPage.submit.click()
 
     await AddUserAllowListPage.verifyOnPage(page)
@@ -115,6 +120,7 @@ test.describe('Add user to allow list', () => {
     await addUserPage.firstName.fill('Anastazia')
     await addUserPage.lastName.fill('Armistead')
     await addUserPage.reason.fill('different reason')
+    await addUserPage.approver.fill('Sharlotte Muirhead')
     await addUserPage.submit.click()
 
     await AddUserAllowListPage.verifyOnPage(page)
@@ -127,6 +133,7 @@ test.describe('Add user to allow list', () => {
     await addUserPage.firstName.fill('Derryck')
     await addUserPage.lastName.fill('Siegle')
     await addUserPage.reason.fill('for test purposes')
+    await addUserPage.approver.fill('Sharlotte Muirhead')
     await addUserPage.submit.click()
 
     await AddUserAllowListPage.verifyOnPage(page)
@@ -140,6 +147,7 @@ test.describe('Add user to allow list', () => {
     await addUserPage.firstName.fill('Derryck')
     await addUserPage.lastName.fill('Siegle')
     await addUserPage.reason.fill('for test purposes')
+    await addUserPage.approver.fill('Sharlotte Muirhead')
     await addUserPage.submit.click()
 
     await AddUserAllowListPage.verifyOnPage(page)
@@ -154,6 +162,7 @@ test.describe('Add user to allow list', () => {
     await addUserPage.email.fill('jameisha_mullings2s@employee.zg')
     await addUserPage.lastName.fill('Siegle')
     await addUserPage.reason.fill('for test purposes')
+    await addUserPage.approver.fill('Sharlotte Muirhead')
     await addUserPage.submit.click()
 
     await AddUserAllowListPage.verifyOnPage(page)
@@ -166,6 +175,7 @@ test.describe('Add user to allow list', () => {
     await addUserPage.email.fill('jameisha_mullings2s@employee.zg')
     await addUserPage.firstName.fill('Derryck')
     await addUserPage.reason.fill('for test purposes')
+    await addUserPage.approver.fill('Sharlotte Muirhead')
     await addUserPage.submit.click()
 
     await AddUserAllowListPage.verifyOnPage(page)
@@ -178,10 +188,24 @@ test.describe('Add user to allow list', () => {
     await addUserPage.email.fill('jameisha_mullings2s@employee.zg')
     await addUserPage.firstName.fill('Derryck')
     await addUserPage.lastName.fill('Siegle')
+    await addUserPage.approver.fill('Sharlotte Muirhead')
     await addUserPage.submit.click()
 
     await AddUserAllowListPage.verifyOnPage(page)
     await expect(addUserPage.errorSummary).toContainText('Enter a valid business reason')
+  })
+
+  test('shows error when approver is missing', async ({ page }) => {
+    const addUserPage = await gotoAddUserToAllowlist(page)
+    await addUserPage.username.fill('fasha6v')
+    await addUserPage.email.fill('jameisha_mullings2s@employee.zg')
+    await addUserPage.firstName.fill('Derryck')
+    await addUserPage.lastName.fill('Siegle')
+    await addUserPage.reason.fill('for test purposes')
+    await addUserPage.submit.click()
+
+    await AddUserAllowListPage.verifyOnPage(page)
+    await expect(addUserPage.errorSummary).toContainText("Enter the approving manager's name")
   })
 
   test('retains username value on error', async ({ page }) => {
@@ -227,6 +251,15 @@ test.describe('Add user to allow list', () => {
 
     await AddUserAllowListPage.verifyOnPage(page)
     await expect(addUserPage.reason).toHaveValue('for test purposes')
+  })
+
+  test('retains approver value on error', async ({ page }) => {
+    const addUserPage = await gotoAddUserToAllowlist(page)
+    await addUserPage.approver.fill('Sharlotte Muirhead')
+    await addUserPage.submit.click()
+
+    await AddUserAllowListPage.verifyOnPage(page)
+    await expect(addUserPage.approver).toHaveValue('Sharlotte Muirhead')
   })
 
   test('retains access period selection on error', async ({ page }) => {

@@ -19,8 +19,8 @@ import {
   validateRoleDescription,
   validateRoleName,
 } from '../../presentation/validation/roleValidation'
-import { EventType, SubjectType } from '../../services/auditService'
-import { HttpStatusCode } from '../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../utils/utils'
+import { EventType } from '../audit'
 
 const validate = (body: CreateRoleRequest): FormError[] => {
   const errors: FormError[] = []
@@ -62,7 +62,7 @@ export default (services: Services): Router => {
       try {
         await rolesService.createRole(token, body)
       } catch (err) {
-        if (err.responseStatus === HttpStatusCode.CONFLICT && err.data) {
+        if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.CONFLICT && err.data) {
           errors.push({ href: '#roleCode', text: 'Role code already exists' })
         } else {
           throw err
@@ -77,7 +77,7 @@ export default (services: Services): Router => {
         what: EventType.CREATE_ROLE,
         who: username,
         subjectId: body.roleCode,
-        subjectType: SubjectType.ROLE_CODE,
+        subjectType: 'ROLE_CODE',
         details: body,
       })
       return res.redirect(paths.roles.details({ role: body.roleCode }))

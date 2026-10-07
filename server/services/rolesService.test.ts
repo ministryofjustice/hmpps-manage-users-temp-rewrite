@@ -41,6 +41,7 @@ describe('RolesService', () => {
       authSource: 'nomis',
       staffId: 1234,
       userId: '1234',
+      userUuid: '447672e4-70ed-459e-a8ce-b6098d9f35a3',
       name: 'Some User',
       displayName: 'S. User',
       userRoles: ['MAINTAIN_ACCESS_ROLES_ADMIN', 'OAUTH_ADMIN'],
@@ -86,6 +87,7 @@ describe('RolesService', () => {
       authSource: 'nomis',
       staffId: 1234,
       userId: '1234',
+      userUuid: '447672e4-70ed-459e-a8ce-b6098d9f35a3',
       name: 'Some User',
       displayName: 'S. User',
       userRoles: ['MAINTAIN_ACCESS_ROLES_ADMIN'],
@@ -145,6 +147,7 @@ describe('RolesService', () => {
       authSource: 'nomis',
       staffId: 1234,
       userId: '1234',
+      userUuid: '447672e4-70ed-459e-a8ce-b6098d9f35a3',
       name: 'Some User',
       displayName: 'S. User',
       userRoles: ['MAINTAIN_ACCESS_ROLES_ADMIN'],
@@ -190,6 +193,7 @@ describe('RolesService', () => {
       authSource: 'nomis',
       staffId: 1234,
       userId: '1234',
+      userUuid: '447672e4-70ed-459e-a8ce-b6098d9f35a3',
       name: 'Some User',
       displayName: 'S. User',
       userRoles: ['MAINTAIN_ACCESS_ROLES'],
@@ -229,9 +233,9 @@ describe('RolesService', () => {
     expect(result).toStrictEqual(roles)
   })
 
-  it.each([['DPS_LSA'], ['DPS_ADM'], ['EXT_ADM'], ['IMS_HIDDEN']])(
+  it.each(['DPS_LSA', 'DPS_ADM', 'EXT_ADM', 'IMS_HIDDEN'])(
     'gets roles for admin type %s',
-    async (adminType: 'DPS_LSA' | 'DPS_ADM' | 'EXT_ADM' | 'IMS_HIDDEN') => {
+    async (adminType: string) => {
       const roles = [
         {
           roleCode: 'ROLE_TEST',
@@ -259,7 +263,7 @@ describe('RolesService', () => {
 
       apiClient.getRoles.mockResolvedValue(roles)
 
-      const result = await service.getRoles(token, adminType)
+      const result = await service.getRoles(token, adminType as 'DPS_LSA' | 'DPS_ADM' | 'EXT_ADM' | 'IMS_HIDDEN')
 
       expect(apiClient.getRoles).toHaveBeenCalledWith(token, adminType)
       expect(result).toStrictEqual(roles)

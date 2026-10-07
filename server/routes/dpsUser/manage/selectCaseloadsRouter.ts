@@ -8,9 +8,9 @@ import { caseloadDropdownValues } from '../../../presentation/caseloads'
 import { formErrorsFromFlash, validateFormOrRedirect } from '../../../middleware/route/formMiddleware'
 import { FormError } from '../../../interfaces/formError'
 import { toArray } from '../../../utils/utils'
-import { EventType, SubjectType } from '../../../services/auditService'
 import AuthRole from '../../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
+import { EventType } from '../../audit'
 
 interface Form {
   caseloads: string[]
@@ -55,7 +55,7 @@ export default (services: Services): Router => {
       what: EventType.VIEW_USER_CASELOADS,
       who: user.username,
       subjectId: userId,
-      subjectType: SubjectType.USER_ID,
+      subjectType: 'USER_ID',
     })
 
     return res.render('pages/addUserCaseload', {
@@ -84,8 +84,8 @@ export default (services: Services): Router => {
         what: EventType.ADD_USER_CASELOADS,
         who: username,
         subjectId: userId,
-        subjectType: SubjectType.USER_ID,
-        details: body,
+        subjectType: 'USER_ID',
+        details: { ...body },
       })
 
       return res.redirect(paths.dpsUser.manage.details({ userId }))

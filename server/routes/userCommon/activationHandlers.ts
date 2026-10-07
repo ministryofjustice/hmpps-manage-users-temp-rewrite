@@ -1,7 +1,7 @@
 import { Request, RequestHandler, Response } from 'express'
 import { Services } from '../../services'
 import { UserUrlProvider, UserParam } from './paramTypes'
-import { EventType, SubjectType } from '../../services/auditService'
+import { EventType } from '../audit'
 
 export type UserEnabler = (services: Services, token: string, userId: string) => Promise<unknown>
 export type UserDisabler = (services: Services, token: string, userId: string) => Promise<unknown>
@@ -17,7 +17,7 @@ export const activateHandler =
       what: EventType.ENABLE_USER,
       who: username,
       subjectId: userId,
-      subjectType: SubjectType.USER_ID,
+      subjectType: 'USER_ID',
     })
     return res.redirect(detailsUrlProvider(userId))
   }
@@ -33,7 +33,7 @@ export const deactivateHandler =
       what: EventType.DISABLE_USER,
       who: username,
       subjectId: userId,
-      subjectType: SubjectType.USER_ID,
+      subjectType: 'USER_ID',
     })
     return res.redirect(detailsUrlProvider(userId))
   }

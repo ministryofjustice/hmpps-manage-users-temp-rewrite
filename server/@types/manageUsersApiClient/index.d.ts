@@ -12,6 +12,7 @@ declare module 'manageUsersApiClient' {
   type CreateRoleRequest = components['schemas']['CreateRoleDto']
   type CreateUserRequest = components['schemas']['CreateUserRequest']
   type EmailAddress = components['schemas']['EmailAddressDto']
+  type UserEmailAddress = EmailAddress & { email: string }
   type EmailDomain = components['schemas']['EmailDomainDto']
   type ErrorResponse = components['schemas']['ErrorResponse']
   type ExternalUser = components['schemas']['ExternalUserDetailsDto']
@@ -68,7 +69,7 @@ declare module 'manageUsersApiClient' {
   }
   interface UserAllowlistQuery {
     name?: string
-    status: string
+    status?: string
     userType?: string
     size: number
     page: number

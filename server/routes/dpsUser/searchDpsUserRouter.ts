@@ -6,12 +6,12 @@ import { Services } from '../../services'
 import { downloadCsv } from '../../middleware/route/downloadMiddleware'
 import { hasRole } from '../../interfaces/hmppsUser'
 import AuthRole from '../../interfaces/authRole'
-import { EventType } from '../../services/auditService'
 import paths from '../paths'
 import { asUrlSearchParams, canDownload, Filter } from '../../presentation/searchDpsUser'
 import config from '../../config'
 import { toArray, toBoolean } from '../../utils/utils'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
+import { EventType } from '../audit'
 
 interface Query extends Filter {
   page?: number

@@ -5,9 +5,9 @@ import { formErrorsFromFlash } from '../../middleware/route/formMiddleware'
 import paths from '../paths'
 import AuthRole from '../../interfaces/authRole'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
-import { Page } from '../../services/auditService'
 import { Filter } from '../../presentation/roles'
 import { toArray } from '../../utils/utils'
+import { Page } from '../audit'
 
 interface Query extends Filter {
   page?: number

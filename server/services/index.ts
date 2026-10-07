@@ -1,5 +1,5 @@
+import { AuditServiceFactory } from '@ministryofjustice/hmpps-audit-client'
 import { dataAccess } from '../data'
-import AuditService from './auditService'
 import MenuService from './menuService'
 import DpsUserService from './dpsUserService'
 import RolesService from './rolesService'
@@ -9,13 +9,18 @@ import GroupsService from './groupsService'
 import ExternalUserService from './externalUserService'
 import UserAllowListService from './userAllowListService'
 import paginationService from './paginationService'
+import logger from '../../logger'
+import config from '../config'
+import { SubjectType } from '../routes/audit'
 
 export const services = () => {
-  const { applicationInfo, hmppsAuditClient, manageUsersApiClient } = dataAccess()
+  const { applicationInfo, manageUsersApiClient } = dataAccess()
+
+  const auditService = AuditServiceFactory.createInstance<string, SubjectType>(config.sqs.audit, logger)
 
   return {
     applicationInfo,
-    auditService: new AuditService(hmppsAuditClient),
+    auditService,
     menuService: new MenuService(manageUsersApiClient),
     dpsUserService: new DpsUserService(manageUsersApiClient),
     rolesService: new RolesService(manageUsersApiClient),

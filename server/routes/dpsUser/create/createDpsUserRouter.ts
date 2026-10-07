@@ -12,10 +12,10 @@ import {
   validateFormOrRedirect,
 } from '../../../middleware/route/formMiddleware'
 import { Services } from '../../../services'
-import { EventType, SubjectType } from '../../../services/auditService'
-import { HttpStatusCode } from '../../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../../utils/utils'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../../interfaces/authRole'
+import { EventType } from '../../audit'
 
 interface Form {
   userType: string
@@ -69,35 +69,32 @@ export default ({ dpsUserService, auditService }: Services): Router => {
     async (req, res) => {
       const body = bodyFromFlash<CreateUserRequest>(req)
       const { username } = res.locals.user
-      const errors: FormError[] = []
       let newUser: PrisonStaffNewUser
       try {
         newUser = await dpsUserService.createDpsUser(res.locals.user.token, body)
       } catch (err) {
-        if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
-          const { userMessage } = err.data
-          const errorDetails = { text: userMessage }
-          errors.push(errorDetails)
-        } else if (err.responseStatus === HttpStatusCode.CONFLICT && err.data && err.data.errorCode === 601) {
-          const usernameError = { href: '#username', text: 'Username already exists' }
-          errors.push(usernameError)
-        } else if (err.responseStatus === HttpStatusCode.CONFLICT && err.data && err.data.errorCode === 602) {
-          const emailDomainError = { href: '#email', text: 'Invalid Email domain' }
-          errors.push(emailDomainError)
-        } else {
+        let errorDetails: FormError | undefined
+        if (isErrorResponse(err)) {
+          if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
+            errorDetails = { text: err.data.userMessage ?? 'Unable to create DPS user' }
+          } else if (err.responseStatus === HttpStatusCode.CONFLICT && err.data && err.data.errorCode === 601) {
+            errorDetails = { href: '#username', text: 'Username already exists' }
+          } else if (err.responseStatus === HttpStatusCode.CONFLICT && err.data && err.data.errorCode === 602) {
+            errorDetails = { href: '#email', text: 'Invalid Email domain' }
+          }
+        }
+        if (!errorDetails) {
           throw err
         }
-      }
-      if (errors.length) {
         flashBody(req, body)
-        flashErrors(req, errors)
+        flashErrors(req, [errorDetails])
         return res.redirect(paths.dpsUser.createDpsUser.pattern)
       }
       await auditService.logAuditEvent({
         what: EventType.CREATE_DPS_USER,
         who: username,
         subjectId: newUser.username,
-        subjectType: SubjectType.USER_ID,
+        subjectType: 'USER_ID',
         details: body,
       })
       return res.render('pages/dpsUser/createSuccess', {

@@ -2,11 +2,11 @@ import { Request, RequestHandler } from 'express'
 import { PrisonCaseload, UserGroup, UserRole } from 'manageUsersApiClient'
 import { CommonUser, UserParam, UserUrlProvider } from './paramTypes'
 import { Services } from '../../services'
-import { Page, SubjectType } from '../../services/auditService'
 import { hasRole, HmppsUser } from '../../interfaces/hmppsUser'
 import AuthRole from '../../interfaces/authRole'
 import { sortAlphabetically } from '../../presentation/caseloads'
 import { formErrorsFromFlash } from '../../middleware/route/formMiddleware'
+import { Page } from '../audit'
 
 export type UserGroupWithShowRemove = UserGroup & { showRemove: boolean }
 
@@ -33,7 +33,7 @@ export const userDetailsGetHandler = <UserType extends CommonUser>(
     await auditService.logPageView(page, {
       who: user.username,
       subjectId: userId,
-      subjectType: SubjectType.USER_ID,
+      subjectType: 'USER_ID',
     })
 
     const staffUrl = staffUrlProvider(userId)

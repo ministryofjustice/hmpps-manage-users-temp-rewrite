@@ -41,6 +41,7 @@ test.describe('View allow list user', () => {
     await expect(viewPage.createdDate).toHaveText('19 March 2024')
     await expect(viewPage.lastUpdatedDate).toHaveText('19 March 2024')
     await expect(viewPage.lastUpdatedBy).toHaveText('ADMIN')
+    await expect(viewPage.approver).toHaveText('Sharlotte Muirhead')
   })
 
   test('Should show details of an expired user', async ({ page }) => {
@@ -64,6 +65,7 @@ test.describe('View allow list user', () => {
     await expect(viewPage.createdDate).toHaveText('19 March 2024')
     await expect(viewPage.lastUpdatedDate).toHaveText('19 March 2024')
     await expect(viewPage.lastUpdatedBy).toHaveText('ADMIN')
+    await expect(viewPage.approver).toHaveText('Sharlotte Muirhead')
   })
 
   test('Should click the edit link and go to the edit page', async ({ page }) => {

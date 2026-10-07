@@ -57,7 +57,7 @@ export const downloadHandler = ({
   return downloadCsv<Query, ExternalUser[]>(
     'crs-group-members.csv',
     auditService,
-    (query, token): Promise<ExternalUser[]> => externalUserService.getUsersInCRSGroup(token, query.group),
+    (query, token): Promise<ExternalUser[]> => externalUserService.getUsersInCRSGroup(token, query.group as string),
     (data: ExternalUser[]): string => {
       const fields = ['email', 'enabled', 'firstName', 'lastName', 'lastLoggedIn', 'inactiveReason']
       const json2csvParser = new Parser({ fields })

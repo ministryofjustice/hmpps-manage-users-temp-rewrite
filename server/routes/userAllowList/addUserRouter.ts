@@ -4,11 +4,11 @@ import paths from '../paths'
 import type { FormError } from '../../interfaces/formError'
 import { bodyFromFlash, flashBody, flashErrors, formErrorsFromFlash } from '../../middleware/route/formMiddleware'
 import type { Services } from '../../services'
-import { EventType, SubjectType } from '../../services/auditService'
 import authRoleGuardMiddleware from '../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../interfaces/authRole'
 import { validateEmail } from '../../presentation/validation/userValidation'
 import { UserAllowlistUserType } from '../../presentation/userAllowList'
+import { EventType } from '../audit'
 
 interface Form {
   username: string
@@ -18,6 +18,7 @@ interface Form {
   accessPeriod: string
   reason: string
   userType?: UserAllowlistUserType
+  approver: string
 }
 
 const DEFAULT_ACCESS_PERIOD = 'ONE_MONTH'
@@ -38,6 +39,9 @@ const validate = (body: Form, usernameExists: boolean): FormError[] => {
   }
   if (!body.reason) {
     errors.push({ href: '#reason', text: 'Enter a valid business reason' })
+  }
+  if (!body.approver) {
+    errors.push({ href: '#approver', text: "Enter the approving manager's name" })
   }
   return errors
 }
@@ -84,7 +88,7 @@ export default ({ userAllowListService, auditService }: Services): Router => {
       what: EventType.ADD_ALLOW_LIST_USER,
       who: res.locals.user.username,
       subjectId: form.username,
-      subjectType: SubjectType.USER_ID,
+      subjectType: 'USER_ID',
       details: allowListUserRequest,
     })
 

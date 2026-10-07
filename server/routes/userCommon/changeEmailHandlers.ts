@@ -4,9 +4,9 @@ import { CommonUser, UserParam, UserUrlProvider } from './paramTypes'
 import { bodyFromFlash, flashBody, flashErrors, formErrorsFromFlash } from '../../middleware/route/formMiddleware'
 import { FormError } from '../../interfaces/formError'
 import emailVerificationError from '../../presentation/errors'
-import { EventType, SubjectType } from '../../services/auditService'
 import { validateEmail } from '../../presentation/validation/userValidation'
-import { HttpStatusCode } from '../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../utils/utils'
+import { EventType } from '../audit'
 
 export interface Form {
   email: string
@@ -61,7 +61,7 @@ export const changeEmailPostHandler =
     try {
       await emailChanger(services, res.locals.user.token, userId, body.email)
     } catch (err) {
-      if (err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
+      if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.BAD_REQUEST && err.data) {
         errors.push({ href: '#email', text: emailVerificationError(err) })
       } else {
         throw err
@@ -77,8 +77,8 @@ export const changeEmailPostHandler =
       what: EventType.UPDATE_USER,
       who: res.locals.user.username,
       subjectId: userId,
-      subjectType: SubjectType.USER_ID,
-      details: body,
+      subjectType: 'USER_ID',
+      details: { ...body },
     })
     return res.redirect(changeEmailSuccessProvider(userId))
   }

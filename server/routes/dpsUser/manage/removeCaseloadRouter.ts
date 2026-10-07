@@ -1,11 +1,11 @@
 import { Router, Request } from 'express'
 import { Services } from '../../../services'
 import { CaseloadParam } from '../../userCommon/paramTypes'
-import { EventType, SubjectType } from '../../../services/auditService'
 import paths from '../../paths'
-import { HttpStatusCode } from '../../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../../utils/utils'
 import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMiddleware'
 import AuthRole from '../../../interfaces/authRole'
+import { EventType } from '../../audit'
 
 export default ({ dpsUserService, auditService }: Services): Router => {
   const router = Router({ mergeParams: true })
@@ -23,11 +23,14 @@ export default ({ dpsUserService, auditService }: Services): Router => {
         what: EventType.REMOVE_USER_CASELOAD,
         who: username,
         subjectId: userId,
-        subjectType: SubjectType.USER_ID,
+        subjectType: 'USER_ID',
         details: { caseload },
       })
       return res.redirect(staffUrl)
     } catch (err) {
+      if (!isErrorResponse(err)) {
+        throw err
+      }
       switch (err.responseStatus) {
         case HttpStatusCode.BAD_REQUEST: // role already removed from user
           return res.redirect(staffUrl)

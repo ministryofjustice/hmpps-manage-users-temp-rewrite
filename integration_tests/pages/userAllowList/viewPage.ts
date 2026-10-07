@@ -18,6 +18,8 @@ export default class ViewAllowListPage extends AbstractPage {
 
   readonly searchLink: Locator
 
+  readonly approver: Locator
+
   private constructor(page: Page, name: string) {
     super(page)
     this.header = page.getByRole('heading', { name })
@@ -28,6 +30,7 @@ export default class ViewAllowListPage extends AbstractPage {
     this.lastUpdatedDate = page.getByTestId('last-updated-date')
     this.lastUpdatedBy = page.getByTestId('last-updated-by')
     this.searchLink = page.getByTestId('search-link')
+    this.approver = page.getByTestId('approver')
   }
 
   static async verifyOnPage(page: Page, name: string): Promise<ViewAllowListPage> {

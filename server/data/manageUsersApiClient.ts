@@ -39,6 +39,7 @@ import {
   UserAllowlistPatchRequest,
   UserAllowlistQuery,
   UserCaseloadDetail,
+  UserEmailAddress,
   UserGroup,
   UserRole,
   UserRoleDetail,
@@ -304,7 +305,7 @@ export default class ManageUsersApiClient extends RestClient {
   }
 
   async syncDpsEmail(token: string, username: string): Promise<Response> {
-    return this.post({ path: `/prisonusers/${username}/email/sync`, data: null }, asUser(token))
+    return this.post({ path: `/prisonusers/${username}/email/sync`, data: undefined }, asUser(token))
   }
 
   async addDpsUserRoles(token: string, username: string, roles: string[]): Promise<UserRoleDetail> {
@@ -392,19 +393,20 @@ export default class ManageUsersApiClient extends RestClient {
     return this.get({ path: '/users/me/roles' }, asUser(token))
   }
 
-  async getUserEmail(token: string, username: string): Promise<EmailAddress> {
-    return this.get(
+  async getUserEmail(token: string, username: string): Promise<UserEmailAddress> {
+    const emailAddress = await this.get<EmailAddress>(
       {
         path: `/users/${username}/email`,
         query: { unverified: true },
         errorHandler: <Response, ERROR>(_path: string, _verb: string, error: SanitisedError<ERROR>): Response => {
           if (error.responseStatus === 404) {
-            return null
+            return { username, email: '', verified: false } as Response
           }
           throw error
         },
       },
       asUser(token),
     )
+    return { ...emailAddress, email: emailAddress.email ?? '' }
   }
 }

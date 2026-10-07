@@ -5,7 +5,7 @@ import authRoleGuardMiddleware from '../../../middleware/route/authRoleGuardMidd
 import paths from '../../paths'
 import { UserParam } from '../paramTypes'
 import { getAllowlistStatus } from '../../../presentation/userAllowList'
-import { Page, SubjectType } from '../../../services/auditService'
+import { Page } from '../../audit'
 
 export default ({ userAllowListService, auditService }: Services): Router => {
   const router = Router({ mergeParams: true })
@@ -19,7 +19,7 @@ export default ({ userAllowListService, auditService }: Services): Router => {
     await auditService.logPageView(Page.VIEW_ALLOW_LIST_USER, {
       who: res.locals.user.username,
       subjectId: allowlistUser.id,
-      subjectType: SubjectType.USER_ID,
+      subjectType: 'USER_ID',
     })
 
     return res.render('pages/userAllowList/viewUser', {

@@ -2,9 +2,8 @@ import { Request, Router } from 'express'
 import { Services } from '../../../services'
 import { UserParam } from '../../userCommon/paramTypes'
 import paths from '../../paths'
-import { EventType, SubjectType } from '../../../services/auditService'
 import { FormError } from '../../../interfaces/formError'
-import { HttpStatusCode } from '../../../utils/utils'
+import { HttpStatusCode, isErrorResponse } from '../../../utils/utils'
 import {
   bodyFromFlash,
   flashBody,
@@ -12,6 +11,7 @@ import {
   formErrorsFromFlash,
   validateFormOrRedirect,
 } from '../../../middleware/route/formMiddleware'
+import { EventType } from '../../audit'
 
 interface Form {
   reason: string
@@ -60,7 +60,7 @@ export default (services: Services): Router => {
       try {
         await externalUserService.deactivateUser(token, userId, body.reason)
       } catch (err) {
-        if (err.responseStatus === HttpStatusCode.FORBIDDEN) {
+        if (isErrorResponse(err) && err.responseStatus === HttpStatusCode.FORBIDDEN) {
           errors.push({
             href: '#reason',
             text: 'You are not able to maintain this user, user does not belong to any groups you manage',
@@ -80,8 +80,8 @@ export default (services: Services): Router => {
         what: EventType.DEACTIVATE_USER,
         who: username,
         subjectId: userId,
-        subjectType: SubjectType.USER_ID,
-        details: body,
+        subjectType: 'USER_ID',
+        details: { ...body },
       })
       return res.redirect(paths.externalUser.manage.details({ userId }))
     },

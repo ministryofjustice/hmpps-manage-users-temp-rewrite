@@ -1,7 +1,8 @@
 import { Request, RequestHandler, Response } from 'express'
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import logger from '../../../logger'
-import AuditService, { EventType } from '../../services/auditService'
 import { canDownload, DownloadAuthorisationCheck } from '../../presentation/searchDpsUser'
+import { EventType } from '../../routes/audit'
 
 export type DataProvider<Query, Data> = (query: Query, token: string) => Promise<Readonly<Data>>
 

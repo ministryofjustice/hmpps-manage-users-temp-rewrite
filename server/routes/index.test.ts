@@ -6,7 +6,7 @@ import { HttpStatusCode } from '../utils/utils'
 
 jest.mock('../services/menuService')
 
-const menuService = new MenuService(null) as jest.Mocked<MenuService>
+const menuService = new MenuService({} as never) as jest.Mocked<MenuService>
 
 let app: Express
 
